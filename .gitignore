@@ -8,6 +8,9 @@ workbench.xmi
 #java
 classes/
 
+#Gradle
+/.gradle
+
 # IDE
 *.ipr
 *.iml
