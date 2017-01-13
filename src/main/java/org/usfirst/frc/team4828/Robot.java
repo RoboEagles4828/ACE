@@ -12,6 +12,6 @@ public class Robot extends IterativeRobot{
     @Override
     public void teleopPeriodic() {
         super.teleopPeriodic();
-        System.out.println("Teleop running");
+        System.out.println("Teleop running!");
     }
 }
