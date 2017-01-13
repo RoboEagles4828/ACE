@@ -29,4 +29,4 @@ cards:
   title: Toast
 env:
   - TEST_SUITE=build
-  - TEST_SUITE=verify
+  - TEST_SUITE=check
