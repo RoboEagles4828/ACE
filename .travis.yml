@@ -1,0 +1,32 @@
+language: java
+# Make NetworkTables happy
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - libstdc++6
+      - junit4
+before_install:
+  - chmod +x gradlew
+script:
+  - ./gradlew $TEST_SUITE
+
+# For CodeCov
+after_success:
+  - ./gradlew test jacocoTestReport
+  - bash <(curl -s https://codecov.io/bash)
+
+jdk:
+- oraclejdk8
+notifications:
+  email: false
+  slack: 4828roboeagles:qjpsMMedvSTKBq3KCmDmdAjB
+cards:
+  enabled:
+  - master
+  - development
+  title: Toast
+env:
+  - TEST_SUITE=build
+  - TEST_SUITE=check
