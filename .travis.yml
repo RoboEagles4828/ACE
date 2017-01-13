@@ -10,7 +10,7 @@ addons:
 before_install:
   - chmod +x gradlew
 script:
-  - ./gradlew $TEST_SUITE --debug
+  - ./gradlew $TEST_SUITE
 
 # For CodeCov
 after_success:
