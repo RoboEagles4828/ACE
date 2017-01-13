@@ -9,7 +9,7 @@ workbench.xmi
 classes/
 
 #Gradle
-/.gradle
+.gradle/
 
 # IDE
 *.ipr
@@ -27,15 +27,6 @@ tmp/
 .floo
 .flooignore
 
-# Toast/GradleRIO
-run/toast/*
-run/gradle
-!run/toast/config/
-!run/toast/config/*
-
-.gradle/
-gradle/.launch/
-
 # OS Files
 .DS_Store
 .DS_Store?
@@ -49,6 +40,3 @@ Thumbs.db
 
 # backup files
 *~
-
-# directory for XML generated after running junit tests through ant
-junit/
