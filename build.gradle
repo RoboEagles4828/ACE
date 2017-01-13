@@ -43,3 +43,7 @@ task genJavadoc(type: Jar, dependsOn: javadoc) {
 artifacts {
   archives genJavadoc
 }
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+}
