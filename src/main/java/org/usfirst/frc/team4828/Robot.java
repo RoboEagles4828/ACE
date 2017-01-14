@@ -6,20 +6,20 @@ import edu.wpi.first.wpilibj.RobotDrive;
 
 public class Robot extends IterativeRobot{
 
-    Joystick driveStick;
+    Joystick discoStick;
     RobotDrive drive;
 
     @Override
     public void robotInit() {
         super.robotInit();
         System.out.println("THE ROBOT TURNED ON");
-        driveStick = new Joystick(0);
+        discoStick = new Joystick(0);
         drive = new RobotDrive(1,2,3,4);
     }
 
     @Override
     public void teleopPeriodic() {
         super.teleopPeriodic();
-        drive.mecanumDrive_Cartesian(driveStick.getX(), driveStick.getY(), driveStick.getTwist(),0);
+        drive.mecanumDrive_Cartesian(discoStick.getX(), discoStick.getY(), discoStick.getTwist(),0);
     }
 }
