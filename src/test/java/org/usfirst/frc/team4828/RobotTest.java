@@ -6,6 +6,7 @@ import org.junit.Test;
 public class RobotTest {
     @Test
     public void testTheThings() {
+        System.out.println("Test ran!");
         Assert.assertTrue(true);
     }
 }
