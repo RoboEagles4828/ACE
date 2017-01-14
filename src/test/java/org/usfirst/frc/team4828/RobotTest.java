@@ -9,4 +9,8 @@ public class RobotTest {
         System.out.println("Test ran!");
         Assert.assertTrue(true);
     }
+    @Test
+    public void anotherTest() {
+        Assert.assertEquals("Test that 1 = 1",1,1);
+    }
 }
