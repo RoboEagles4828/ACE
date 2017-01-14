@@ -47,3 +47,11 @@ artifacts {
 dependencies {
     testCompile 'junit:junit:4.12'
 }
+
+sourceSets {
+    test {
+        java {
+            srcDirs = ["src/test"]
+        }
+    }
+}
