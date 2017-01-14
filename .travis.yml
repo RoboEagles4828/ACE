@@ -7,7 +7,7 @@ addons:
     packages:
       - libstdc++6
       - junit4
-before_script:
+before_install:
   - chmod +x gradlew
 script:
   - ./gradlew $TEST_SUITE --debug
