@@ -14,12 +14,12 @@ public class Robot extends IterativeRobot {
         super.robotInit();
         System.out.println("THE ROBOT TURNED ON");
         driveStick = new Joystick(0);
-        drive = new RobotDrive(1,2,3,4);
+        drive = new RobotDrive(1, 2, 3, 4);
     }
 
     @Override
     public void teleopPeriodic() {
         super.teleopPeriodic();
-        drive.mecanumDrive_Cartesian(driveStick.getX(), driveStick.getY(), driveStick.getTwist(),0);
+        drive.mecanumDrive_Cartesian(driveStick.getX(), driveStick.getY(), driveStick.getTwist(), 0);
     }
 }
