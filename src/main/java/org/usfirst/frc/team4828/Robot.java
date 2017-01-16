@@ -2,11 +2,13 @@ package org.usfirst.frc.team4828;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotDrive;
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SPI;
 
 public class Robot extends IterativeRobot {
     Joystick driveStick;
     DriveTrain drive;
+    static AHRS navx;
 
     @Override
     public void robotInit() {
@@ -14,6 +16,7 @@ public class Robot extends IterativeRobot {
         System.out.println("THE ROBOT TURNED ON");
         driveStick = new Joystick(0);
         drive = new DriveTrain(1, 2, 3, 4);
+        navx = new AHRS(SPI.Port.kMXP);
     }
 
     @Override
@@ -36,7 +39,7 @@ public class Robot extends IterativeRobot {
     @Override
     public void teleopPeriodic() {
         super.teleopPeriodic();
-
+        drive.mecanumDrive(driveStick.getX()/2,driveStick.getY()/2,driveStick.getTwist()/8, navx.getAngle());
     }
 
     @Override
@@ -47,7 +50,6 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void testPeriodic(){
-        System.out.println(driveStick.getX()+ "  "+driveStick.getY());
-        drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist(), 0);
+        drive.testMotors();
     }
 }
