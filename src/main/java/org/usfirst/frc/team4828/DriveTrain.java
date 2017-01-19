@@ -4,9 +4,9 @@ package org.usfirst.frc.team4828;
 import com.ctre.CANTalon;
 
 public class DriveTrain {
-    CANTalon frontLeft, frontRight, backLeft, backRight;
+    private CANTalon frontLeft, frontRight, backLeft, backRight;
 
-    public DriveTrain(int frontLeftPort, int backLeftPort, int frontRightPort, int backRightPort) {
+    DriveTrain(int frontLeftPort, int backLeftPort, int frontRightPort, int backRightPort) {
         frontLeft = new CANTalon(frontLeftPort);
         frontRight = new CANTalon(frontRightPort);
         backLeft = new CANTalon(backLeftPort);
@@ -36,7 +36,7 @@ public class DriveTrain {
      * @param angle Angle by which to rotate the vector
      * @return The resultant vector as a double[2]
      */
-    private static double[] rotateVector(double x, double y, double angle) {
+    public static double[] rotateVector(double x, double y, double angle) {
         double cosA = Math.cos(angle * (3.14159 / 180.0));
         double sinA = Math.sin(angle * (3.14159 / 180.0));
         double[] out = new double[2];
@@ -45,10 +45,35 @@ public class DriveTrain {
         return out;
     }
 
+    /**
+     * Adjust motor speeds according to joystick input
+     */
+    public void mecanumDrive(double x, double y, double rotation) {
+        // Negate y for the joystick.
+        y = -y;
+
+        double[] wheelSpeeds = new double[4];
+        wheelSpeeds[0] = x + y + rotation;
+        wheelSpeeds[1] = -x + y - rotation;
+        wheelSpeeds[2] = -x + y + rotation;
+        wheelSpeeds[3] = x + y - rotation;
+
+        normalize(wheelSpeeds);
+        frontLeft.set(wheelSpeeds[0]);
+        frontRight.set(wheelSpeeds[1]);
+        backLeft.set(wheelSpeeds[2]);
+        backRight.set(wheelSpeeds[3]);
+    }
+
+    /**
+     * Adjust motor speeds according to heading and joystick input
+     * <p>
+     * use input from the gyroscope to determine field orientation
+     */
     public void mecanumDrive(double x, double y, double rotation, double gyroAngle) {
         // Negate y for the joystick.
         y = -y;
-        // Compenstate for gyro angle.
+        // Compensate for gyro angle.
         double[] rotated = rotateVector(x, y, gyroAngle);
         x = rotated[0];
         y = rotated[1];
@@ -66,11 +91,14 @@ public class DriveTrain {
         backRight.set(wheelSpeeds[3]);
     }
 
+    /**
+     * Turn all wheels slowly for testing purposes
+     */
     public void testMotors() {
-        frontLeft.set(.5);
-        frontRight.set(.5);
-        backLeft.set(.5);
-        backRight.set(.5);
+        frontLeft.set(.2);
+        frontRight.set(.2);
+        backLeft.set(.2);
+        backRight.set(.2);
     }
 
 }

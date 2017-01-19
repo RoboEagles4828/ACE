@@ -40,8 +40,8 @@ public class Robot extends IterativeRobot {
     @Override
     public void teleopPeriodic() {
         super.teleopPeriodic();
-        drive.mecanumDrive(driveStick.getX()/2,driveStick.getY()/2,driveStick.getTwist()/2, navx.getAngle());
-        if(driveStick.getRawButton(11)){
+        drive.mecanumDrive(driveStick.getX() / 2, driveStick.getY() / 2, driveStick.getTwist() / 2, navx.getAngle());
+        if (driveStick.getRawButton(11)) {
             navx.reset();
         }
         System.out.println("Angle: " + navx.getAngle());
@@ -55,7 +55,7 @@ public class Robot extends IterativeRobot {
     }
 
     @Override
-    public void testPeriodic(){
+    public void testPeriodic() {
         System.out.println("Angle: " + navx.getAngle());
     }
 }
