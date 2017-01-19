@@ -41,16 +41,16 @@ DISCLAIMER: This guide assumes that you have prior git knowledge. PLEASE learn g
 
 This year, we are using **git flow**, a development model to make our repository all neat and pretty!
 
-The main idea is to use separate branches for development and for features. The full blog post can be found [here](blogpost).
+The main idea is to use separate branches for development and for features. The full blog post can be found [here][blogpost].
 
 ### So... how do you use git flow?
 
 #### The easy way
 
 - Install the git flow extension.
-    - Follow [these](instructions) instructions.
+    - Follow [these][instructions] instructions.
     
-That's it! You're done! Well... ALMOST done. Now you just need to know how to use git flow. A cheat sheet can be found [here](cheatsheet)
+That's it! You're done! Well... ALMOST done. Now you just need to know how to use git flow. A cheat sheet can be found [here][cheatsheet]
 
 #### The "do it yourself" way
 
@@ -148,7 +148,7 @@ If you want to do a thing, click the dropdown arrow and then "Convert to Issue".
 GradleRIO is a powerful plugin that allows FRC teams to produce and build their code without being limited to the Eclipse IDE. 
 It allows you to use it with Eclipse, IntelliJ IDEA or any IDE of your choice. GradleRIO also allows you to build and deploy your code to the RoboRIO from the command-line. Finally it has a myriad of small but useful benefits over the default build system like lowered deploy times, better dependency handling, and the ability to easily integrate unit tests.
 
-See [here](gradlerio) for more information.
+See [here][gradlerio] for more information.
 
 ### Why do we use GradleRIO?
 
@@ -192,7 +192,7 @@ Click "Import" to use the default options.
 
 #### 5.5. Set `JAVA_HOME`
 
-There is a chance that your `JAVA_HOME` variable will not be set. If you run into a problem with importing in the last step, follow [these instructions](javahome) to set it.
+There is a chance that your `JAVA_HOME` variable will not be set. If you run into a problem with importing in the last step, follow [these instructions][javahome] to set it.
 
 #### 6. Profit
 
@@ -206,7 +206,7 @@ These practices are good for everything. Use them!
     - Good: "Problem with vision when running with toaster mode on" or "Pancake cooking functionality?"
     - Not good: "The robot broke" or "I want something to be added"
 - Include exactly what happened if the Issue is about a bug. Try to be as specific as possible.
-- Don't use Issues for random information. See [here](ripnikhil) for an example.
+- Don't use Issues for random information. See [here][ripnikhil] for an example.
 - When referencing other Commits, Pull Requests, or Issues, use it's `#` code. This can be found next to the name of the commit/issue/pull request. Example "Jackie, you totally broke the whole robot in #123"
 - When writing a title for anything, use the imperative form of the verb.
     - Good: "Fix Vision"
