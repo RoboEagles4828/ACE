@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Robot extends IterativeRobot {
     Joystick driveStick;
@@ -44,6 +45,7 @@ public class Robot extends IterativeRobot {
             navx.reset();
         }
         System.out.println("Angle: " + navx.getAngle());
+        Timer.delay(0.05);
     }
 
     @Override
