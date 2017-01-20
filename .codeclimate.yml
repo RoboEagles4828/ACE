@@ -1,0 +1,14 @@
+engines:
+  markdownlint:
+    enabled: true
+  pmd:
+    enables: true
+    channel: "beta"
+  checkstyle:
+    enabled: true
+    channel: "beta"
+ratings:
+  paths:
+  - "**.md"
+  - "src/*"
+  - "**.java"
