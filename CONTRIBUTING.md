@@ -49,12 +49,12 @@ The main idea is to use separate branches for development and for features. The 
 
 - Install the git flow extension.
     - Follow [these][instructions] instructions.
-    
+
 That's it! You're done! Well... ALMOST done. Now you just need to know how to use git flow. A cheat sheet can be found [here][cheatsheet]
 
 #### The "do it yourself" way
 
-The blog gives a good explanation on how to manually use commands to use the git flow technique. Although this is only recommended for people experienced in git, you can try it if you want. Just don't delete all our code. 
+The blog gives a good explanation on how to manually use commands to use the git flow technique. Although this is only recommended for people experienced in git, you can try it if you want. Just don't delete all our code.
 
 ## How to add code
 
@@ -92,7 +92,7 @@ Type up your code in whatever text editor you choose, and commit using:
 
 Now, connect your branch to the remote and push your commits:
 
-`git push --set-upstream origin/<name> <name>`
+`git push --set-upstream origin/develop <name>`
 
 ### 5. Make a pull request back into `develop`
 
@@ -114,7 +114,7 @@ You will also need a person to review your code. Just contact any programmer on 
 
 ### 7. See your code on the robot!
 
-Now that the code is in develop, it is officially a part of the robot code! 
+Now that the code is in develop, it is officially a part of the robot code!
 
 ## Issues and not knowing what to do at the shop
 
@@ -145,7 +145,7 @@ If you want to do a thing, click the dropdown arrow and then "Convert to Issue".
 
 ### What is GradleRIO?
 
-GradleRIO is a powerful plugin that allows FRC teams to produce and build their code without being limited to the Eclipse IDE. 
+GradleRIO is a powerful plugin that allows FRC teams to produce and build their code without being limited to the Eclipse IDE.
 It allows you to use it with Eclipse, IntelliJ IDEA or any IDE of your choice. GradleRIO also allows you to build and deploy your code to the RoboRIO from the command-line. Finally it has a myriad of small but useful benefits over the default build system like lowered deploy times, better dependency handling, and the ability to easily integrate unit tests.
 
 See [here][gradlerio] for more information.
@@ -168,7 +168,7 @@ Install the most recent JDK from Oracle. Follow the prompts.
 
 #### 3. Clone the repository
 
-You should have this done, but if you haven't, use this command: 
+You should have this done, but if you haven't, use this command:
 
 `git clone https://github.com/RoboEagles4828/2017Robot.git`
 
