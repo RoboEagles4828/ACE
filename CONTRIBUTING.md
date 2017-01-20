@@ -92,7 +92,7 @@ Type up your code in whatever text editor you choose, and commit using:
 
 Now, connect your branch to the remote and push your commits:
 
-`git push --set-upstream origin/develop <name>`
+`git push --set-upstream origin <name>`
 
 ### 5. Make a pull request back into `develop`
 
