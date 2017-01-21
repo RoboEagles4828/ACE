@@ -2,6 +2,8 @@ package org.usfirst.frc.team4828;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SensorBase;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
@@ -10,6 +12,7 @@ public class Robot extends IterativeRobot {
     Joystick driveStick;
     DriveTrain drive;
     static AHRS navx;
+    Ultrasonic us;
 
     @Override
     public void robotInit() {
@@ -18,7 +21,9 @@ public class Robot extends IterativeRobot {
         driveStick = new Joystick(0);
         drive = new DriveTrain(1, 2, 3, 4);
         navx = new AHRS(SPI.Port.kMXP);
-    }
+        us = new Ultrasonic(1,1);
+        us.setAutomaticMode(true);
+}
 
     @Override
     public void autonomousInit() {
