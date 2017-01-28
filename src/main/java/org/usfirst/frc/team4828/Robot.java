@@ -13,6 +13,7 @@ public class Robot extends IterativeRobot {
     AnalogInput us;
     double range;
     AccumulatorResult accum;
+    int bits;
 
     boolean use_units = true;
     double min_voltage = .5;
@@ -68,15 +69,13 @@ public class Robot extends IterativeRobot {
         System.out.println("Entering test...");
     }
 
-    @Override
     public void testPeriodic() {
-        us.initAccumulator();
-        us.setAccumulatorInitialValue(0);
-        Timer.delay(2);
-        us.getAccumulatorOutput(accum);
-        range = ((accum.value / accum.count) / (SUPPLIED_VOLTS / 1024.0));
-        us.resetAccumulator();
-        System.out.println("Voltage: " + us.getVoltage());
+        us.setOversampleBits(4);
+        us.setAverageBits(2);
+
+        range = ((((us.getAverageVoltage())) * (SUPPLIED_VOLTS / 1024.0)));
+
+        System.out.println("LSB: " + us.getLSBWeight() + " Offset: " + us.getOffset());
         System.out.println("Ultrasonic Dist: " + range * 5 * 10);
 
         Timer.delay(0.05);
