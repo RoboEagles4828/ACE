@@ -1,22 +1,18 @@
 package org.usfirst.frc.team4828;
 
-import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.SensorBase;
-import edu.wpi.first.wpilibj.Ultrasonic;
+import edu.wpi.first.wpilibj.*;
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.AnalogInput;
 
 public class Robot extends IterativeRobot {
+    private static final int SUPPLIED_VOLTS = 5;
+
     Joystick driveStick;
     DriveTrain drive;
     static AHRS navx;
     DigitalInput ir;
     AnalogInput us;
     double range;
+    AccumulatorResult accum;
 
     boolean use_units = true;
     double min_voltage = .5;
@@ -33,6 +29,7 @@ public class Robot extends IterativeRobot {
         navx = new AHRS(SPI.Port.kMXP);
         ir = new DigitalInput(2);
         us = new AnalogInput(0);
+        accum = new AccumulatorResult();
     }
     @Override
     public void autonomousInit() {
@@ -60,22 +57,9 @@ public class Robot extends IterativeRobot {
         }
 
         //System.out.println("Angle: " + navx.getAngle());
-        //System.out.println("IR Status: " + ir.get());
+        System.out.println("IR Status: " + ir.get());
 
-        range = us.getVoltage();
-        if (range < min_voltage) {
-            range = -2.0;
-        } else {
-            //first, normalize the voltage
-            range = (range - min_voltage) / voltage_range;
-            //next, denormalize to the unit range
-            range = (range * distance_range) + min_distance;
-            //finally, convert to centimeters
-            range *= 2.54;
-        }
 
-        System.out.println("Ultrasonic Dist: " + range * 5 * 10);
-        Timer.delay(0.05);
     }
 
     @Override
@@ -86,6 +70,15 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void testPeriodic() {
-        System.out.println("Angle: " + navx.getAngle());
+        us.initAccumulator();
+        us.setAccumulatorInitialValue(0);
+        Timer.delay(2);
+        us.getAccumulatorOutput(accum);
+        range = ((accum.value / accum.count) / (SUPPLIED_VOLTS / 1024.0));
+        us.resetAccumulator();
+        System.out.println("Voltage: " + us.getVoltage());
+        System.out.println("Ultrasonic Dist: " + range * 5 * 10);
+
+        Timer.delay(0.05);
     }
 }
