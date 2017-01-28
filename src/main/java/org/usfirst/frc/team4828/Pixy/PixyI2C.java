@@ -22,6 +22,7 @@ public class PixyI2C{
 		packets = new PixyPacket[7];
 		pExc = new PixyException(print);
 		values = new PixyPacket();
+		System.out.println("--- Created Pixy ---");
 	}
 	//This method parses raw data from the pixy into readable integers
 	public int cvt(byte upper, byte lower) {
