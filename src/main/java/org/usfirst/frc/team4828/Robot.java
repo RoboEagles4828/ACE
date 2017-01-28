@@ -6,13 +6,12 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 
-import org.usfirst.frc.team4828.Pixy.PixyI2C;
+import org.usfirst.frc.team4828.Pixy.PixyThread;
 
 public class Robot extends IterativeRobot {
     Joystick driveStick;
     DriveTrain drive;
     static AHRS navx;
-    PixyI2C pixy;
 
     @Override
     public void robotInit() {
@@ -21,7 +20,6 @@ public class Robot extends IterativeRobot {
         driveStick = new Joystick(0);
         drive = new DriveTrain(1, 2, 3, 4);
         navx = new AHRS(SPI.Port.kMXP);
-        pixy = new PixyI2C();
     }
 
     @Override
@@ -49,8 +47,6 @@ public class Robot extends IterativeRobot {
             navx.reset();
         }
         System.out.println("Angle: " + navx.getAngle());
-        System.out.println("PixyX: " + pixy.getX());
-        System.out.println("PixyY: " + pixy.getY());
         Timer.delay(0.05);
     }
 
@@ -58,6 +54,8 @@ public class Robot extends IterativeRobot {
     public void testInit() {
         super.testInit();
         System.out.println("Entering test...");
+        PixyThread pixy = new PixyThread();
+        pixy.start();
     }
 
     @Override
