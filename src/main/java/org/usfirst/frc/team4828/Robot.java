@@ -17,6 +17,7 @@ public class Robot extends IterativeRobot {
     @Override
     public void robotInit() {
         super.robotInit();
+
         System.out.println("THE ROBOT TURNED ON");
         driveStick = new Joystick(0);
         drive = new DriveTrain(1, 2, 3, 4);
@@ -64,7 +65,7 @@ public class Robot extends IterativeRobot {
     }
 
     public void testPeriodic() {
-        System.out.println("Ultrasonic Dist: " + us.dist);
+        System.out.println("Ultrasonic Dist: " + us.distCm);
         Timer.delay(0.05);
     }
 }
