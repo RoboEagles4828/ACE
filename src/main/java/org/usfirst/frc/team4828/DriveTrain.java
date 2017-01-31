@@ -49,8 +49,7 @@ public class DriveTrain {
         return out;
     }
 
-    /**
-     * Adjust motor speeds according to joystick input
+    /** mecanumDrive - Adjust motor speeds according to joystick input.
      */
     public void mecanumDrive(double x, double y, double rotation) {
         // Ignore tiny inadvertent joystick rotations
@@ -74,10 +73,8 @@ public class DriveTrain {
         backRight.set(wheelSpeeds[3]);
     }
 
-    /**
-     * Adjust motor speeds according to heading and joystick input
-     * <p>
-     * use input from the gyroscope to determine field orientation
+    /** mecanumDrive - Adjust motor speeds according to heading and joystick input.
+     * Uses input from the gyroscope to determine field orientation.
      */
     public void mecanumDrive(double x, double y, double rotation, double gyroAngle) {
         // Ignore tiny inadvertent joystick rotations
