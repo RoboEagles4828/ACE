@@ -11,7 +11,7 @@ public class Robot extends IterativeRobot {
     static AHRS navx;
     DigitalInput ir;
     double range;
-    UltraSensor us;
+    UltraThread us;
     AccumulatorResult accum;
 
     @Override
@@ -22,8 +22,9 @@ public class Robot extends IterativeRobot {
         drive = new DriveTrain(1, 2, 3, 4);
         navx = new AHRS(SPI.Port.kMXP);
         ir = new DigitalInput(2);
-        us = new UltraSensor(0);
+        us = new UltraThread(0);
         accum = new AccumulatorResult();
+        us.start();
     }
     @Override
     public void autonomousInit() {
@@ -63,12 +64,7 @@ public class Robot extends IterativeRobot {
     }
 
     public void testPeriodic() {
-        us.setOversampleBits(4);
-        us.setAverageBits(2);
-
-        System.out.println("LSB: " + us.getLSBWeight() + " Offset: " + us.getOffset());
-        System.out.println("Ultrasonic Dist: " + us.getCm() * 5 * 10);
-
+        System.out.println("Ultrasonic Dist: " + us.dist);
         Timer.delay(0.05);
     }
 }
