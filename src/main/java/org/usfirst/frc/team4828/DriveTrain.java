@@ -40,12 +40,12 @@ public class DriveTrain {
      * @param angle Angle by which to rotate the vector
      * @return The resultant vector as a double[2]
      */
-    public static double[] rotateVector(double x, double y, double angle) {
+    public static double[] rotateVector(double xComponent, double yComponent, double angle) {
         double cosA = Math.cos(angle * (3.14159 / 180.0));
         double sinA = Math.sin(angle * (3.14159 / 180.0));
         double[] out = new double[2];
-        out[0] = x * cosA - y * sinA;
-        out[1] = x * sinA + y * cosA;
+        out[0] = xComponent * cosA - yComponent * sinA;
+        out[1] = xComponent * sinA + yComponent * cosA;
         return out;
     }
 
