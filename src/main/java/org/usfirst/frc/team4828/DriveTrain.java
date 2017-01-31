@@ -33,8 +33,7 @@ public class DriveTrain {
         }
     }
 
-    /**
-     * Rotate A vector in cartesian space
+    /** rotateVector - Rotate a vector in Cartesian space.
      *
      * @param x     X component of the vector
      * @param y     Y component of the vector
