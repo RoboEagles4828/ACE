@@ -11,6 +11,7 @@ import java.util.List;
 public class UltraThread extends Thread{
 
     private static final int WINDOW_SIZE = 5;
+    private static final int SUPPLIED_VOLTAGE = 5;
 
     AnalogInput sensor;
     double dist;
@@ -37,11 +38,11 @@ public class UltraThread extends Thread{
     }
 
     private double toCm(double v) {
-        return 0.0;
+        return v / (SUPPLIED_VOLTAGE / 1024);
     }
 
     private double toIn(double v) {
-        return 0.0;
+        return toCm(v) / 2.54;
     }
 
     public void run() {
