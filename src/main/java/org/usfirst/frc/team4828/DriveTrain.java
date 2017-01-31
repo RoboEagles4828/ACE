@@ -4,7 +4,11 @@ package org.usfirst.frc.team4828;
 import com.ctre.CANTalon;
 
 public class DriveTrain {
-    private CANTalon frontLeft, frontRight, backLeft, backRight;
+    private CANTalon frontLeft;
+    private CANTalon frontRight;
+    private CANTalon backLeft;
+    private CANTalon backRight;
+
     private static final double TWIST_THRESHOLD = 0.15;
 
     DriveTrain(int frontLeftPort, int backLeftPort, int frontRightPort, int backRightPort) {
