@@ -10,16 +10,9 @@ public class Robot extends IterativeRobot {
     DriveTrain drive;
     static AHRS navx;
     DigitalInput ir;
-    AnalogInput us;
     double range;
+    UltraSensor us;
     AccumulatorResult accum;
-    int bits;
-
-    boolean use_units = true;
-    double min_voltage = .5;
-    double voltage_range = 5.0 - min_voltage;
-    double min_distance = 3.0;
-    double distance_range = 60.0 - min_distance;
 
     @Override
     public void robotInit() {
@@ -29,7 +22,7 @@ public class Robot extends IterativeRobot {
         drive = new DriveTrain(1, 2, 3, 4);
         navx = new AHRS(SPI.Port.kMXP);
         ir = new DigitalInput(2);
-        us = new AnalogInput(0);
+        us = new UltraSensor(0);
         accum = new AccumulatorResult();
     }
     @Override
@@ -73,10 +66,8 @@ public class Robot extends IterativeRobot {
         us.setOversampleBits(4);
         us.setAverageBits(2);
 
-        range = ((((us.getAverageVoltage())) * (SUPPLIED_VOLTS / 1024.0)));
-
         System.out.println("LSB: " + us.getLSBWeight() + " Offset: " + us.getOffset());
-        System.out.println("Ultrasonic Dist: " + range * 5 * 10);
+        System.out.println("Ultrasonic Dist: " + us.getCm() * 5 * 10);
 
         Timer.delay(0.05);
     }
