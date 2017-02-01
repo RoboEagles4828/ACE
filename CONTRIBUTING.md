@@ -128,10 +128,10 @@ Issues are basically problems with the code, and Projects are a place to store a
 
 Found a bug in the code? Want a feature to be implemented on the robot? Here's how to make an Issue.
 
-1. Click the "Issues" tab on the toolbar
-2. Click "New Issue"
-3. Type the Issue and click "Submit new issue"
-4. On the right side, assign people to the Issue
+1. Click the "Issues" tab on the toolbar.
+2. Click "New Issue".
+3. Type the Issue and click "Submit new issue".
+4. On the right side, assign people to the Issue.
 
 That's it for making an Issue!
 
