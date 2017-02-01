@@ -82,7 +82,7 @@ With extension: `git flow feature start <name>`
 
 Without extension: `git checkout -b <name> develop`
 
-### 3. Add your code!
+### 3. Add your code
 
 Type up your code in whatever text editor you choose, and commit using:
 
@@ -112,7 +112,7 @@ Near the bottom, you will see some checks. You must wait for these to finish bef
 
 You will also need a person to review your code. Just contact any programmer on Slack, and they'll probably look it over for you and merge it.
 
-### 7. See your code on the robot!
+### 7. See your code on the robot
 
 Now that the code is in develop, it is officially a part of the robot code!
 
