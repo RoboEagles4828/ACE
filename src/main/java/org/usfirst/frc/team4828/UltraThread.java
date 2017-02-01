@@ -17,8 +17,10 @@ public class UltraThread extends Thread {
     private static final int SUPPLIED_VOLTAGE = 5;
 
     AnalogInput sensor;
-    double distCm, distIn;
-    List<Double> valuesCm, valuesIn;
+    double distCm;
+    double distIn;
+    List<Double> valuesCm;
+    List<Double> valuesIn;
 
     /**
      * Create a new UltraThread with a given port.
