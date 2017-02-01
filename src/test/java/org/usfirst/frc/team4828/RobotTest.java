@@ -12,9 +12,9 @@ public class RobotTest {
 
     @Test
     public void anotherTest() {
-        int a = 1;
-        int b = 1;
-        System.out.println("Checking that " + a + " is equal to " + b);
+        int firstTest = 1;
+        int secondTest = 1;
+        System.out.println("Checking that " + firstTest + " is equal to " + secondTest);
         Assert.assertEquals(1, 1);
     }
 
