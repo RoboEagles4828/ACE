@@ -51,20 +51,20 @@ public class DriveTrain {
 
     /** mecanumDrive - Adjust motor speeds according to joystick input.
      */
-    public void mecanumDrive(double x, double y, double rotation) {
+    public void mecanumDrive(double xComponent, double yComponent, double rotation) {
         // Ignore tiny inadvertent joystick rotations
         if (Math.abs(rotation) <= TWIST_THRESHOLD) {
              rotation = 0.0;
         }
-        
+
         // Negate y for the joystick.
-        y = -y;
+        yComponent = -yComponent;
 
         double[] wheelSpeeds = new double[4];
-        wheelSpeeds[0] = x + y + rotation;
-        wheelSpeeds[1] = -x + y - rotation;
-        wheelSpeeds[2] = -x + y + rotation;
-        wheelSpeeds[3] = x + y - rotation;
+        wheelSpeeds[0] = xComponent + yComponent + rotation;
+        wheelSpeeds[1] = -xComponent + yComponent - rotation;
+        wheelSpeeds[2] = -xComponent + yComponent + rotation;
+        wheelSpeeds[3] = xComponent + yComponent - rotation;
 
         normalize(wheelSpeeds);
         frontLeft.set(wheelSpeeds[0]);
@@ -76,24 +76,24 @@ public class DriveTrain {
     /** mecanumDrive - Adjust motor speeds according to heading and joystick input.
      * Uses input from the gyroscope to determine field orientation.
      */
-    public void mecanumDrive(double x, double y, double rotation, double gyroAngle) {
+    public void mecanumDrive(double xComponent, double yComponent, double rotation, double gyroAngle) {
         // Ignore tiny inadvertent joystick rotations
         if (Math.abs(rotation) <= TWIST_THRESHOLD) {
              rotation = 0.0;
         }
-        
+
         // Negate y for the joystick.
-        y = -y;
+        yComponent = -yComponent;
         // Compensate for gyro angle.
-        double[] rotated = rotateVector(x, y, gyroAngle);
-        x = rotated[0];
-        y = rotated[1];
+        double[] rotated = rotateVector(xComponent, yComponent, gyroAngle);
+        xComponent = rotated[0];
+        yComponent = rotated[1];
 
         double[] wheelSpeeds = new double[4];
-        wheelSpeeds[0] = x + y + rotation;
-        wheelSpeeds[1] = -x + y - rotation;
-        wheelSpeeds[2] = -x + y + rotation;
-        wheelSpeeds[3] = x + y - rotation;
+        wheelSpeeds[0] = xComponent + yComponent + rotation;
+        wheelSpeeds[1] = -xComponent + yComponent - rotation;
+        wheelSpeeds[2] = -xComponent + yComponent + rotation;
+        wheelSpeeds[3] = xComponent + yComponent - rotation;
 
         normalize(wheelSpeeds);
         frontLeft.set(wheelSpeeds[0]);
