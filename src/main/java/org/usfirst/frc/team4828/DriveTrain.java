@@ -35,36 +35,36 @@ public class DriveTrain {
 
     /** rotateVector - Rotate a vector in Cartesian space.
      *
-     * @param x     X component of the vector
-     * @param y     Y component of the vector
+     * @param xcomponent     X component of the vector
+     * @param ycomponent     Y component of the vector
      * @param angle Angle by which to rotate the vector
      * @return The resultant vector as a double[2]
      */
-    public static double[] rotateVector(double xComponent, double yComponent, double angle) {
+    public static double[] rotateVector(double xcomponent, double ycomponent, double angle) {
         double cosA = Math.cos(angle * (3.14159 / 180.0));
         double sinA = Math.sin(angle * (3.14159 / 180.0));
         double[] out = new double[2];
-        out[0] = xComponent * cosA - yComponent * sinA;
-        out[1] = xComponent * sinA + yComponent * cosA;
+        out[0] = xcomponent * cosA - ycomponent * sinA;
+        out[1] = xcomponent * sinA + ycomponent * cosA;
         return out;
     }
 
     /** mecanumDrive - Adjust motor speeds according to joystick input.
      */
-    public void mecanumDrive(double xComponent, double yComponent, double rotation) {
+    public void mecanumDrive(double xcomponent, double ycomponent, double rotation) {
         // Ignore tiny inadvertent joystick rotations
         if (Math.abs(rotation) <= TWIST_THRESHOLD) {
              rotation = 0.0;
         }
 
         // Negate y for the joystick.
-        yComponent = -yComponent;
+        ycomponent = -ycomponent;
 
         double[] wheelSpeeds = new double[4];
-        wheelSpeeds[0] = xComponent + yComponent + rotation;
-        wheelSpeeds[1] = -xComponent + yComponent - rotation;
-        wheelSpeeds[2] = -xComponent + yComponent + rotation;
-        wheelSpeeds[3] = xComponent + yComponent - rotation;
+        wheelSpeeds[0] = xcomponent + ycomponent + rotation;
+        wheelSpeeds[1] = -xcomponent + ycomponent - rotation;
+        wheelSpeeds[2] = -xcomponent + ycomponent + rotation;
+        wheelSpeeds[3] = xcomponent + ycomponent - rotation;
 
         normalize(wheelSpeeds);
         frontLeft.set(wheelSpeeds[0]);
@@ -76,24 +76,24 @@ public class DriveTrain {
     /** mecanumDrive - Adjust motor speeds according to heading and joystick input.
      * Uses input from the gyroscope to determine field orientation.
      */
-    public void mecanumDrive(double xComponent, double yComponent, double rotation, double gyroAngle) {
+    public void mecanumDrive(double xcomponent, double ycomponent, double rotation, double gyroAngle) {
         // Ignore tiny inadvertent joystick rotations
         if (Math.abs(rotation) <= TWIST_THRESHOLD) {
              rotation = 0.0;
         }
 
         // Negate y for the joystick.
-        yComponent = -yComponent;
+        ycomponent = -ycomponent;
         // Compensate for gyro angle.
-        double[] rotated = rotateVector(xComponent, yComponent, gyroAngle);
-        xComponent = rotated[0];
-        yComponent = rotated[1];
+        double[] rotated = rotateVector(xcomponent, ycomponent, gyroAngle);
+        xcomponent = rotated[0];
+        ycomponent = rotated[1];
 
         double[] wheelSpeeds = new double[4];
-        wheelSpeeds[0] = xComponent + yComponent + rotation;
-        wheelSpeeds[1] = -xComponent + yComponent - rotation;
-        wheelSpeeds[2] = -xComponent + yComponent + rotation;
-        wheelSpeeds[3] = xComponent + yComponent - rotation;
+        wheelSpeeds[0] = xcomponent + ycomponent + rotation;
+        wheelSpeeds[1] = -xcomponent + ycomponent - rotation;
+        wheelSpeeds[2] = -xcomponent + ycomponent + rotation;
+        wheelSpeeds[3] = xcomponent + ycomponent - rotation;
 
         normalize(wheelSpeeds);
         frontLeft.set(wheelSpeeds[0]);
