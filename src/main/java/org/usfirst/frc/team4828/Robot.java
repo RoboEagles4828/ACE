@@ -32,6 +32,7 @@ public class Robot extends IterativeRobot {
         accum = new AccumulatorResult();
         us.start();
     }
+
     @Override
     public void autonomousInit() {
         super.autonomousInit();
