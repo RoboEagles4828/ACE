@@ -55,7 +55,7 @@ public class UltraThread extends Thread {
 
     /**
      * Converts a number to Centimeters
-     * @param v number to convert
+     * @param voltage number to convert
      * @return  converted number
      */
 
@@ -65,12 +65,12 @@ public class UltraThread extends Thread {
 
     /**
      * Converts a number to Inches
-     * @param v number to convert
+     * @param voltage number to convert
      * @return  converted number
      */
 
-    private double toIn(double v) {
-        return toCm(v) / 2.54;
+    private double toIn(double voltage) {
+        return toCm(voltage) / 2.54;
     }
 
     /**
