@@ -1,23 +1,36 @@
 package org.usfirst.frc.team4828;
 
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.AccumulatorResult;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 
 public class Robot extends IterativeRobot {
+    private static final int SUPPLIED_VOLTS = 5;
+
     Joystick driveStick;
     DriveTrain drive;
     static AHRS navx;
+    DigitalInput ir;
+    double range;
+    UltraThread us;
+    AccumulatorResult accum;
 
     @Override
     public void robotInit() {
         super.robotInit();
+
         System.out.println("THE ROBOT TURNED ON");
         driveStick = new Joystick(0);
         drive = new DriveTrain(1, 2, 3, 4);
         navx = new AHRS(SPI.Port.kMXP);
+        ir = new DigitalInput(2);
+        us = new UltraThread(0);
+        accum = new AccumulatorResult();
+        us.start();
     }
 
     @Override
@@ -45,8 +58,11 @@ public class Robot extends IterativeRobot {
         if (driveStick.getRawButton(11)) {
             navx.reset();
         }
-        System.out.println("Angle: " + navx.getAngle());
-        Timer.delay(0.05);
+
+        //System.out.println("Angle: " + navx.getAngle());
+        System.out.println("IR Status: " + ir.get());
+
+
     }
 
     @Override
@@ -55,8 +71,8 @@ public class Robot extends IterativeRobot {
         System.out.println("Entering test...");
     }
 
-    @Override
     public void testPeriodic() {
-        System.out.println("Angle: " + navx.getAngle());
+        System.out.println("Ultrasonic Dist: " + us.distCm);
+        Timer.delay(0.05);
     }
 }
