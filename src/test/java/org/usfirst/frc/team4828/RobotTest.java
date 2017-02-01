@@ -3,8 +3,6 @@ package org.usfirst.frc.team4828;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.awt.*;
-
 public class RobotTest {
     @Test
     public void testTheThings() {
