@@ -1,8 +1,8 @@
 package org.usfirst.frc.team4828;
 
+import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
-import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -40,7 +40,8 @@ public class Robot extends IterativeRobot {
     @Override
     public void teleopPeriodic() {
         super.teleopPeriodic();
-        drive.mecanumDrive(driveStick.getX() / 2, driveStick.getY() / 2, driveStick.getTwist() / 2, navx.getAngle());
+        drive.mecanumDrive(driveStick.getX() / 2, driveStick.getY() / 2,
+            driveStick.getTwist() / 2, navx.getAngle());
         if (driveStick.getRawButton(11)) {
             navx.reset();
         }
