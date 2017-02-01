@@ -12,11 +12,11 @@
   - [1. Get the code from GitHub](#1-get-the-code-from-github)
   - [1.5. Set up `git flow`](#15-set-up-git-flow)
   - [2. Create a new branch off of `develop`](#2-create-a-new-branch-off-of-develop)
-  - [3. Add your code!](#3-add-your-code)
+  - [3. Add your code](#3-add-your-code)
   - [4. Connect your local branch to remote and push your code](#4-connect-your-local-branch-to-remote-and-push-your-code)
   - [5. Make a pull request back into `develop`](#5-make-a-pull-request-back-into-develop)
   - [6. Wait for review](#6-wait-for-review)
-  - [7. See your code on the robot!](#7-see-your-code-on-the-robot)
+  - [7. See your code on the robot](#7-see-your-code-on-the-robot)
 - [Issues and not knowing what to do at the shop](#issues-and-not-knowing-what-to-do-at-the-shop)
   - [Making an Issue](#making-an-issue)
   - [Using Projects](#using-projects)
@@ -82,7 +82,7 @@ With extension: `git flow feature start <name>`
 
 Without extension: `git checkout -b <name> develop`
 
-### 3. Add your code!
+### 3. Add your code
 
 Type up your code in whatever text editor you choose, and commit using:
 
@@ -112,7 +112,7 @@ Near the bottom, you will see some checks. You must wait for these to finish bef
 
 You will also need a person to review your code. Just contact any programmer on Slack, and they'll probably look it over for you and merge it.
 
-### 7. See your code on the robot!
+### 7. See your code on the robot
 
 Now that the code is in develop, it is officially a part of the robot code!
 
@@ -128,10 +128,10 @@ Issues are basically problems with the code, and Projects are a place to store a
 
 Found a bug in the code? Want a feature to be implemented on the robot? Here's how to make an Issue.
 
-1. Click the "Issues" tab on the toolbar
-2. Click "New Issue"
-3. Type the Issue and click "Submit new issue"
-4. On the right side, assign people to the Issue
+1. Click the "Issues" tab on the toolbar.
+2. Click "New Issue".
+3. Type the Issue and click "Submit new issue".
+4. On the right side, assign people to the Issue.
 
 That's it for making an Issue!
 
