@@ -102,8 +102,7 @@ public class DriveTrain {
         backRight.set(wheelSpeeds[3]);
     }
 
-    /**
-     * Turn all wheels slowly for testing purposes
+    /** testMotors - Turn all wheels slowly for testing purposes.
      */
     public void testMotors() {
         frontLeft.set(.2);
