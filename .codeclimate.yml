@@ -8,6 +8,8 @@ engines:
         enabled: false
       MD036:
         enabled: false
+      MD039:
+        enabled: false
   pmd:
     enabled: true
     channel: "beta"
