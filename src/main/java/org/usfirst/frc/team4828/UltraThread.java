@@ -59,8 +59,8 @@ public class UltraThread extends Thread {
      * @return  converted number
      */
 
-    private double toCm(double v) {
-        return v / (SUPPLIED_VOLTAGE / 1024);
+    private double toCm(double voltage) {
+        return voltage / (SUPPLIED_VOLTAGE / 1024);
     }
 
     /**
