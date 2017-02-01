@@ -53,8 +53,7 @@ public class UltraThread extends Thread {
         }
     }
 
-    /**
-     * Converts a number to Centimeters
+    /** toCm - Converts a number to Centimeters.
      * @param voltage number to convert
      * @return  converted number
      */
@@ -63,8 +62,7 @@ public class UltraThread extends Thread {
         return voltage / (SUPPLIED_VOLTAGE / 1024);
     }
 
-    /**
-     * Converts a number to Inches
+    /** toIn - Converts a number to Inches.
      * @param voltage number to convert
      * @return  converted number
      */
