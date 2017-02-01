@@ -22,8 +22,7 @@ public class UltraThread extends Thread {
     List<Double> valuesCm;
     List<Double> valuesIn;
 
-    /**
-     * Create a new UltraThread with a given port.
+    /** UltraThread - Create a new UltraThread with a given port.
      * Port should be an Analog port.
      * @param port the port that the sensor is connected to
      */
