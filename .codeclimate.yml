@@ -4,6 +4,14 @@ engines:
     checks:
       MD013:
         enabled: false
+      MD026:
+        enabled: false
+      MD029:
+        enabled: false
+      MD036:
+        enabled: false
+      MD039:
+        enabled: false
   pmd:
     enabled: true
     channel: "beta"
