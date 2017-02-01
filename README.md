@@ -1,5 +1,5 @@
 # 2017 Robot
-[![Code Climate](https://codeclimate.com/github/RoboEagles4828/2017Robot/badges/gpa.svg)](https://codeclimate.com/github/RoboEagles4828/2017Robot) [![Test Coverage](https://codeclimate.com/github/RoboEagles4828/2017Robot/badges/coverage.svg)](https://codeclimate.com/github/RoboEagles4828/2017Robot/coverage) 
+[![Code Climate](https://codeclimate.com/github/RoboEagles4828/2017Robot/badges/gpa.svg)](https://codeclimate.com/github/RoboEagles4828/2017Robot) [![Test Coverage](https://codeclimate.com/github/RoboEagles4828/2017Robot/badges/coverage.svg)](https://codeclimate.com/github/RoboEagles4828/2017Robot/coverage)
 
 ## Builds
 
