@@ -30,7 +30,6 @@ public class Robot extends IterativeRobot {
         ir = new DigitalInput(2);
         us = new UltraThread(0);
         accum = new AccumulatorResult();
-        us.start();
     }
 
     @Override
@@ -69,10 +68,18 @@ public class Robot extends IterativeRobot {
     public void testInit() {
         super.testInit();
         System.out.println("Entering test...");
+        us.start();
     }
-
+    
+    @Override
     public void testPeriodic() {
-        System.out.println("Ultrasonic Dist: " + us.distCm);
-        Timer.delay(0.05);
+        //System.out.println("Ultrasonic Dist: " + us.distCm);
+        Timer.delay(0.1);
+    }
+    
+	@Override
+    public void disabledInit(){
+    	us.terminate();
+    	System.out.println("Stopping thread");
     }
 }

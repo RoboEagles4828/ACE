@@ -1,7 +1,9 @@
 package org.usfirst.frc.team4828;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.Timer;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,10 +17,13 @@ public class UltraThread extends Thread {
 
     private static final int WINDOW_SIZE = 5;
     private static final int SUPPLIED_VOLTAGE = 5;
-
+    
+    private Thread t;
+    private String threadName = "ultrasonic thread";
     AnalogInput sensor;
     double distCm;
     double distIn;
+    boolean enabled;
     List<Double> valuesCm;
     List<Double> valuesIn;
 
@@ -29,6 +34,9 @@ public class UltraThread extends Thread {
 
     public UltraThread(int port) {
         sensor = new AnalogInput(port);
+        valuesCm = new ArrayList<Double>();
+        valuesIn = new ArrayList<Double>();
+        System.out.println("Thread starting");
     }
 
     /**
@@ -71,11 +79,11 @@ public class UltraThread extends Thread {
         return toCm(voltage) / 2.54;
     }
 
-    /**
-     * Run the thread.
+    /** The contents of the thread
+     *  loops while it's alive
      */
-
     public void run() {
+    	while(enabled){
         valuesCm.add(toCm(sensor.getVoltage()));
         valuesCm.add(toIn(sensor.getVoltage()));
 
@@ -88,5 +96,26 @@ public class UltraThread extends Thread {
 
         distCm = medianFilter(valuesCm);
         distIn = medianFilter(valuesIn);
+        Timer.delay(.05);
+    	}
+    }
+    
+    /** Starts the thread
+     *  
+     */
+    public void start () {
+    	enabled = true;
+        if (t == null) {
+           t = new Thread (this, threadName);
+           t.start ();
+        }
+     }
+    
+    /** Stops the thread
+     * 
+     */
+    public void terminate(){
+    	enabled = false;
+    	t = null;
     }
 }
