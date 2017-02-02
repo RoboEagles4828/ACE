@@ -16,7 +16,7 @@ import java.util.List;
 public class UltraThread extends Thread {
 
     private static final int WINDOW_SIZE = 5;
-    private static final int SUPPLIED_VOLTAGE = 5;
+    private static final double SUPPLIED_VOLTAGE = 5.0;
     
     private Thread t;
     private String threadName = "ultrasonic thread";
@@ -84,18 +84,8 @@ public class UltraThread extends Thread {
      */
     public void run() {
     	while(enabled){
-        valuesCm.add(toCm(sensor.getVoltage()));
-        valuesCm.add(toIn(sensor.getVoltage()));
-
-        if(valuesCm.size() > WINDOW_SIZE) {
-            valuesCm.remove(0);
-        }
-        if(valuesIn.size() > WINDOW_SIZE) {
-            valuesIn.remove(0);
-        }
-
-        distCm = medianFilter(valuesCm);
-        distIn = medianFilter(valuesIn);
+        distIn = toIn(sensor.getAverageVoltage());
+        distCm = toCm(sensor.getAverageVoltage());
         Timer.delay(.05);
     	}
     }
