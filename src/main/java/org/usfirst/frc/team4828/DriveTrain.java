@@ -17,6 +17,9 @@ public class DriveTrain {
         backRight = new CANTalon(backRightPort);
     }
 
+    /**
+     * Ensures that wheel speeds are valid numbers
+     */
     private static void normalize(double[] wheelSpeeds) {
         double maxMagnitude = Math.abs(wheelSpeeds[0]);
         for (int i = 1; i < 4; i++) {
