@@ -53,9 +53,7 @@ public class Robot extends IterativeRobot {
         }
 
         //System.out.println("Angle: " + navx.getAngle());
-        System.out.println("IR Status: " + ir.get());
-
-
+        //System.out.println("IR Status: " + ir.get());
     }
 
     @Override
@@ -67,7 +65,7 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void testPeriodic() {
-        System.out.println("Ultrasonic Dist: " + us.values.get(0));
+        System.out.println("Ultrasonic Dist: " + us.distIn + " inches");
         Timer.delay(0.1);
     }
 
