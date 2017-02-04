@@ -1,10 +1,14 @@
 package org.usfirst.frc.team4828;
 
-
 import com.ctre.CANTalon;
 
 public class DriveTrain {
-    private CANTalon frontLeft, frontRight, backLeft, backRight;
+    private CANTalon frontLeft;
+    private CANTalon frontRight;
+    private CANTalon backLeft;
+    private CANTalon backRight;
+
+    private static final double TWIST_THRESHOLD = 0.15;
 
     DriveTrain(int frontLeftPort, int backLeftPort, int frontRightPort, int backRightPort) {
         frontLeft = new CANTalon(frontLeftPort);
@@ -13,10 +17,9 @@ public class DriveTrain {
         backRight = new CANTalon(backRightPort);
     }
 
-    public int[] getPorts() {
-        return new int[]{frontLeft.getDeviceID(), frontRight.getDeviceID(), backLeft.getDeviceID(), backRight.getDeviceID()};
-    }
-
+    /**
+     * Ensures that wheel speeds are valid numbers
+     */
     private static void normalize(double[] wheelSpeeds) {
         double maxMagnitude = Math.abs(wheelSpeeds[0]);
         for (int i = 1; i < 4; i++) {
@@ -33,61 +36,52 @@ public class DriveTrain {
     }
 
     /**
-     * Rotate A vector in cartesian space
+     * Rotate a vector in Cartesian space.
      *
-     * @param x     X component of the vector
-     * @param y     Y component of the vector
-     * @param angle Angle by which to rotate the vector
+     * @param xcomponent X component of the vector
+     * @param ycomponent Y component of the vector
+     * @param angle      Angle by which to rotate the vector
      * @return The resultant vector as a double[2]
      */
-
-    public static double[] rotateVector(double x, double y, double angle) {
+    public static double[] rotateVector(double xcomponent, double ycomponent, double angle) {
         double cosA = Math.cos(angle * (3.14159 / 180.0));
         double sinA = Math.sin(angle * (3.14159 / 180.0));
         double[] out = new double[2];
-        out[0] = x * cosA - y * sinA;
-        out[1] = x * sinA + y * cosA;
+        out[0] = xcomponent * cosA - ycomponent * sinA;
+        out[1] = xcomponent * sinA + ycomponent * cosA;
         return out;
     }
 
     /**
-     * Adjust motor speeds according to joystick input
+     * Adjust motor speeds according to joystick input.
      */
-    public void mecanumDrive(double x, double y, double rotation) {
-        // Negate y for the joystick.
-        y = -y;
-
-        double[] wheelSpeeds = new double[4];
-        wheelSpeeds[0] = x + y + rotation;
-        wheelSpeeds[1] = -x + y - rotation;
-        wheelSpeeds[2] = -x + y + rotation;
-        wheelSpeeds[3] = x + y - rotation;
-
-        normalize(wheelSpeeds);
-        frontLeft.set(wheelSpeeds[0]);
-        frontRight.set(wheelSpeeds[1]);
-        backLeft.set(wheelSpeeds[2]);
-        backRight.set(wheelSpeeds[3]);
+    public void mecanumDrive(double xcomponent, double ycomponent, double rotation) {
+        mecanumDrive(xcomponent, ycomponent, rotation, 0);
     }
 
     /**
-     * Adjust motor speeds according to heading and joystick input
-     * <p>
-     * use input from the gyroscope to determine field orientation
+     * Adjust motor speeds according to heading and joystick input.
+     * Uses input from the gyroscope to determine field orientation.
      */
-    public void mecanumDrive(double x, double y, double rotation, double gyroAngle) {
+    public void mecanumDrive(double xcomponent, double ycomponent,
+                             double rotation, double gyroAngle) {
+        // Ignore tiny inadvertent joystick rotations
+        if (Math.abs(rotation) <= TWIST_THRESHOLD) {
+            rotation = 0.0;
+        }
+
         // Negate y for the joystick.
-        y = -y;
+        ycomponent = -ycomponent;
         // Compensate for gyro angle.
-        double[] rotated = rotateVector(x, y, gyroAngle);
-        x = rotated[0];
-        y = rotated[1];
+        double[] rotated = rotateVector(xcomponent, ycomponent, gyroAngle);
+        xcomponent = rotated[0];
+        ycomponent = rotated[1];
 
         double[] wheelSpeeds = new double[4];
-        wheelSpeeds[0] = x + y + rotation;
-        wheelSpeeds[1] = -x + y - rotation;
-        wheelSpeeds[2] = -x + y + rotation;
-        wheelSpeeds[3] = x + y - rotation;
+        wheelSpeeds[0] = xcomponent + ycomponent + rotation;
+        wheelSpeeds[1] = -xcomponent + ycomponent - rotation;
+        wheelSpeeds[2] = -xcomponent + ycomponent + rotation;
+        wheelSpeeds[3] = xcomponent + ycomponent - rotation;
 
         normalize(wheelSpeeds);
         frontLeft.set(wheelSpeeds[0]);
@@ -97,7 +91,7 @@ public class DriveTrain {
     }
 
     /**
-     * Turn all wheels slowly for testing purposes
+     * Turn all wheels slowly for testing purposes.
      */
     public void testMotors() {
         frontLeft.set(.2);

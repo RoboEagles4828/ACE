@@ -12,14 +12,9 @@ public class RobotTest {
 
     @Test
     public void anotherTest() {
-        Assert.assertEquals("Test that 1 = 1", 1, 1);
-    }
-
-    @Test
-    public void checkPorts() {
-        int[] ports = {1, 2, 3, 4};
-
-        Robot r = new Robot();
-        Assert.assertArrayEquals(r.drive.getPorts(), ports);
+        int firstTest = 1;
+        int secondTest = 1;
+        System.out.println("Checking that " + firstTest + " is equal to " + secondTest);
+        Assert.assertEquals(1, 1);
     }
 }
