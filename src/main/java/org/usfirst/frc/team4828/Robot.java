@@ -1,7 +1,6 @@
 package org.usfirst.frc.team4828;
 
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.AccumulatorResult;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
@@ -9,27 +8,22 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 
 public class Robot extends IterativeRobot {
-    private static final int SUPPLIED_VOLTS = 5;
 
-    Joystick driveStick;
-    DriveTrain drive;
-    static AHRS navx;
-    DigitalInput ir;
-    double range;
-    UltraThread us;
-    AccumulatorResult accum;
+    private Joystick driveStick;
+    private DriveTrain drive;
+    private AHRS navx;
+    private DigitalInput ir;
+    private UltraThread us;
 
     @Override
     public void robotInit() {
         super.robotInit();
-
         System.out.println("THE ROBOT TURNED ON");
         driveStick = new Joystick(0);
         drive = new DriveTrain(1, 2, 3, 4);
         navx = new AHRS(SPI.Port.kMXP);
         ir = new DigitalInput(2);
         us = new UltraThread(0);
-        accum = new AccumulatorResult();
     }
 
     @Override
@@ -52,8 +46,8 @@ public class Robot extends IterativeRobot {
     @Override
     public void teleopPeriodic() {
         super.teleopPeriodic();
-        drive.mecanumDrive(driveStick.getX() / 2, driveStick.getY() / 2,
-            driveStick.getTwist() / 2, navx.getAngle());
+        drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist(), navx.getAngle());
+
         if (driveStick.getRawButton(11)) {
             navx.reset();
         }
@@ -70,19 +64,16 @@ public class Robot extends IterativeRobot {
         System.out.println("Entering test...");
         us.start();
     }
-    
+
     @Override
     public void testPeriodic() {
-        Timer.delay(5);
-        while(true) {
-            System.out.println("Ultrasonic Dist: " + us.values.get(0) + " " + us.values.get(1) + " " + us.values.get(2) + " " + us.valuesCm.get(3) + " " + us.valuesCm.get(4));
-            Timer.delay(0.1);
-        }
+        System.out.println("Ultrasonic Dist: " + us.values.get(0));
+        Timer.delay(0.1);
     }
-    
-	@Override
-    public void disabledInit(){
-    	us.terminate();
-    	System.out.println("Stopping thread");
+
+    @Override
+    public void disabledInit() {
+        us.terminate();
+        System.out.println("Stopping thread");
     }
 }
