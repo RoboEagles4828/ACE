@@ -20,6 +20,7 @@ public class Robot extends IterativeRobot {
         driveStick = new Joystick(0);
         drive = new DriveTrain(1, 2, 3, 4);
         navx = new AHRS(SPI.Port.kMXP);
+        pixy = new PixyThread();
     }
 
     @Override
