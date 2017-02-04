@@ -11,6 +11,7 @@ public class Robot extends IterativeRobot {
     Joystick driveStick;
     DriveTrain drive;
     static AHRS navx;
+    PixyThread pixy;
 
     @Override
     public void robotInit() {
@@ -53,14 +54,17 @@ public class Robot extends IterativeRobot {
     public void testInit() {
         super.testInit();
         System.out.println("Entering test...");
-        PixyThread pixy = new PixyThread();
+        pixy = new PixyThread();
         pixy.start();
-        while(true){
-            System.out.println(pixy.frame);
-        }
     }
 
     @Override
     public void testPeriodic() {
+        System.out.println(pixy.frame);
+    }
+
+    @Override
+    public void disabledInit(){
+        pixy.terminate();
     }
 }
