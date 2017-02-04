@@ -11,7 +11,7 @@ import java.util.*;
 
 public class UltraThread extends Thread {
 
-    private static final int WINDOW_SIZE = 5;
+    private static final int WINDOW_SIZE = 30;
     private static final double SUPPLIED_VOLTAGE = 5.0;
 
     private Thread t;
