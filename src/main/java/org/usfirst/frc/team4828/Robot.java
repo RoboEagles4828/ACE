@@ -73,8 +73,11 @@ public class Robot extends IterativeRobot {
     
     @Override
     public void testPeriodic() {
-        System.out.println("Ultrasonic Dist: " + us.distIn);
-        Timer.delay(0.1);
+        Timer.delay(5);
+        while(true) {
+            System.out.println("Ultrasonic Dist: " + us.values.get(0) + " " + us.values.get(1) + " " + us.values.get(2) + " " + us.valuesCm.get(3) + " " + us.valuesCm.get(4));
+            Timer.delay(0.1);
+        }
     }
     
 	@Override

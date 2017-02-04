@@ -22,10 +22,10 @@ public class UltraThread extends Thread {
     private String threadName = "ultrasonic thread";
     AnalogInput sensor;
     double distCm;
+    private double temp;
     double distIn;
     boolean enabled;
-    List<Double> valuesCm;
-    List<Double> valuesIn;
+    List<Double> values;
 
     /** UltraThread - Create a new UltraThread with a given port.
      * Port should be an Analog port.
@@ -34,8 +34,7 @@ public class UltraThread extends Thread {
 
     public UltraThread(int port) {
         sensor = new AnalogInput(port);
-        valuesCm = new ArrayList<Double>();
-        valuesIn = new ArrayList<Double>();
+        values = new ArrayList<Double>();
         System.out.println("Thread starting");
     }
 
@@ -47,11 +46,11 @@ public class UltraThread extends Thread {
 
     private double medianFilter(List<Double> values) {
         int half = WINDOW_SIZE / 2;
-        double med;
         if (values.size() < WINDOW_SIZE) {
             return 0.0;
         }
 
+        System.out.println(values.get(0) + " " + values.get(1) + " " + values.get(2) + " " + values.get(3) + " " + values.get(4));
         Collections.sort(values);
 
         if (WINDOW_SIZE % 2 == 1) {
@@ -70,7 +69,7 @@ public class UltraThread extends Thread {
         return voltage / (SUPPLIED_VOLTAGE / 1024);
     }
 
-    /** toIn - Converts a number to Inches.
+    /** toIn - Converts from Centimeters to Inches.
      * @param voltage number to convert
      * @return  converted number
      */
@@ -84,9 +83,19 @@ public class UltraThread extends Thread {
      */
     public void run() {
     	while(enabled){
-        distIn = toIn(sensor.getAverageVoltage());
-        distCm = toCm(sensor.getAverageVoltage());
-        Timer.delay(.05);
+            // Uncomment if it breaks
+    	    //distIn = toIn(sensor.getAverageVoltage());
+            //distCm = toCm(sensor.getAverageVoltage());
+
+            values.add(sensor.getVoltage());
+
+            if(values.size() > WINDOW_SIZE) {
+                values.remove(0);
+            }
+
+            distCm = medianFilter(values);
+            distIn = medianFilter(values);
+            Timer.delay(0.1);
     	}
     }
     
