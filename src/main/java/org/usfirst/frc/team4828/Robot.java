@@ -1,11 +1,10 @@
 package org.usfirst.frc.team4828;
 
+import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
-import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
-
 import org.usfirst.frc.team4828.Pixy.PixyThread;
 
 public class Robot extends IterativeRobot {
@@ -56,10 +55,12 @@ public class Robot extends IterativeRobot {
         System.out.println("Entering test...");
         PixyThread pixy = new PixyThread();
         pixy.start();
+        while(true){
+            System.out.println(pixy.frame);
+        }
     }
 
     @Override
     public void testPeriodic() {
-        System.out.println("Angle: " + navx.getAngle());
     }
 }
