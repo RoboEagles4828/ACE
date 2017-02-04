@@ -5,14 +5,13 @@ import edu.wpi.first.wpilibj.Timer;
 
 import java.util.*;
 
-/**
- * A Thread for finding distance using the MB1200 XL-MaxSonar-EZ0 Sensor.
+/** A Thread for finding distance using the MB1200 XL-MaxSonar-EZ0 Sensor.
  * Can be used to find both Inches and Centimeters. Uses a Median Filter.
  */
 
 public class UltraThread extends Thread {
 
-    private static final int WINDOW_SIZE = 5;
+    private static final int WINDOW_SIZE = 30;
     private static final double SUPPLIED_VOLTAGE = 5.0;
 
     private Thread t;
@@ -24,8 +23,7 @@ public class UltraThread extends Thread {
     public double distCm = 0;
     public double distIn = 0;
 
-    /**
-     * Create a new UltraThread with a given port.
+    /** Create a new UltraThread with a given port.
      * Port should be an Analog port.
      *
      * @param port the port that the sensor is connected to
@@ -36,8 +34,7 @@ public class UltraThread extends Thread {
         System.out.println("Thread starting");
     }
 
-    /**
-     * Finds the median in a List of values.
+    /** Finds the median in a List of values.
      *
      * @param values a List of Doubles
      * @return the median
@@ -56,8 +53,7 @@ public class UltraThread extends Thread {
         }
     }
 
-    /**
-     * Converts a number to Centimeters.
+    /** Converts a number to Centimeters.
      *
      * @param voltage number to convert
      * @return converted number
@@ -66,8 +62,7 @@ public class UltraThread extends Thread {
         return voltage / (SUPPLIED_VOLTAGE / 1024);
     }
 
-    /**
-     * Converts from Centimeters to Inches.
+    /** Converts from Centimeters to Inches.
      *
      * @param voltage number to convert
      * @return converted number
@@ -76,8 +71,7 @@ public class UltraThread extends Thread {
         return toCm(voltage) / 2.54;
     }
 
-    /**
-     * The contents of the thread
+    /** The contents of the thread
      * loops while it's alive
      */
     public void run() {
@@ -94,8 +88,7 @@ public class UltraThread extends Thread {
         }
     }
 
-    /**
-     * Starts the thread
+    /** Starts the thread.
      */
     public void start() {
         enabled = true;
@@ -105,8 +98,7 @@ public class UltraThread extends Thread {
         }
     }
 
-    /**
-     * Stops the thread
+    /** Stops the thread.
      */
     public void terminate() {
         enabled = false;

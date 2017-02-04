@@ -1,6 +1,5 @@
 package org.usfirst.frc.team4828;
 
-
 import com.ctre.CANTalon;
 
 public class DriveTrain {
