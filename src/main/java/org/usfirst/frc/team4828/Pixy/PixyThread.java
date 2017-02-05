@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.Timer;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.Arrays;
 
 public class PixyThread extends Thread {
     private static final String HOST = "pixyco.local";
@@ -18,7 +19,7 @@ public class PixyThread extends Thread {
     public static int height = 0;
     private BufferedReader in;
     private Socket soc;
-    private String visionData;
+    private String[] visionData;
     private Thread t;
     private boolean enabled;
     private String threadName = "pixy thread";
@@ -39,24 +40,18 @@ public class PixyThread extends Thread {
     public void run() {
         while (enabled) {
             try {
-                visionData = in.readLine();
+                visionData = in.readLine().split(" ");
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            System.out.println(visionData);
-            frame = Integer.parseInt(visionData.substring(0, visionData.indexOf(' ')));
-            visionData = visionData.substring(visionData.indexOf(' '));
-            type = Integer.parseInt(visionData.substring(0, visionData.indexOf(' ')));
-            visionData = visionData.substring(visionData.indexOf(' '));
-            sig = Integer.parseInt(visionData.substring(0, visionData.indexOf(' ')));
-            visionData = visionData.substring(visionData.indexOf(' '));
-            x = Integer.parseInt(visionData.substring(0, visionData.indexOf(' ')));
-            visionData = visionData.substring(visionData.indexOf(' '));
-            y = Integer.parseInt(visionData.substring(0, visionData.indexOf(' ')));
-            visionData = visionData.substring(visionData.indexOf(' '));
-            width = Integer.parseInt(visionData.substring(0, visionData.indexOf(' ')));
-            visionData = visionData.substring(visionData.indexOf(' '));
-            height = Integer.parseInt(visionData);
+            System.out.println(Arrays.toString(visionData));
+            frame = Integer.parseInt(visionData[0]);
+            type = Integer.parseInt(visionData[1]);
+            sig = Integer.parseInt(visionData[2]);
+            x = Integer.parseInt(visionData[3]);
+            y = Integer.parseInt(visionData[4]);
+            width = Integer.parseInt(visionData[5]);
+            height = Integer.parseInt(visionData[6]);
         }
     }
 
