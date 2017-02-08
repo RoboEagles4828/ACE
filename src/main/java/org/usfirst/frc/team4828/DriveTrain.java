@@ -29,8 +29,7 @@ public class DriveTrain {
         }
     }
 
-    /**
-     * Rotate A vector in cartesian space
+    /** Rotate A vector in cartesian space
      *
      * @param x     X component of the vector
      * @param y     Y component of the vector
@@ -46,8 +45,7 @@ public class DriveTrain {
         return out;
     }
 
-    /**
-     * Adjust motor speeds according to joystick input
+    /** Adjust motor speeds according to joystick input
      */
     public void mecanumDrive(double x, double y, double rotation) {
         // Ignore tiny inadvertent joystick rotations
@@ -71,8 +69,7 @@ public class DriveTrain {
         backRight.set(wheelSpeeds[3]);
     }
 
-    /**
-     * Adjust motor speeds according to heading and joystick input
+    /** Adjust motor speeds according to heading and joystick input
      * <p>
      * use input from the gyroscope to determine field orientation
      */
@@ -102,8 +99,7 @@ public class DriveTrain {
         backRight.set(wheelSpeeds[3]);
     }
 
-    /**
-     * Turn all wheels slowly for testing purposes
+    /** Turn all wheels slowly for testing purposes
      */
     public void testMotors() {
         frontLeft.set(.2);
