@@ -23,11 +23,11 @@ public class DriveTrainTest {
                     Assert.fail();
                 }
             }
-            String output = "Normalization tests passed (" + j + " of " + TEST_CASES + ")";
+//            String output = "Normalization tests passed (" + j + " of " + TEST_CASES + ")";
 //            for (int i = 0; i < output.length(); i++) {
 //                System.out.print("\b");
 //            }
-            System.out.print("\r" + output);
+//            System.out.print("\r" + output);
 
         }
     }
