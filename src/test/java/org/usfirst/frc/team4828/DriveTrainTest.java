@@ -28,7 +28,7 @@ public class DriveTrainTest {
 //                System.out.print("\b");
 //            }
 //            System.out.print("\r" + output);
-
         }
+        System.out.println("Finished " + TEST_CASES + " Normalization Tests");
     }
 }
