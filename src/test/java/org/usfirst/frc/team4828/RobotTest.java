@@ -18,5 +18,4 @@ public class RobotTest {
         Assert.assertEquals(1, 1);
     }
 
-
 }
