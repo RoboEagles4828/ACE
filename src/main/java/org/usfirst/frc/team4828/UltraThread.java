@@ -6,7 +6,9 @@ import edu.wpi.first.wpilibj.Timer;
 import java.util.*;
 
 /** A Thread for finding distance using the MB1200 XL-MaxSonar-EZ0 Sensor.
- * Can be used to find both Inches and Centimeters. Uses a Median Filter.
+ *  Can be used to find both Inches and Centimeters. Uses a Median Filter.
+ *
+ * @see Thread
  */
 
 public class UltraThread extends Thread {
@@ -24,7 +26,7 @@ public class UltraThread extends Thread {
     public double distIn = 0;
 
     /** Create a new UltraThread with a given port.
-     * Port should be an Analog port.
+     *  Port should be an Analog port.
      *
      * @param port the port that the sensor is connected to
      */
