@@ -1,5 +1,7 @@
 # 2017 Robot
+
 [![Code Climate](https://codeclimate.com/github/RoboEagles4828/2017Robot/badges/gpa.svg)](https://codeclimate.com/github/RoboEagles4828/2017Robot) [![codecov](https://codecov.io/gh/RoboEagles4828/2017Robot/branch/master/graph/badge.svg)](https://codecov.io/gh/RoboEagles4828/2017Robot)
+
 ## Builds
 
 |Master|Develop|
