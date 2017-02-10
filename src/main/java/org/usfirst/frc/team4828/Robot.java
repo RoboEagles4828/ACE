@@ -47,7 +47,6 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
         super.teleopPeriodic();
         drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist(), navx.getAngle());
-
         if (driveStick.getRawButton(11)) {
             navx.reset();
         }
