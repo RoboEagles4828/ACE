@@ -17,5 +17,4 @@ public class RobotTest {
         System.out.println("Checking that " + firstTest + " is equal to " + secondTest);
         Assert.assertEquals(1, 1);
     }
-
 }
