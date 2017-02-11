@@ -28,10 +28,10 @@ public class Ports {
 
     private Ports(){
         throw new AssertionError(
-                "A Summoner has Disconnected.\n" +
-                        "(Assertion Error 'cause you instantiated class Ports.\n" +
-                        "What part of private don't you understand, Nikhil...\n" +
-                        "Sigh.)\n"
+            "A Summoner has Disconnected.\n"
+             + "(Assertion Error 'cause you instantiated class Ports.\n"
+             + "What part of private don't you understand, Nikhil...\n"
+             + "Sigh.)\n"
         );
     }
 }
