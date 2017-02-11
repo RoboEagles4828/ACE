@@ -20,7 +20,12 @@ public class Robot extends IterativeRobot {
         super.robotInit();
         System.out.println("THE ROBOT TURNED ON");
         driveStick = new Joystick(0);
-        drive = new DriveTrain(Ports.DT_FRONT_LEFT, Ports.DT_BACK_LEFT, Ports.DT_FRONT_RIGHT, Ports.DT_BACK_RIGHT);
+        drive = new DriveTrain(
+                Ports.DT_FRONT_LEFT,
+                Ports.DT_BACK_LEFT,
+                Ports.DT_FRONT_RIGHT,
+                Ports.DT_BACK_RIGHT
+        );
         navx = new AHRS(SPI.Port.kMXP);
         ir = new DigitalInput(Ports.IR_CHANNEL);
         us = new UltraThread(Ports.US_CHANNEL);

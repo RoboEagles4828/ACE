@@ -4,14 +4,6 @@ package org.usfirst.frc.team4828;
  * Created by Jackie on 2/11/2017.
  */
 public class Ports {
-    private Ports(){
-        throw new AssertionError(
-                "A Summoner has Disconnected.\n" +
-                "(Assertion Error 'cause you instantiated class Ports.\n" +
-                "What part of private don't you understand, Nikhil...\n" +
-                "Sigh.)\n"
-        );
-    }
     // PWM
     public static final int INTAKE = 9;
     public static final int CLIMBER = 8;
@@ -33,4 +25,13 @@ public class Ports {
     // Sensors
     public static final int IR_CHANNEL = 2;
     public static final int US_CHANNEL = 0;
+
+    private Ports(){
+        throw new AssertionError(
+                "A Summoner has Disconnected.\n" +
+                        "(Assertion Error 'cause you instantiated class Ports.\n" +
+                        "What part of private don't you understand, Nikhil...\n" +
+                        "Sigh.)\n"
+        );
+    }
 }
