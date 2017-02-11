@@ -1,29 +1,68 @@
 package org.usfirst.frc.team4828.Pixy;
 
-import edu.wpi.first.wpilibj.Timer;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.Arrays;
+import java.util.List;
 
 public class PixyThread extends Thread {
     private static final String HOST = "pixyco.local";
     private static final int PORT = 5800;
-    public static int frame = 0;
-    public static int type = 0;
-    public static int sig = 0;
-    public static int x = 0;
-    public static int y = 0;
-    public static int width = 0;
-    public static int height = 0;
     private BufferedReader in;
     private Socket soc;
-    private String[] visionData;
     private Thread t;
     private boolean enabled;
     private String threadName = "pixy thread";
+    public frame lastFrame;
 
+    private class frame{
+        //8.5 in between targets
+        private static final double WIDTH_BETWEEN_TARGET = 8.5;
+        public List<block> frameData;
+
+        public class block {
+            private static final int X_CENTER = 319/2;
+            private static final int Y_CENTER = 199/2;
+            private int frame;
+            private int signature;
+            private int x;
+            private int y;
+            private int width;
+            private int height;
+
+            public block(String[] data){
+                frame = Integer.parseInt(data[0]);
+                signature = Integer.parseInt(data[1]);
+                x = Integer.parseInt(data[2]);
+                y = Integer.parseInt(data[3]);
+                width = Integer.parseInt(data[4]);
+                height = Integer.parseInt(data[5]);
+            }
+
+            public getAngle(){
+                double constant = getPixelConstant();
+                double horizontalDistance = (x - X_CENTER) * constant;
+                double lateralDistance = null;
+                return Math.toDegrees(Math.atan(horizontalDistance/ lateralDistance));
+            }
+
+            public int getX(){return x}
+            public int getY(){return y}
+        }
+
+        public double getPixelConstant(){
+            return WIDTH_BETWEEN_TARGET/(Math.abs(frameData.get(0).getX() - frameData.get(1).getY()));
+        }
+
+        public frame(String[] data){
+            for (String item : data){
+                frameData.add(new block(item.split(" "));
+            }
+        }
+
+        public int numBlocks(){return frameData.size()}
+    }
 
     public PixyThread() {
         System.out.println("Thread starting: " + threadName);
@@ -41,7 +80,7 @@ public class PixyThread extends Thread {
                 System.out.println("Connect failed, waiting and trying again");
                 try
                 {
-                    Thread.sleep(1000);//2 seconds
+                    Thread.sleep(1000);
                 }
                 catch(InterruptedException ie){
                     ie.printStackTrace();
@@ -55,21 +94,14 @@ public class PixyThread extends Thread {
     public void run() {
         while (enabled) {
             try {
-                visionData = in.readLine().split(" ");
+                lastFrame = new frame(in.readLine().split(","));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            System.out.println(Arrays.toString(visionData));
-            frame = Integer.parseInt(visionData[0]);
-            type = Integer.parseInt(visionData[1]);
-            sig = Integer.parseInt(visionData[2]);
-            x = Integer.parseInt(visionData[3]);
-            y = Integer.parseInt(visionData[4]);
-            width = Integer.parseInt(visionData[5]);
-            height = Integer.parseInt(visionData[6]);
         }
     }
 
+    @Override
     public void start(){
         enabled = true;
         if(t==null){
