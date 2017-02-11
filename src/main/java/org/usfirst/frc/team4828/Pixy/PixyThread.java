@@ -44,12 +44,12 @@ public class PixyThread extends Thread {
             public double getAngle(){
                 double constant = getPixelConstant();
                 double horizontalDistance = (x - X_CENTER) * constant;
-                double lateralDistance = us.distIn();
+                double lateralDistance = us.distIn;
                 return Math.toDegrees(Math.atan(horizontalDistance/ lateralDistance));
             }
 
-            public int getX(){return x}
-            public int getY(){return y}
+            public int getX(){return x;}
+            public int getY(){return y;}
         }
 
         public double getPixelConstant(){
@@ -58,11 +58,11 @@ public class PixyThread extends Thread {
 
         public frame(String[] data){
             for (String item : data){
-                frameData.add(new block(item.split(" "));
+                frameData.add(new block(item.split(" ")));
             }
         }
 
-        public int numBlocks(){return frameData.size()}
+        public int numBlocks(){return frameData.size();}
     }
 
     public PixyThread() {
