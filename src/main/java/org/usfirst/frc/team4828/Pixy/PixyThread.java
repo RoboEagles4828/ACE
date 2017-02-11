@@ -15,6 +15,7 @@ public class PixyThread extends Thread {
     private boolean enabled;
     private String threadName = "pixy thread";
     public frame lastFrame;
+    private UltraThread us;
 
     private class frame{
         //8.5 in between targets
@@ -40,10 +41,10 @@ public class PixyThread extends Thread {
                 height = Integer.parseInt(data[5]);
             }
 
-            public getAngle(){
+            public double getAngle(){
                 double constant = getPixelConstant();
                 double horizontalDistance = (x - X_CENTER) * constant;
-                double lateralDistance = null;
+                double lateralDistance = us.distIn();
                 return Math.toDegrees(Math.atan(horizontalDistance/ lateralDistance));
             }
 
@@ -88,6 +89,8 @@ public class PixyThread extends Thread {
             }
         }
         System.out.println("Socket connection established");
+        us = new UltraThread(0);
+        us.start();
     }
 
     @Override
