@@ -27,11 +27,26 @@ public class PixyThread extends Thread {
 
     public PixyThread() {
         System.out.println("Thread starting: " + threadName);
-        try {
-            soc = new Socket(HOST, PORT);
-            in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
-        } catch (Exception e) {
-            e.printStackTrace();
+        boolean scanning=true;
+        while(scanning)
+        {
+            try
+            {
+                soc = new Socket(HOST, PORT);
+                in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
+                scanning=false;
+            }
+            catch(Exception e)
+            {
+                System.out.println("Connect failed, waiting and trying again");
+                try
+                {
+                    Thread.sleep(1000);//2 seconds
+                }
+                catch(InterruptedException ie){
+                    ie.printStackTrace();
+                }
+            }
         }
         System.out.println("Socket connection established");
     }
