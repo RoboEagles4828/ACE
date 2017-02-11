@@ -3,8 +3,8 @@ package org.usfirst.frc.team4828.Pixy;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.List;
+import org.usfirst.frc.team4828.UltraThread;
 
 public class PixyThread extends Thread {
     private static final String HOST = "pixyco.local";

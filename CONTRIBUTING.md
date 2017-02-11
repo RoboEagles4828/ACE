@@ -12,11 +12,11 @@
   - [1. Get the code from GitHub](#1-get-the-code-from-github)
   - [1.5. Set up `git flow`](#15-set-up-git-flow)
   - [2. Create a new branch off of `develop`](#2-create-a-new-branch-off-of-develop)
-  - [3. Add your code!](#3-add-your-code)
+  - [3. Add your code](#3-add-your-code)
   - [4. Connect your local branch to remote and push your code](#4-connect-your-local-branch-to-remote-and-push-your-code)
   - [5. Make a pull request back into `develop`](#5-make-a-pull-request-back-into-develop)
   - [6. Wait for review](#6-wait-for-review)
-  - [7. See your code on the robot!](#7-see-your-code-on-the-robot)
+  - [7. See your code on the robot](#7-see-your-code-on-the-robot)
 - [Issues and not knowing what to do at the shop](#issues-and-not-knowing-what-to-do-at-the-shop)
   - [Making an Issue](#making-an-issue)
   - [Using Projects](#using-projects)
@@ -39,7 +39,7 @@ DISCLAIMER: This guide assumes that you have prior git knowledge. PLEASE learn g
 
 ## Git Flow
 
-This year, we are using **git flow**, a development model to make our repository all neat and pretty!
+This year, we are using **git flow**, a development model to make our repository all neat and pretty.
 
 The main idea is to use separate branches for development and for features. The full blog post can be found [here][blogpost].
 
@@ -48,9 +48,9 @@ The main idea is to use separate branches for development and for features. The 
 #### The easy way
 
 - Install the git flow extension.
-    - Follow [these][instructions] instructions.
+  - Follow [these][instructions] instructions.
 
-That's it! You're done! Well... ALMOST done. Now you just need to know how to use git flow. A cheat sheet can be found [here][cheatsheet]
+That's it, you're done! Now you just need to know how to use git flow. A cheat sheet can be found [here][cheatsheet]
 
 #### The "do it yourself" way
 
@@ -82,7 +82,7 @@ With extension: `git flow feature start <name>`
 
 Without extension: `git checkout -b <name> develop`
 
-### 3. Add your code!
+### 3. Add your code
 
 Type up your code in whatever text editor you choose, and commit using:
 
@@ -104,7 +104,7 @@ On the right hand side, click "New pull request".
 
 Near the top of the page, there should be 2 dropdowns, each with `master` selected. Switch the base one to `develop` and the compare one to your branch. Click "Create Pull Request".
 
-Create a nice title for yout pull request, and click "Create pull request".
+Create a nice title for your pull request, and click "Create pull request".
 
 ### 6. Wait for review
 
@@ -112,7 +112,7 @@ Near the bottom, you will see some checks. You must wait for these to finish bef
 
 You will also need a person to review your code. Just contact any programmer on Slack, and they'll probably look it over for you and merge it.
 
-### 7. See your code on the robot!
+### 7. See your code on the robot
 
 Now that the code is in develop, it is officially a part of the robot code!
 
@@ -120,7 +120,7 @@ Now that the code is in develop, it is officially a part of the robot code!
 
 We've all experience this before. You get to the shop, get out your computer, open up IntelliJ (or, god forbid, Eclipse), and sit there for 30 minutes, not knowing what to do.
 
-Say no more! Introducing, Issues and Projects!
+Say no more. Introducing: Issues and Projects
 
 Issues are basically problems with the code, and Projects are a place to store all the TODO's and such.
 
@@ -128,18 +128,18 @@ Issues are basically problems with the code, and Projects are a place to store a
 
 Found a bug in the code? Want a feature to be implemented on the robot? Here's how to make an Issue.
 
-1. Click the "Issues" tab on the toolbar
-2. Click "New Issue"
-3. Type the Issue and click "Submit new issue"
-4. On the right side, assign people to the Issue
+1. Click the "Issues" tab on the toolbar.
+2. Click "New Issue".
+3. Type the Issue and click "Submit new issue".
+4. On the right side, assign people to the Issue.
 
-That's it for making an Issue!
+That's it for making an Issue
 
 ### Using Projects
 
 Projects can be found at the GitHub organization page or the repository page in the "Projects" tab. This is basically a running list of things to do.
 
-If you want to do a thing, click the dropdown arrow and then "Convert to Issue". This allows you to make an Issue for that card! When finished, drag to the appropriate section.
+If you want to do a thing, click the dropdown arrow and then "Convert to Issue". This allows you to make an Issue for that card. When finished, drag to the appropriate section.
 
 ## GradleRIO
 
@@ -196,22 +196,22 @@ There is a chance that your `JAVA_HOME` variable will not be set. If you run int
 
 #### 6. Profit
 
-That's it! You're now all set to mess with the code!
+That's it! You're now all set to mess with the code.
 
 ## Good Practices
 
-These practices are good for everything. Use them!
+These practices are good for everything. Use them.
 
 - Try to use an insightful title. Bonus points for including the specific error if you can figure it out, but keep things concise (one line).
-    - Great: "Null pointer exception in Toaster class when setting temperature" or "Out of memory error while saving custom temperature preset"
-    - Good: "Problem with vision when running with toaster mode on" or "Pancake cooking functionality?"
-    - Not good: "The robot broke" or "I want something to be added"
+  - Great: "Null pointer exception in Toaster class when setting temperature" or "Out of memory error while saving custom temperature preset"
+  - Good: "Problem with vision when running with toaster mode on" or "Pancake cooking functionality?"
+  - Not good: "The robot broke" or "I want something to be added"
 - Include exactly what happened if the Issue is about a bug. Try to be as specific as possible, and document the exact steps that you followed to produce the issue. If you have logs, error codes, or dumps, you should include those inside code blocks in the Issues. A sequence of three backticks (`) indicate the start and end of code blocks.
 - Don't use Issues for random information, such as documentation. See [here][ripnikhil] for an example of what *not* to do.
 - When referencing other Commits, Pull Requests, or Issues, use it's `#` code. This can be found next to the name of the commit/issue/pull request. Example "Jackie, you totally broke the whole robot in #123"
 - When writing a title for anything, use the imperative form of the verb.
-    - Good: "Fix Vision"
-    - Not good: "Fixed Vision"
+  - Good: "Fix Vision"
+  - Not good: "Fixed Vision"
 
 [blogpost]: http://nvie.com/posts/a-successful-git-branching-model/
 [instructions]: https://github.com/nvie/gitflow/wiki/Installation
