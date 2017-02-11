@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 
 public class Robot extends IterativeRobot {
-
     private Joystick driveStick;
     private DriveTrain drive;
     private AHRS navx;
     private DigitalInput ir;
     private UltraThread us;
+    private DigitalInput[] autonSelect;
 
     @Override
     public void robotInit() {
@@ -30,6 +30,24 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {
         super.autonomousInit();
         System.out.println("Entering auton...");
+        /*
+         * This stuff should go in its own class later
+         */
+        autonSelect = new DigitalInput[5];
+        autonSelect[0] = new DigitalInput(0); //1
+        autonSelect[1] = new DigitalInput(1); //2
+        autonSelect[2] = new DigitalInput(2); //3
+        autonSelect[3] = new DigitalInput(3); //4
+        //etc.
+        int one = autonSelect[0].get() ? 1 : 0;
+        int two = autonSelect[1].get() ? 1 : 0;
+        int three = autonSelect[2].get() ? 1 : 0;
+        int four = autonSelect[3].get() ? 1 : 0;
+        int modeNum = one + two*2 + three*4 + four*8;
+        /*
+         * --------------------------------------------
+         */
+        //auton modes here
     }
 
     @Override
