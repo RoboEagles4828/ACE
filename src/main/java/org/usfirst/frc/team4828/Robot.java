@@ -59,13 +59,14 @@ public class Robot extends IterativeRobot {
     public void testInit() {
         super.testInit();
         System.out.println("Entering test...");
-        us.start();
+        //us.start();
     }
 
     @Override
     public void testPeriodic() {
-
-        System.out.println("Ultrasonic Dist: " + us.distIn + " inches");
+//        System.out.println("Ultrasonic Dist: " + us.distIn + " inches");
+//        Timer.delay(0.1);
+        drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
         Timer.delay(0.1);
     }
 
