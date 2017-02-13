@@ -14,6 +14,7 @@ public class Robot extends IterativeRobot {
     private AHRS navx;
     private DigitalInput ir;
     private UltraThread us;
+    private Shooter shoot;
 
     @Override
     public void robotInit() {
@@ -29,6 +30,7 @@ public class Robot extends IterativeRobot {
         navx = new AHRS(SPI.Port.kMXP);
         ir = new DigitalInput(Ports.IR_CHANNEL);
         us = new UltraThread(Ports.US_CHANNEL);
+        shoot = new Shooter(Ports.MOTOR_LEFT, Ports.SERVO_LEFT_1, Ports.SERVO_LEFT_2);
     }
 
     @Override
@@ -70,8 +72,17 @@ public class Robot extends IterativeRobot {
     @Override
     public void testPeriodic() {
 //        System.out.println("Ultrasonic Dist: " + us.distIn + " inches");
-//        Timer.delay(0.1);
-        drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
+
+//        drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
+
+        if(driveStick.getRawButton(9)) {
+            System.out.println("RAISING");
+            shoot.servos.raise();
+        }
+        if(driveStick.getRawButton(10)) {
+            System.out.println("LOWERING");
+            shoot.servos.lower();
+        }
         Timer.delay(0.1);
     }
 

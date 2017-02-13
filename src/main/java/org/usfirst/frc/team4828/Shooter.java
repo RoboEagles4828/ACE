@@ -6,7 +6,7 @@ public class Shooter {
     private CANTalon shooterMotor;
     public ServoGroup servos;
 
-    public void Shooter(int motorPort, int masterPort, int slavePort){
+    public Shooter(int motorPort, int masterPort, int slavePort){
         shooterMotor = new CANTalon(motorPort);
         servos = new ServoGroup(masterPort, slavePort);
     }
