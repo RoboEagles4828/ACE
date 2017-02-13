@@ -16,9 +16,9 @@ public class DriveTrain {
         backLeft = new CANTalon(backLeftPort);
         backRight = new CANTalon(backRightPort);
         frontLeft.setPID(0.6, 0, 0);
-        frontLeft.setPID(0.6, 0, 0);
-        frontLeft.setPID(0.6, 0, 0);
-        frontLeft.setPID(0.6, 0, 0);
+        frontRight.setPID(0.6, 0, 0);
+        backLeft.setPID(0.6, 0, 0);
+        backRight.setPID(0.6, 0, 0);
     }
 
     DriveTrain(){
