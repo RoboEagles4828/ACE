@@ -110,6 +110,21 @@ public class DriveTrain {
     }
 
     /**
+     * Turn all wheels at set speeds
+     *
+     * @param fl Speed for Front Left Wheel
+     * @param fr Speed for Front Right Wheel
+     * @param bl Speed for Back Left Wheel
+     * @param br Speed for Back Right Wheel
+     */
+    public void testMotors(int fl, int fr, int bl, int br) {
+        frontLeft.set(fl);
+        frontRight.set(fr);
+        backLeft.set(bl);
+        backRight.set(br);
+    }
+
+    /**
      * Use PID to lock the robot in its current position
      */
     public void lock(){
@@ -132,20 +147,4 @@ public class DriveTrain {
         backRight.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
         backLeft.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
     }
-     
-    /**
-     * Turn all wheels at set speeds
-     *
-     * @param fl Speed for Front Left Wheel
-     * @param fr Speed for Front Right Wheel
-     * @param bl Speed for Back Left Wheel
-     * @param br Speed for Back Right Wheel
-     */
-    public void testMotors(int fl, int fr, int bl, int br) {
-        frontLeft.set(fl);
-        frontRight.set(fr);
-        backLeft.set(bl);
-        backRight.set(br);
-    }
-
 }
