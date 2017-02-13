@@ -20,10 +20,15 @@ public class Robot extends IterativeRobot {
         super.robotInit();
         System.out.println("THE ROBOT TURNED ON");
         driveStick = new Joystick(0);
-        drive = new DriveTrain(1, 2, 3, 4);
+        drive = new DriveTrain(
+                Ports.DT_FRONT_LEFT,
+                Ports.DT_BACK_LEFT,
+                Ports.DT_FRONT_RIGHT,
+                Ports.DT_BACK_RIGHT
+        );
         navx = new AHRS(SPI.Port.kMXP);
-        ir = new DigitalInput(2);
-        us = new UltraThread(0);
+        ir = new DigitalInput(Ports.IR_CHANNEL);
+        us = new UltraThread(Ports.US_CHANNEL);
     }
 
     @Override
@@ -47,7 +52,6 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
         super.teleopPeriodic();
         drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist(), navx.getAngle());
-
         if (driveStick.getRawButton(11)) {
             navx.reset();
         }
@@ -60,13 +64,14 @@ public class Robot extends IterativeRobot {
     public void testInit() {
         super.testInit();
         System.out.println("Entering test...");
-        us.start();
+        //us.start();
     }
 
     @Override
     public void testPeriodic() {
-
-        System.out.println("Ultrasonic Dist: " + us.distIn + " inches");
+//        System.out.println("Ultrasonic Dist: " + us.distIn + " inches");
+//        Timer.delay(0.1);
+        drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
         Timer.delay(0.1);
     }
 
