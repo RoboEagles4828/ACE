@@ -16,7 +16,7 @@ public class Ports {
     public static final int DT_FRONT_RIGHT = 3;
     public static final int DT_BACK_RIGHT = 4;
 
-    // Shooter
+    // ShooterThread
     public static final int SERVO_LEFT_1 = 4;
     public static final int SERVO_LEFT_2 = 5;
     public static final int SERVO_RIGHT_1 = 2;
