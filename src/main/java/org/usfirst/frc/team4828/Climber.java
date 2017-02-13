@@ -21,7 +21,7 @@ public class Climber {
     }
 
     /**
-     *
+     * Lower the robot at a set speed.
      * @param speed NOTE: STILL USE POSITIVE NUMBERS
      */
     public void lower(double speed){
