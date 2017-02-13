@@ -15,6 +15,10 @@ public class DriveTrain {
         frontRight = new CANTalon(frontRightPort);
         backLeft = new CANTalon(backLeftPort);
         backRight = new CANTalon(backRightPort);
+        frontLeft.setPID(0.6, 0, 0);
+        frontLeft.setPID(0.6, 0, 0);
+        frontLeft.setPID(0.6, 0, 0);
+        frontLeft.setPID(0.6, 0, 0);
     }
 
     DriveTrain(){
@@ -103,6 +107,30 @@ public class DriveTrain {
         frontRight.set(.2);
         backLeft.set(.2);
         backRight.set(.2);
+    }
+
+    /**
+     * Use PID to lock the robot in its current position
+     */
+    public void lock(){
+        frontLeft.changeControlMode(CANTalon.TalonControlMode.Position);
+        frontRight.changeControlMode(CANTalon.TalonControlMode.Position);
+        backRight.changeControlMode(CANTalon.TalonControlMode.Position);
+        backLeft.changeControlMode(CANTalon.TalonControlMode.Position);
+        frontLeft.set(frontLeft.get());
+        frontRight.set(frontRight.get());
+        backRight.set(backRight.get());
+        backLeft.set(backLeft.get());
+    }
+
+    /**
+     * Set the motors back to normal speed control
+     */
+    public void unlock(){
+        frontLeft.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+        frontRight.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+        backRight.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+        backLeft.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
     }
 
 }
