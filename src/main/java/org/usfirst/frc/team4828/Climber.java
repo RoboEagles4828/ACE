@@ -20,6 +20,10 @@ public class Climber {
         climberMotor.set(RAISE_SPEED);
     }
 
+    /**
+     *
+     * @param speed NOTE: STILL USE POSITIVE NUMBERS
+     */
     public void lower(double speed){
         climberMotor.set(-speed);
     }
