@@ -10,7 +10,14 @@ public class DriveTrain {
 
     private static final double TWIST_THRESHOLD = 0.15;
 
-    DriveTrain(int frontLeftPort, int backLeftPort, int frontRightPort, int backRightPort) {
+    /**
+     * Create drive train object containing mecanum motor functionality.
+     * @param frontLeftPort port of the front left motor
+     * @param backLeftPort port of the back left motor
+     * @param frontRightPort port of the front right motor
+     * @param backRightPort port of the back right motor
+     */
+    public DriveTrain(int frontLeftPort, int backLeftPort, int frontRightPort, int backRightPort) {
         frontLeft = new CANTalon(frontLeftPort);
         frontRight = new CANTalon(frontRightPort);
         backLeft = new CANTalon(backLeftPort);
@@ -21,7 +28,7 @@ public class DriveTrain {
         backRight.setPID(0.6, 0, 0);
     }
 
-    DriveTrain(){
+    public DriveTrain(){
         //for testing purposes
         System.out.println("Created dummy drivetrain");
     }
