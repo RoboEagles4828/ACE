@@ -11,6 +11,12 @@ public class Hopper {
     private Spark rightMotor;
     private Spark intakeMotor;
 
+    /**
+     * Create hopper encapsulating the intake and agitator functionality.
+     * @param leftPort port of the left agitator motor
+     * @param rightPort port of the right agitator motor
+     * @param intakePort port of the intake motor
+     */
     public Hopper(int leftPort, int rightPort, int intakePort){
         leftMotor = new Spark(leftPort);
         rightMotor = new Spark(rightPort);
