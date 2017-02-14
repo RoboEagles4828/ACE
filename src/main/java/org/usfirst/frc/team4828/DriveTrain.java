@@ -10,6 +10,13 @@ public class DriveTrain {
 
     private static final double TWIST_THRESHOLD = 0.15;
 
+    /**
+     * Create drive train object containing mecanum motor functionality.
+     * @param frontLeftPort
+     * @param backLeftPort
+     * @param frontRightPort
+     * @param backRightPort
+     */
     public DriveTrain(int frontLeftPort, int backLeftPort, int frontRightPort, int backRightPort) {
         frontLeft = new CANTalon(frontLeftPort);
         frontRight = new CANTalon(frontRightPort);
