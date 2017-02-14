@@ -10,7 +10,7 @@ import org.junit.Test;
  * @see DriveTrain
  */
 public class DriveTrainTest {
-    private static final int TEST_CASES = 420420;
+    private static final int TEST_CASES = 420;
 
     /**
      * Tests the Normalization function in DriveTrain Class
