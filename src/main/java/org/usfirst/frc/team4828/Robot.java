@@ -14,7 +14,7 @@ public class Robot extends IterativeRobot {
     private AHRS navx;
     private DigitalInput ir;
     private UltraThread us;
-    private ShooterThread shoot;
+    private Shooter shoot;
 
     @Override
     public void robotInit() {
@@ -28,9 +28,8 @@ public class Robot extends IterativeRobot {
                 Ports.DT_BACK_RIGHT
         );
         navx = new AHRS(SPI.Port.kMXP);
-        ir = new DigitalInput(Ports.IR_CHANNEL);
         us = new UltraThread(Ports.US_CHANNEL);
-        shoot = new ShooterThread(Ports.MOTOR_LEFT, Ports.SERVO_LEFT_1, Ports.SERVO_LEFT_2);
+        shoot = new Shooter(Ports.MOTOR_LEFT, Ports.INDEXER_LEFT, Ports.SERVO_LEFT_1, Ports.SERVO_LEFT_2);
     }
 
     @Override
@@ -59,7 +58,6 @@ public class Robot extends IterativeRobot {
         }
 
         //System.out.println("Angle: " + navx.getAngle());
-        //System.out.println("IR Status: " + ir.get());
     }
 
     @Override
@@ -89,7 +87,6 @@ public class Robot extends IterativeRobot {
     @Override
     public void disabledInit() {
         us.terminate();
-        shoot.terminate();
         System.out.println("Stopping thread");
     }
 }
