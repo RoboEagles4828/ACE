@@ -8,6 +8,10 @@ public class Climber {
     private static final double RAISE_SPEED = 0.5;
     private static final double LOWER_SPEED = -0.5;
 
+    /**
+     * Create climber object encapsulating the climber motor.
+     * @param motorPort port of the climber motor
+     */
     public Climber(int motorPort){
         climberMotor = new Victor(motorPort);
     }
