@@ -18,8 +18,8 @@ cache:
     - $HOME/.gradle/wrapper/
 before_install:
   - chmod +x gradlew
-script:
-  - ./gradlew $TEST_SUITE
+install: echo "skip 'gradle assemble' step"
+script: gradle build --continue
 
 # For CodeCov
 after_success:
@@ -36,5 +36,3 @@ cards:
   - master
   - development
   title: Toast
-env:
-  - TEST_SUITE=build
