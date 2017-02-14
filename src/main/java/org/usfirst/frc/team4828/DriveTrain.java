@@ -12,10 +12,10 @@ public class DriveTrain {
 
     /**
      * Create drive train object containing mecanum motor functionality.
-     * @param frontLeftPort
-     * @param backLeftPort
-     * @param frontRightPort
-     * @param backRightPort
+     * @param frontLeftPort port of the front left motor
+     * @param backLeftPort port of the back left motor
+     * @param frontRightPort port of the front right motor
+     * @param backRightPort port of the back right motor
      */
     public DriveTrain(int frontLeftPort, int backLeftPort, int frontRightPort, int backRightPort) {
         frontLeft = new CANTalon(frontLeftPort);
