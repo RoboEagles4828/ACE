@@ -29,7 +29,10 @@ public class Robot extends IterativeRobot {
         );
         navx = new AHRS(SPI.Port.kMXP);
         us = new UltraThread(Ports.US_CHANNEL);
-        shoot = new Shooter(Ports.MOTOR_LEFT, Ports.INDEXER_LEFT, Ports.SERVO_LEFT_1, Ports.SERVO_LEFT_2);
+        shoot = new Shooter(Ports.MOTOR_LEFT, Ports.INDEXER_LEFT, Ports.SERVO_LEFT_MASTER, Ports.SERVO_LEFT_SLAVE);
+        // Master is the one on the right if you are looking at the back of the shooter
+        shoot.servos.calibrate(1, .3, 0);
+        shoot.servos.calibrate(2, .6, 1);
     }
 
     @Override
@@ -64,29 +67,31 @@ public class Robot extends IterativeRobot {
     public void testInit() {
         super.testInit();
         System.out.println("Entering test...");
-        //us.start();
+        shoot.servos.set(.5);
     }
 
     @Override
     public void testPeriodic() {
-//        System.out.println("Ultrasonic Dist: " + us.distIn + " inches");
-
-//        drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
-
-        if(driveStick.getRawButton(9)) {
+        if (driveStick.getRawButton(9)) {
             System.out.println("RAISING");
             shoot.servos.raise();
         }
-        if(driveStick.getRawButton(10)) {
+        if (driveStick.getRawButton(10)) { //slave  = back left .66 - 1  master .33 - 0
             System.out.println("LOWERING");
             shoot.servos.lower();
         }
+        if (driveStick.getRawButton(11)) {
+            shoot.servos.set(0);
+        }
+        if (driveStick.getRawButton(12)) {
+            shoot.servos.set(1);
+        }
+        System.out.println(shoot.servos);
         Timer.delay(0.1);
     }
 
     @Override
     public void disabledInit() {
-        us.terminate();
-        System.out.println("Stopping thread");
+        System.out.println("Disabling robot");
     }
 }
