@@ -67,4 +67,15 @@ public class Shooter extends Thread {
         indexer.set(indexerClose);
     }
 
+    /**
+     * Change the shooter motor back to normal speed control instead of PID.
+     *
+     * If they don't give us enough time to calibrate shooter PID, we will
+     * have to resort to the tried and true way of spinning the shooter
+     * wheel and not worry about it slowing down from contacting fuel.
+     */
+    public void superSecretSafetyBackup(){
+        shooterMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+    }
+
 }
