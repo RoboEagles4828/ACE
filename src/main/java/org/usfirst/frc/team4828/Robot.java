@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
+import org.usfirst.frc.team4828.Pixy.PixyThread;
 
 public class Robot extends IterativeRobot {
 
@@ -13,7 +14,7 @@ public class Robot extends IterativeRobot {
     private DriveTrain drive;
     private AHRS navx;
     private DigitalInput ir;
-    private UltraThread us;
+    1
 
     @Override
     public void robotInit() {
@@ -28,7 +29,7 @@ public class Robot extends IterativeRobot {
         );
         navx = new AHRS(SPI.Port.kMXP);
         ir = new DigitalInput(Ports.IR_CHANNEL);
-        us = new UltraThread(Ports.US_CHANNEL);
+        pixy = new PixyThread(Ports.US_CHANNEL);
     }
 
     @Override
@@ -64,7 +65,7 @@ public class Robot extends IterativeRobot {
     public void testInit() {
         super.testInit();
         System.out.println("Entering test...");
-        //us.start();
+        pixy.start();
     }
 
     @Override
@@ -77,7 +78,7 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void disabledInit() {
-        us.terminate();
+        pixy.terminate();
         System.out.println("Stopping thread");
     }
 }
