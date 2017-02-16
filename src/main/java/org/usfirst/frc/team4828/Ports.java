@@ -14,10 +14,10 @@ public class Ports {
     public static final int DT_BACK_RIGHT = 4;
 
     // Shooter
-    public static final int SERVO_LEFT_1 = 4;
-    public static final int SERVO_LEFT_2 = 5;
-    public static final int SERVO_RIGHT_1 = 2;
-    public static final int SERVO_RIGHT_2 = 3;
+    public static final int SERVO_LEFT_MASTER = 4;
+    public static final int SERVO_LEFT_SLAVE = 5;
+    public static final int SERVO_RIGHT_MASTER = 2;
+    public static final int SERVO_RIGHT_SLAVE = 3;
     public static final int MOTOR_LEFT = 1;
     public static final int MOTOR_RIGHT = 2;
     public static final int INDEXER_RIGHT = 10; // use port 0 on the navx as port 10
@@ -25,14 +25,14 @@ public class Ports {
 
     // Sensors
     public static final int IR_CHANNEL = 2;
-    public static final int US_CHANNEL = 0;
+    public static final int US_CHANNEL = 0; // Analog
 
-    private Ports(){
+    private Ports() {
         throw new AssertionError(
-            "A Summoner has Disconnected.\n"
-             + "(Assertion Error 'cause you instantiated class Ports.\n"
-             + "What part of private don't you understand, Nikhil...\n"
-             + "Sigh.)\n"
+                "A Summoner has Disconnected.\n"
+                        + "(Assertion Error 'cause you instantiated class Ports.\n"
+                        + "What part of private don't you understand, Nikhil...\n"
+                        + "Sigh.)\n"
         );
     }
 }
