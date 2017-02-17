@@ -1,20 +1,18 @@
 package org.usfirst.frc.team4828;
 
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
-import org.usfirst.frc.team4828.Pixy.PixyThread;
+import org.usfirst.frc.team4828.Vision.Vision;
 
 public class Robot extends IterativeRobot {
 
     private Joystick driveStick;
     private DriveTrain drive;
     private AHRS navx;
-    private DigitalInput ir;
-    1
+    private Vision vision;
 
     @Override
     public void robotInit() {
@@ -28,8 +26,7 @@ public class Robot extends IterativeRobot {
                 Ports.DT_BACK_RIGHT
         );
         navx = new AHRS(SPI.Port.kMXP);
-        ir = new DigitalInput(Ports.IR_CHANNEL);
-        pixy = new PixyThread(Ports.US_CHANNEL);
+        vision = new Vision(Ports.US_CHANNEL);
     }
 
     @Override
@@ -56,29 +53,23 @@ public class Robot extends IterativeRobot {
         if (driveStick.getRawButton(11)) {
             navx.reset();
         }
-
-        //System.out.println("Angle: " + navx.getAngle());
-        //System.out.println("IR Status: " + ir.get());
     }
 
     @Override
     public void testInit() {
         super.testInit();
         System.out.println("Entering test...");
-        pixy.start();
     }
 
     @Override
     public void testPeriodic() {
 //        System.out.println("Ultrasonic Dist: " + us.distIn + " inches");
 //        Timer.delay(0.1);
-        drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
         Timer.delay(0.1);
     }
 
     @Override
     public void disabledInit() {
-        pixy.terminate();
         System.out.println("Stopping thread");
     }
 }
