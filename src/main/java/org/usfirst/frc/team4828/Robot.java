@@ -71,8 +71,12 @@ public class Robot extends IterativeRobot {
     public void testPeriodic() {
 //        System.out.println("Ultrasonic Dist: " + us.distIn + " inches");
 //        Timer.delay(0.1);
-        drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
-        Timer.delay(0.1);
+//        drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
+//        Timer.delay(0.1);
+        drive.moveDistance(1000);
+        Timer.delay(1);
+        drive.moveDistance(-1000);
+        Timer.delay(1);
     }
 
     @Override

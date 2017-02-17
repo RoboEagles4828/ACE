@@ -108,7 +108,12 @@ public class DriveTrain {
         backRight.set(wheelSpeeds[3]);
     }
 
-    public void moveDistance(int dist) {
+    /**
+     * Moves motors a certain distance.
+     *
+     * @param dist Distance to move
+     */
+    public void moveDistance(double dist) {
         double encchange = dist * DIST_TO_ENC;
 
         frontLeft.changeControlMode(CANTalon.TalonControlMode.Position);
