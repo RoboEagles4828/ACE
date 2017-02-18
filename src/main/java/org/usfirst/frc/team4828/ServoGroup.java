@@ -9,6 +9,7 @@ public class ServoGroup {
     private Servo slave;
     private double[] masterRange;
     private double[] slaveRange;
+    private double position;
 
     ServoGroup(int masterPort, int slavePort) {
         master = new Servo(masterPort);
@@ -24,32 +25,30 @@ public class ServoGroup {
         slaveRange = new double[2];
         calibrate(1, masterMin, masterMax);
         calibrate(2, slaveMin, slaveMax);
+        position = 0;
     }
 
     public void raise(double step) {
-        master.set(master.get() + step);
-        slave.set(slave.get() - step);
+        set(position + step);
     }
 
     public void raise() {
-        master.set(master.get() + STEP_SIZE);
-        slave.set(slave.get() - STEP_SIZE);
+        raise(STEP_SIZE);
     }
 
     public void lower(double step) {
-        master.set(master.get() - step);
-        slave.set(slave.get() + step);
+        set(position - step);
     }
 
     public void lower() {
-        master.set(master.get() - STEP_SIZE);
-        slave.set(slave.get() + STEP_SIZE);
+        lower(STEP_SIZE);
     }
 
 
     public void set(double pos) {
-        master.set((masterRange[1] - masterRange[0]) * pos + masterRange[0]);
-        slave.set((slaveRange[1] - slaveRange[0]) * pos + slaveRange[0]);
+        position = pos;
+        master.set((masterRange[1] - masterRange[0]) * position + masterRange[0]);
+        slave.set((slaveRange[1] - slaveRange[0]) * position + slaveRange[0]);
     }
 
     /**
