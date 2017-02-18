@@ -15,21 +15,28 @@ public class Robot extends IterativeRobot {
     private UltraThread us;
     private DigitalInput[] dipSwitch;
     private int autonSelect;
+    private Climber climb;
 
     @Override
     public void robotInit() {
         super.robotInit();
         System.out.println("THE ROBOT TURNED ON");
         driveStick = new Joystick(0);
-        drive = new DriveTrain(1, 2, 3, 4);
+        drive = new DriveTrain(
+                Ports.DT_FRONT_LEFT,
+                Ports.DT_BACK_LEFT,
+                Ports.DT_FRONT_RIGHT,
+                Ports.DT_BACK_RIGHT
+        );
+        climb = new Climber(7, 8);
         navx = new AHRS(SPI.Port.kMXP);
-        ir = new DigitalInput(2);
-        us = new UltraThread(0);
         dipSwitch = new DigitalInput[4];
-        dipSwitch[0] = new DigitalInput(6);
-        dipSwitch[1] = new DigitalInput(4);
-        dipSwitch[2] = new DigitalInput(5);
-        dipSwitch[3] = new DigitalInput(3);
+        dipSwitch[0] = new DigitalInput(Ports.DIPSWITCH_1);
+        dipSwitch[1] = new DigitalInput(Ports.DIPSWITCH_2);
+        dipSwitch[2] = new DigitalInput(Ports.DIPSWITCH_3);
+        dipSwitch[3] = new DigitalInput(Ports.DIPSWITCH_4);
+        ir = new DigitalInput(Ports.IR_CHANNEL);
+        us = new UltraThread(Ports.US_CHANNEL);
     }
 
     @Override
@@ -91,7 +98,6 @@ public class Robot extends IterativeRobot {
     public void testInit() {
         super.testInit();
         System.out.println("Entering test...");
-        //.start();
     }
 
     @Override
