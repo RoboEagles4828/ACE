@@ -8,6 +8,11 @@ public class Frame {
     private static final double WIDTH_BETWEEN_TARGET = 8.5;
     private List<Block> frameData;
 
+    /**
+     * Create frame holding a list of all blocks found.
+     * @param data raw string of comma separated blocks
+     * @param dist current ultrasonic sensor reading
+     */
     public Frame(String[] data, double dist) {
         frameData = new ArrayList<>();
         for (String i : data) {

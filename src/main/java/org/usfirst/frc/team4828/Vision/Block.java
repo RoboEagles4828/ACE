@@ -12,6 +12,10 @@ public class Block {
     private int width;
     private int height;
 
+    /**
+     * Create block object storing the relevant fields.
+     * @param data raw string with space separated fields
+     */
     public Block(String[] data) {
         frame = Integer.parseInt(data[0]);
         block_type = Integer.parseInt(data[1]);

@@ -9,7 +9,6 @@ public class Robot extends IterativeRobot {
     private DriveTrain drive;
     private AHRS navx;
     private Vision vision;
-    private UltraThread us;
     private DigitalInput[] dipSwitch;
     private int autonSelect;
     private Climber climb;

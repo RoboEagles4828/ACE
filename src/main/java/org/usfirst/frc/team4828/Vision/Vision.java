@@ -3,6 +3,10 @@ package org.usfirst.frc.team4828.Vision;
 public class Vision {
     private PixyThread pixy;
 
+    /**
+     * Create an object encapsulating the vision and ultrasonic thread.
+     * @param port port of the ultrasonic sensor
+     */
     public Vision(int port) {
         pixy = new PixyThread(port);
     }

@@ -25,7 +25,7 @@ public class PixyThread extends Thread {
     private Queue<Double> values;
 
     /**
-     * The contents of the thread
+     * Create object encapsulating the last frame and ultrasonic data.
      * loops while it's alive
      */
     public PixyThread(int port) {
