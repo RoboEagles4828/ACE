@@ -11,8 +11,10 @@ public class Block {
     private int y;
     private int width;
     private int height;
+
     /**
      * Create block object storing the relevant fields.
+     *
      * @param data raw string with space separated fields
      */
     public Block(String[] data) {
@@ -25,7 +27,7 @@ public class Block {
         height = Integer.parseInt(data[6]);
     }
 
-    public Block(int frame, int block_type, int signature, int x, int y, int width, int height){
+    public Block(int frame, int block_type, int signature, int x, int y, int width, int height) {
         this.frame = frame;
         this.block_type = block_type;
         this.signature = signature;

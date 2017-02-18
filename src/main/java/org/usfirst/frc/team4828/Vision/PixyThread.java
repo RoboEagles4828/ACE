@@ -34,6 +34,7 @@ public class PixyThread extends Thread {
         values = new LinkedList<>();
         String[] temp = {"0 1 2 3 4 5 6"};
         currentFrame = new Frame(temp, .5);
+        lastFrame = new Frame(temp, .5);
         //start();
     }
 
@@ -85,7 +86,7 @@ public class PixyThread extends Thread {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if(currentFrame.numBlocks() >= 2){
+            if (currentFrame.numBlocks() >= 2) {
                 lastFrame = currentFrame;
             }
             values.add(sensor.getVoltage());
@@ -137,6 +138,6 @@ public class PixyThread extends Thread {
     }
 
     public String toString() {
-        return currentFrame.toString();
+        return lastFrame.toString();
     }
 }
