@@ -1,8 +1,5 @@
 package org.usfirst.frc.team4828;
 
-/**
- * Created by Jackie on 2/11/2017.
- */
 public class Ports {
     // PWM
     public static final int INTAKE = 9;

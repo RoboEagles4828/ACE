@@ -19,12 +19,12 @@ public class Robot extends IterativeRobot {
         super.robotInit();
         System.out.println("THE ROBOT TURNED ON");
         driveStick = new Joystick(0);
-        drive = new DriveTrain(
+        /*drive = new DriveTrain(
                 Ports.DT_FRONT_LEFT,
                 Ports.DT_BACK_LEFT,
                 Ports.DT_FRONT_RIGHT,
                 Ports.DT_BACK_RIGHT
-        );
+        );*/
         navx = new AHRS(SPI.Port.kMXP);
         vision = new Vision(Ports.US_CHANNEL);
     }
@@ -59,17 +59,20 @@ public class Robot extends IterativeRobot {
     public void testInit() {
         super.testInit();
         System.out.println("Entering test...");
+        vision.start();
     }
 
     @Override
     public void testPeriodic() {
 //        System.out.println("Ultrasonic Dist: " + us.distIn + " inches");
 //        Timer.delay(0.1);
+        System.out.println(vision);
         Timer.delay(0.1);
     }
 
     @Override
     public void disabledInit() {
+        vision.terminate();
         System.out.println("Stopping thread");
     }
 }

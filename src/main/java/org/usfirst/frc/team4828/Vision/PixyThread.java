@@ -3,6 +3,7 @@ package org.usfirst.frc.team4828.Vision;
 import edu.wpi.first.wpilibj.AnalogInput;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.*;
@@ -30,23 +31,9 @@ public class PixyThread extends Thread {
     public PixyThread(int port) {
         sensor = new AnalogInput(port);
         values = new LinkedList<>();
-        System.out.println("Thread starting: " + threadName);
-        boolean scanning = true;
-        while (scanning) {
-            try {
-                soc = new Socket(HOST, PORT);
-                in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
-                scanning = false;
-            } catch (Exception e) {
-                System.out.println("Connect failed, waiting and trying again");
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ie) {
-                    ie.printStackTrace();
-                }
-            }
-        }
-        System.out.println("Socket connection established");
+        String[] temp = {"1 2 3 4 5 6"};
+        lastFrame = new Frame(temp, .5);
+        start();
     }
 
     /**
@@ -96,16 +83,15 @@ public class PixyThread extends Thread {
                 lastFrame = new Frame(in.readLine().split(","), distIn);
             } catch (Exception e) {
                 e.printStackTrace();
-            }
+            }/*
             values.add(sensor.getVoltage());
-
             while (values.size() > WINDOW_SIZE) {
                 values.remove();
             }
 
             distCm = toCm(medianFilter(values));
             distIn = toIn(medianFilter(values));
-            edu.wpi.first.wpilibj.Timer.delay(0.1);
+            //edu.wpi.first.wpilibj.Timer.delay(0.015);*/
         }
     }
 
@@ -113,13 +99,39 @@ public class PixyThread extends Thread {
     public void start() {
         enabled = true;
         if (t == null) {
+            System.out.println("Thread starting: " + threadName);
+            boolean scanning = true;
+            while (scanning) {
+                try {
+                    soc = new Socket(HOST, PORT);
+                    in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
+                    scanning = false;
+                } catch (Exception e) {
+                    System.out.println("Connect failed, waiting and trying again");
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ie) {
+                        ie.printStackTrace();
+                    }
+                }
+            }
+            System.out.println("Socket connection established");
             t = new Thread(this, threadName);
             t.start();
         }
     }
 
     public void terminate() {
+        try {
+            soc.close();
+        } catch (IOException e) {
+
+        }
         enabled = false;
         t = null;
+    }
+
+    public String toString() {
+        return lastFrame.toString();
     }
 }

@@ -1,26 +1,46 @@
 package org.usfirst.frc.team4828.Vision;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Frame {
     //8.5 in between targets
     private static final double WIDTH_BETWEEN_TARGET = 8.5;
-    public List<Block> frameData;
+    private List<Block> frameData;
 
     public Frame(String[] data, double dist) {
-        for (String item : data) {
-            frameData.add(new Block(item.split(" ")));
+        frameData = new ArrayList<>();
+        for (String i : data) {
+            frameData.add(new Block(i.split(" ")));
         }
-        for (Block item : frameData) {
-            item.angle = item.computeAngle(getPixelConstant(), dist);
+        for (Block i : frameData) {
+            i.angle = i.computeAngle(getPixelConstant(), dist);
         }
     }
 
     public double getPixelConstant() {
-        return WIDTH_BETWEEN_TARGET / (Math.abs(frameData.get(0).getX() - frameData.get(1).getY()));
+        if (numBlocks() >= 2) {
+            return WIDTH_BETWEEN_TARGET / (Math.abs(frameData.get(0).getX() - frameData.get(1).getX()));
+        }
+        return -1;
+    }
+
+    public List<Block> getFrameData() {
+        return frameData;
     }
 
     public int numBlocks() {
         return frameData.size();
+    }
+
+    public String toString() {
+        if (numBlocks() == 0) {
+            return "NO BLOCKS DETECTED";
+        }
+        String temp = "";
+        for (Block i : frameData) {
+            temp += " " + i.getX() + " ";
+        }
+        return "Detected " + frameData.size() + " blocks at: " + temp;
     }
 }
