@@ -37,6 +37,12 @@ public class Robot extends IterativeRobot {
             autonSelect += (dipSwitch[i].get() ? 1 : 0) * (1 << i);
         }
         System.out.println("Entering auton number " + autonSelect);
+        drive.reset();
+    }
+
+    @Override
+    public void autonomousPeriodic() {
+        super.autonomousPeriodic();
         switch (autonSelect) {
             case 0:
                 // TODO: Shoot 10 fuel
@@ -59,12 +65,7 @@ public class Robot extends IterativeRobot {
             default:
                 // Do nothing
         }
-    }
-
-    @Override
-    public void autonomousPeriodic() {
         Timer.delay(.1);
-        super.autonomousPeriodic();
     }
 
     @Override
