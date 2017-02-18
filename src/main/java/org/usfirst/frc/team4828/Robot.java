@@ -1,10 +1,7 @@
 package org.usfirst.frc.team4828;
 
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.*;
 import org.usfirst.frc.team4828.Vision.Vision;
 
 public class Robot extends IterativeRobot {
@@ -26,7 +23,6 @@ public class Robot extends IterativeRobot {
                 Ports.DT_BACK_RIGHT
         );*/
         navx = new AHRS(SPI.Port.kMXP);
-        vision = new Vision(Ports.US_CHANNEL);
     }
 
     @Override
@@ -59,6 +55,7 @@ public class Robot extends IterativeRobot {
     public void testInit() {
         super.testInit();
         System.out.println("Entering test...");
+        vision = new Vision(Ports.US_CHANNEL);
         vision.start();
     }
 
@@ -72,6 +69,7 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void disabledInit() {
+        if(vision != null)
         vision.terminate();
         System.out.println("Stopping thread");
     }

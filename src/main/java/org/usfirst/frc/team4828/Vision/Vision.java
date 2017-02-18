@@ -3,26 +3,25 @@ package org.usfirst.frc.team4828.Vision;
 public class Vision {
     private PixyThread pixy;
 
-    public Vision(int port){
+    public Vision(int port) {
         pixy = new PixyThread(port);
     }
 
-    private void firstMove(){
+    private void firstMove() {
         double b1Angle = pixy.lastFrame.getFrameData().get(0).getAngle();
         double b2Angle = pixy.lastFrame.getFrameData().get(1).getAngle();
-        if(pixy.lastFrame.numBlocks() == 2){
-            if(b1Angle<0 && b2Angle<0){
+        if (pixy.lastFrame.numBlocks() == 2) {
+            if (b1Angle < 0 && b2Angle < 0) {
                 //do stuff
             }
-        }
-        else{
+        } else {
             //move back ~2ft
             firstMove();
         }
     }
 
-    private void errorCorrection(){
-        if(pixy.lastFrame.numBlocks() == 2){
+    private void errorCorrection() {
+        if (pixy.lastFrame.numBlocks() == 2) {
             double b1Angle = pixy.lastFrame.getFrameData().get(0).getAngle();
             double b2Angle = pixy.lastFrame.getFrameData().get(1).getAngle();
             int b1x = pixy.lastFrame.getFrameData().get(0).getX();
@@ -34,15 +33,15 @@ public class Vision {
         }
     }
 
-    public void terminate(){
+    public void terminate() {
         pixy.terminate();
     }
 
-    public void start(){
+    public void start() {
         pixy.start();
     }
 
-    public String toString(){
+    public String toString() {
         return pixy.toString();
     }
 }

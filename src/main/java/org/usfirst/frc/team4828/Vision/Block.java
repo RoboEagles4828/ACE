@@ -5,6 +5,7 @@ public class Block {
     //private static final int Y_CENTER = 199/2;
     public double angle;
     private int frame;
+    private int block_type;
     private int signature;
     private int x;
     private int y;
@@ -13,11 +14,12 @@ public class Block {
 
     public Block(String[] data) {
         frame = Integer.parseInt(data[0]);
-        signature = Integer.parseInt(data[1]);
-        x = Integer.parseInt(data[2]);
-        y = Integer.parseInt(data[3]);
-        width = Integer.parseInt(data[4]);
-        height = Integer.parseInt(data[5]);
+        block_type = Integer.parseInt(data[1]);
+        signature = Integer.parseInt(data[2]);
+        x = Integer.parseInt(data[3]);
+        y = Integer.parseInt(data[4]);
+        width = Integer.parseInt(data[5]);
+        height = Integer.parseInt(data[6]);
     }
 
     public double computeAngle(double pixelConstant, double distance) {

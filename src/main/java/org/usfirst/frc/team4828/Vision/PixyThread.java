@@ -31,9 +31,9 @@ public class PixyThread extends Thread {
     public PixyThread(int port) {
         sensor = new AnalogInput(port);
         values = new LinkedList<>();
-        String[] temp = {"1 2 3 4 5 6"};
+        String[] temp = {"0 1 2 3 4 5 6"};
         lastFrame = new Frame(temp, .5);
-        start();
+        //start();
     }
 
     /**
@@ -83,7 +83,7 @@ public class PixyThread extends Thread {
                 lastFrame = new Frame(in.readLine().split(","), distIn);
             } catch (Exception e) {
                 e.printStackTrace();
-            }/*
+            }
             values.add(sensor.getVoltage());
             while (values.size() > WINDOW_SIZE) {
                 values.remove();
@@ -91,7 +91,7 @@ public class PixyThread extends Thread {
 
             distCm = toCm(medianFilter(values));
             distIn = toIn(medianFilter(values));
-            //edu.wpi.first.wpilibj.Timer.delay(0.015);*/
+            edu.wpi.first.wpilibj.Timer.delay(0.1);
         }
     }
 
@@ -124,6 +124,7 @@ public class PixyThread extends Thread {
     public void terminate() {
         try {
             soc.close();
+            in.close();
         } catch (IOException e) {
 
         }
