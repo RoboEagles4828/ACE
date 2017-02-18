@@ -51,6 +51,10 @@ public class ServoGroup {
         slave.set((slaveRange[1] - slaveRange[0]) * position + slaveRange[0]);
     }
 
+    public double get() {
+        return position;
+    }
+
     /**
      * Configure the servos' range of motion.
      *

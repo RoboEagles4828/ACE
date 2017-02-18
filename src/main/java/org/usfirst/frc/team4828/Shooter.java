@@ -9,6 +9,8 @@ public class Shooter extends Thread {
     public ServoGroup servos;
 
     private static final double SHOOTER_SPEED = 0.8;
+    private static final double SERVO_MULTIPLIER = 0.8;
+
     private static final double P = .5;
     private static final double I = 0;
     private static final double D = 0;
@@ -43,7 +45,7 @@ public class Shooter extends Thread {
      * @param speed double 0-1 dictates fire speed
      */
     public void spinUp(double speed) {
-        shooterMotor.set(speed);
+        shooterMotor.set(speed * (1 - servos.get() * SERVO_MULTIPLIER));
     }
 
     /**
