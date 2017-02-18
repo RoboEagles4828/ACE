@@ -26,19 +26,19 @@ public class Robot extends IterativeRobot {
         ir = new DigitalInput(2);
         us = new UltraThread(0);
         dipSwitch = new DigitalInput[4];
-        dipSwitch[0] = new DigitalInput(0);
-        dipSwitch[1] = new DigitalInput(1);
-        dipSwitch[2] = new DigitalInput(2);
+        dipSwitch[0] = new DigitalInput(6);
+        dipSwitch[1] = new DigitalInput(4);
+        dipSwitch[2] = new DigitalInput(5);
         dipSwitch[3] = new DigitalInput(3);
     }
 
     @Override
     public void autonomousInit() {
         super.autonomousInit();
-        System.out.println("Entering auton...");
         for (int i = 0; i < 4; i++) {
             autonSelect += (dipSwitch[i].get() ? 1 : 0) * (1 << i);
         }
+        System.out.println("Entering auton number " + autonSelect);
         switch (autonSelect) {
             case 0:
                 // Shoot 10 fuel
@@ -91,13 +91,16 @@ public class Robot extends IterativeRobot {
     public void testInit() {
         super.testInit();
         System.out.println("Entering test...");
-        us.start();
+        //.start();
     }
 
     @Override
     public void testPeriodic() {
-
-        System.out.println("Ultrasonic Dist: " + us.distIn + " inches");
+        for (int i = 0; i < 4; i++) {
+            System.out.print(" " + dipSwitch[i].get());
+        }
+        System.out.println();
+        //System.out.println("Ultrasonic Dist: " + us.distIn + " inches");
         Timer.delay(0.1);
     }
 
