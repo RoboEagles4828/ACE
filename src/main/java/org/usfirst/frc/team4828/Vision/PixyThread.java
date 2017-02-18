@@ -33,7 +33,7 @@ public class PixyThread extends Thread {
         sensor = new AnalogInput(port);
         values = new LinkedList<>();
         String[] temp = {"0 1 2 3 4 5 6"};
-        lastFrame = new Frame(temp, .5);
+        currentFrame = new Frame(temp, .5);
         //start();
     }
 
@@ -137,6 +137,6 @@ public class PixyThread extends Thread {
     }
 
     public String toString() {
-        return lastFrame.toString();
+        return currentFrame.toString();
     }
 }
