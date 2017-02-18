@@ -40,17 +40,17 @@ public class Frame {
     }
 
     private void filter(){;
-        for (Block i : frameData){
-            for (Block o: frameData){
-                if (!i.equals(o) && (Math.abs(i.getX() - o.getX()) < 10)){
+        for (int i=0; i<frameData.size(); i++){
+            for (int o=0; o<frameData.size(); o++){
+                if (i != o && (Math.abs(frameData.get(i).getX() - frameData.get(o).getX()) < 10)){
                     frameData.add(new Block(
-                            i.getFrame(),
-                            i.getBlock_type(),
-                            i.getSignature(),
-                            (i.getX() + o.getX()) / 2,
-                            (i.getY() + o.getY()) / 2,
-                            (i.getWidth() + o.getWidth()) / 2,
-                            i.getHeight() + o.getHeight() / 2));
+                            frameData.get(i).getFrame(),
+                            frameData.get(i).getBlock_type(),
+                            frameData.get(i).getSignature(),
+                            (frameData.get(i).getX() + frameData.get(o).getX()) / 2,
+                            (frameData.get(i).getY() + frameData.get(o).getY()) / 2,
+                            (frameData.get(i).getWidth() + frameData.get(o).getWidth()) / 2,
+                            frameData.get(i).getHeight() + frameData.get(o).getHeight() / 2));
                     frameData.remove(i);
                     frameData.remove(o);
                 }
