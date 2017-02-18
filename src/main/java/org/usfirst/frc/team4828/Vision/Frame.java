@@ -10,7 +10,7 @@ public class Frame {
 
     /**
      * Create frame holding a list of all blocks found.
-     * @param data raw string of comma separated blocks
+     * @param data raw string  array of comma separated blocks
      * @param dist current ultrasonic sensor reading
      */
     public Frame(String[] data, double dist) {
@@ -18,6 +18,7 @@ public class Frame {
         for (String i : data) {
             frameData.add(new Block(i.split(" ")));
         }
+        filter();
         for (Block i : frameData) {
             i.angle = i.computeAngle(getPixelConstant(), dist);
         }
@@ -36,6 +37,25 @@ public class Frame {
 
     public int numBlocks() {
         return frameData.size();
+    }
+
+    private void filter(){;
+        for (Block i : frameData){
+            for (Block o: frameData){
+                if (!i.equals(o) && (Math.abs(i.getX() - o.getX()) < 10)){
+                    frameData.add(new Block(
+                            i.getFrame(),
+                            i.getBlock_type(),
+                            i.getSignature(),
+                            (i.getX() + o.getX()) / 2,
+                            (i.getY() + o.getY()) / 2,
+                            (i.getWidth() + o.getWidth()) / 2,
+                            i.getHeight() + o.getHeight() / 2));
+                    frameData.remove(i);
+                    frameData.remove(o);
+                }
+            }
+        }
     }
 
     public String toString() {
