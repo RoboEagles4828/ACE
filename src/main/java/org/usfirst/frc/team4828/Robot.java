@@ -102,7 +102,7 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void disabledInit() {
-        if(vision != null) {
+        if (vision != null) {
             vision.terminate();
         }
         System.out.println("Stopping thread");

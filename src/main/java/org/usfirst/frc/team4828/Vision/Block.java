@@ -14,6 +14,7 @@ public class Block {
 
     /**
      * Create block object storing the relevant fields.
+     *
      * @param data raw string with space separated fields
      */
     public Block(String[] data) {
@@ -24,6 +25,36 @@ public class Block {
         y = Integer.parseInt(data[4]);
         width = Integer.parseInt(data[5]);
         height = Integer.parseInt(data[6]);
+    }
+
+    public Block(int frame, int block_type, int signature, int x, int y, int width, int height) {
+        this.frame = frame;
+        this.block_type = block_type;
+        this.signature = signature;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+
+    public int getFrame() {
+        return frame;
+    }
+
+    public int getBlock_type() {
+        return block_type;
+    }
+
+    public int getSignature() {
+        return signature;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     public double computeAngle(double pixelConstant, double distance) {

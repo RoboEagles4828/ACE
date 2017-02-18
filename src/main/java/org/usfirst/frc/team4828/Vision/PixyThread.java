@@ -10,6 +10,7 @@ import java.util.*;
 
 public class PixyThread extends Thread {
     public volatile Frame lastFrame;
+    public volatile Frame currentFrame;
     private static final String HOST = "pixyco.local";
     private static final int PORT = 5800;
     private static final int WINDOW_SIZE = 30;
@@ -32,6 +33,7 @@ public class PixyThread extends Thread {
         sensor = new AnalogInput(port);
         values = new LinkedList<>();
         String[] temp = {"0 1 2 3 4 5 6"};
+        currentFrame = new Frame(temp, .5);
         lastFrame = new Frame(temp, .5);
         //start();
     }
@@ -80,9 +82,12 @@ public class PixyThread extends Thread {
     public void run() {
         while (enabled) {
             try {
-                lastFrame = new Frame(in.readLine().split(","), distIn);
+                currentFrame = new Frame(in.readLine().split(","), distIn);
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+            if (currentFrame.numBlocks() >= 2) {
+                lastFrame = currentFrame;
             }
             values.add(sensor.getVoltage());
             while (values.size() > WINDOW_SIZE) {
