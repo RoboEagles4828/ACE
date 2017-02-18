@@ -13,7 +13,8 @@ public class Robot extends IterativeRobot {
     private AHRS navx;
     private DigitalInput ir;
     private UltraThread us;
-    private DigitalInput[] autonSelect;
+    private DigitalInput[] dipSwitch;
+    private int autonSelect;
 
     @Override
     public void robotInit() {
@@ -24,34 +25,47 @@ public class Robot extends IterativeRobot {
         navx = new AHRS(SPI.Port.kMXP);
         ir = new DigitalInput(2);
         us = new UltraThread(0);
+        dipSwitch = new DigitalInput[4];
+        dipSwitch[0] = new DigitalInput(0);
+        dipSwitch[1] = new DigitalInput(1);
+        dipSwitch[2] = new DigitalInput(2);
+        dipSwitch[3] = new DigitalInput(3);
     }
 
     @Override
     public void autonomousInit() {
         super.autonomousInit();
         System.out.println("Entering auton...");
-        /*
-         * This stuff should go in its own class later
-         */
-        autonSelect = new DigitalInput[5];
-        autonSelect[0] = new DigitalInput(0); //1
-        autonSelect[1] = new DigitalInput(1); //2
-        autonSelect[2] = new DigitalInput(2); //3
-        autonSelect[3] = new DigitalInput(3); //4
-        //etc.
-        int one = autonSelect[0].get() ? 1 : 0;
-        int two = autonSelect[1].get() ? 1 : 0;
-        int three = autonSelect[2].get() ? 1 : 0;
-        int four = autonSelect[3].get() ? 1 : 0;
-        int modeNum = one + two*2 + three*4 + four*8;
-        /*
-         * --------------------------------------------
-         */
-        //auton modes here
+        for (int i = 0; i < 4; i++) {
+            autonSelect += (dipSwitch[i].get() ? 1 : 0) * (1 << i);
+        }
+        switch (autonSelect) {
+            case 0:
+                // Shoot 10 fuel
+                break;
+            case 1:
+                // Place gear on right side
+                break;
+            case 2:
+                // Place gear on center
+                break;
+            case 3:
+                // Place gear on center
+                break;
+            case 4:
+                // Shoot 10 fuel and place gear on left side
+                break;
+            case 5:
+                // The crazy running into hopper and shooting tons of balls plan
+                break;
+            default:
+                // Do nothing
+        }
     }
 
     @Override
     public void autonomousPeriodic() {
+        Timer.delay(.1);
         super.autonomousPeriodic();
     }
 
