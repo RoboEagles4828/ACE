@@ -14,6 +14,7 @@ public class Robot extends IterativeRobot {
     private AHRS navx;
     private DigitalInput ir;
     private UltraThread us;
+    private Climber climb;
 
     @Override
     public void robotInit() {
@@ -26,6 +27,7 @@ public class Robot extends IterativeRobot {
                 Ports.DT_FRONT_RIGHT,
                 Ports.DT_BACK_RIGHT
         );
+        climb = new Climber(7, 8);
         navx = new AHRS(SPI.Port.kMXP);
         ir = new DigitalInput(Ports.IR_CHANNEL);
         us = new UltraThread(Ports.US_CHANNEL);
