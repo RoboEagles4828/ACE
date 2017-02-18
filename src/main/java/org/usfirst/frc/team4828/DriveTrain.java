@@ -1,14 +1,18 @@
 package org.usfirst.frc.team4828;
 
 import com.ctre.CANTalon;
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SPI;
 
 public class DriveTrain {
     private CANTalon frontLeft;
     private CANTalon frontRight;
     private CANTalon backLeft;
     private CANTalon backRight;
+    private AHRS navx;
 
     private static final double TWIST_THRESHOLD = 0.15;
+    private static final double TURN_DEADZONE  = 1;
 
     /**
      * Create drive train object containing mecanum motor functionality.
@@ -26,6 +30,8 @@ public class DriveTrain {
         frontRight.setPID(0.6, 0, 0);
         backLeft.setPID(0.6, 0, 0);
         backRight.setPID(0.6, 0, 0);
+
+        navx = new AHRS(SPI.Port.kMXP);
     }
 
     public DriveTrain(){
@@ -56,10 +62,10 @@ public class DriveTrain {
      *
      * @param xcomponent X component of the vector
      * @param ycomponent Y component of the vector
-     * @param angle      Angle by which to rotate the vector
      * @return The resultant vector as a double[2]
      */
-    public static double[] rotateVector(double xcomponent, double ycomponent, double angle) {
+    public double[] rotateVector(double xcomponent, double ycomponent) {
+        double angle = navx.getAngle();
         double cosA = Math.cos(angle * (3.14159 / 180.0));
         double sinA = Math.sin(angle * (3.14159 / 180.0));
         double[] out = new double[2];
@@ -69,18 +75,11 @@ public class DriveTrain {
     }
 
     /**
-     * Adjust motor speeds according to joystick input.
-     */
-    public void mecanumDrive(double xcomponent, double ycomponent, double rotation) {
-        mecanumDrive(xcomponent, ycomponent, rotation, 0);
-    }
-
-    /**
      * Adjust motor speeds according to heading and joystick input.
      * Uses input from the gyroscope to determine field orientation.
      */
     public void mecanumDrive(double xcomponent, double ycomponent,
-                             double rotation, double gyroAngle) {
+                             double rotation) {
         // Ignore tiny inadvertent joystick rotations
         if (Math.abs(rotation) <= TWIST_THRESHOLD) {
             rotation = 0.0;
@@ -89,7 +88,7 @@ public class DriveTrain {
         // Negate y for the joystick.
         ycomponent = -ycomponent;
         // Compensate for gyro angle.
-        double[] rotated = rotateVector(xcomponent, ycomponent, gyroAngle);
+        double[] rotated = rotateVector(xcomponent, ycomponent);
         xcomponent = rotated[0];
         ycomponent = rotated[1];
 
@@ -114,6 +113,11 @@ public class DriveTrain {
         frontRight.set(.2);
         backLeft.set(.2);
         backRight.set(.2);
+    }
+
+    public void turn(double degrees) {
+        double angle = navx.getAngle();
+
     }
 
     /**
@@ -153,5 +157,9 @@ public class DriveTrain {
         frontRight.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
         backRight.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
         backLeft.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+    }
+
+    public void reset() {
+        navx.reset();
     }
 }
