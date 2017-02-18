@@ -24,6 +24,12 @@ public class Ports {
     public static final int IR_CHANNEL = 2;
     public static final int US_CHANNEL = 0;
 
+    // Switch
+    public static final int DIPSWITCH_1 = 6;
+    public static final int DIPSWITCH_2 = 4;
+    public static final int DIPSWITCH_3 = 5;
+    public static final int DIPSWITCH_4 = 3;
+
     private Ports(){
         throw new AssertionError(
             "A Summoner has Disconnected.\n"
