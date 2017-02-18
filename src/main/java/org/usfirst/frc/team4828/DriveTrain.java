@@ -13,6 +13,7 @@ public class DriveTrain {
 
     private static final double TWIST_THRESHOLD = 0.15;
     private static final double TURN_DEADZONE  = 1;
+    private static final double TURN_SPEED = 48;
 
     /**
      * Create drive train object containing mecanum motor functionality.
@@ -115,9 +116,38 @@ public class DriveTrain {
         backRight.set(.2);
     }
 
-    public void turn(double degrees) {
-        double angle = navx.getAngle();
+    /**
+     * Turns at a certain speed and direction.
+     *
+     * @param speed      Speed to turn at
+     * @param direction  Direction to turn in (L or R)
+     */
+    public void turn(double speed, char direction) {
+        if(direction == 'L') {
+            frontLeft.set(speed);
+            backLeft.set(speed);
+            frontRight.set(-speed);
+            backRight.set(-speed);
+        } else if (direction == 'R') {
+            frontLeft.set(-speed);
+            backLeft.set(-speed);
+            frontRight.set(speed);
+            backRight.set(speed);
+        }
 
+    }
+
+    /**
+     * Turn a certain amount of degrees
+     *
+     * @param degrees   Degrees to turn
+     * @param direction Direction to turn in (L or R)
+     */
+    public void turnDegrees(double degrees, char direction) {
+        double angle = navx.getAngle() + degrees;
+        while(navx.getAngle() + TURN_DEADZONE > degrees || navx.getAngle() - TURN_DEADZONE < degrees) {
+            turn(TURN_SPEED, direction);
+        }
     }
 
     /**
