@@ -3,7 +3,8 @@ package org.usfirst.frc.team4828;
 public class Ports {
     // PWM
     public static final int INTAKE = 9;
-    public static final int CLIMBER = 8;
+    public static final int CLIMBER_1 = 8;
+    public static final int CLIMBER_2 = 7;
     public static final int AGITATOR_LEFT = 6;
     public static final int AGITATOR_RIGHT = 7;
 
@@ -22,6 +23,12 @@ public class Ports {
     // Sensors
     public static final int IR_CHANNEL = 2;
     public static final int US_CHANNEL = 0;
+
+    // Switch
+    public static final int DIPSWITCH_1 = 6;
+    public static final int DIPSWITCH_2 = 4;
+    public static final int DIPSWITCH_3 = 5;
+    public static final int DIPSWITCH_4 = 3;
 
     private Ports(){
         throw new AssertionError(

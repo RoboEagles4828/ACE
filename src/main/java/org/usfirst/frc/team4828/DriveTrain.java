@@ -10,14 +10,25 @@ public class DriveTrain {
 
     private static final double TWIST_THRESHOLD = 0.15;
 
-    DriveTrain(int frontLeftPort, int backLeftPort, int frontRightPort, int backRightPort) {
+    /**
+     * Create drive train object containing mecanum motor functionality.
+     * @param frontLeftPort port of the front left motor
+     * @param backLeftPort port of the back left motor
+     * @param frontRightPort port of the front right motor
+     * @param backRightPort port of the back right motor
+     */
+    public DriveTrain(int frontLeftPort, int backLeftPort, int frontRightPort, int backRightPort) {
         frontLeft = new CANTalon(frontLeftPort);
         frontRight = new CANTalon(frontRightPort);
         backLeft = new CANTalon(backLeftPort);
         backRight = new CANTalon(backRightPort);
+        frontLeft.setPID(0.6, 0, 0);
+        frontRight.setPID(0.6, 0, 0);
+        backLeft.setPID(0.6, 0, 0);
+        backRight.setPID(0.6, 0, 0);
     }
 
-    DriveTrain(){
+    public DriveTrain(){
         //for testing purposes
         System.out.println("Created dummy drivetrain");
     }
@@ -120,4 +131,27 @@ public class DriveTrain {
         backRight.set(br);
     }
 
+    /**
+     * Use PID to lock the robot in its current position
+     */
+    public void lock(){
+        frontLeft.changeControlMode(CANTalon.TalonControlMode.Position);
+        frontRight.changeControlMode(CANTalon.TalonControlMode.Position);
+        backRight.changeControlMode(CANTalon.TalonControlMode.Position);
+        backLeft.changeControlMode(CANTalon.TalonControlMode.Position);
+        frontLeft.set(frontLeft.get());
+        frontRight.set(frontRight.get());
+        backRight.set(backRight.get());
+        backLeft.set(backLeft.get());
+    }
+
+    /**
+     * Set the motors back to normal speed control
+     */
+    public void unlock(){
+        frontLeft.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+        frontRight.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+        backRight.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+        backLeft.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+    }
 }
