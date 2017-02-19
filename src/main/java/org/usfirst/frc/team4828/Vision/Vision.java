@@ -24,6 +24,10 @@ public class Vision {
         System.out.println("Placed Gear");
     }
 
+    public void placeGear() {
+        System.out.println("Placed Gear");
+    }
+
     public void terminate() {
         pixy.terminate();
     }

@@ -6,10 +6,8 @@ import org.usfirst.frc.team4828.Vision.Vision;
 public class Robot extends IterativeRobot {
     private Joystick driveStick;
     private DriveTrain drive;
-
     private DigitalInput ir;
     private Shooter shoot;
-
     private Vision vision;
     private DigitalInput[] dipSwitch;
     private int autonSelect;

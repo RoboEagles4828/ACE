@@ -1,6 +1,8 @@
 package org.usfirst.frc.team4828;
 
 import com.ctre.CANTalon;
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SPI;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
@@ -37,7 +39,6 @@ public class DriveTrain {
         backRight.setPID(0.6, 0, 0);
 
         navx = new AHRS(SPI.Port.kMXP);
-
     }
 
     public DriveTrain(){
