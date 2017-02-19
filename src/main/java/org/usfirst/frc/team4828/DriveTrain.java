@@ -1,6 +1,7 @@
 package org.usfirst.frc.team4828;
 
 import com.ctre.CANTalon;
+import org.omg.IOP.ENCODING_CDR_ENCAPS;
 
 public class DriveTrain {
     private CANTalon frontLeft;
@@ -9,6 +10,7 @@ public class DriveTrain {
     private CANTalon backRight;
 
     private static final double TWIST_THRESHOLD = 0.15;
+    private static final double DIST_TO_ENC  = 0;
 
     /**
      * Create drive train object containing mecanum motor functionality.
@@ -22,10 +24,10 @@ public class DriveTrain {
         frontRight = new CANTalon(frontRightPort);
         backLeft = new CANTalon(backLeftPort);
         backRight = new CANTalon(backRightPort);
-        frontLeft.setPID(0.6, 0, 0);
-        frontRight.setPID(0.6, 0, 0);
-        backLeft.setPID(0.6, 0, 0);
-        backRight.setPID(0.6, 0, 0);
+        frontLeft.setPID(0.5, 0, 0);
+        frontRight.setPID(0.5, 0, 0);
+        backLeft.setPID(0.5, 0, 0);
+        backRight.setPID(0.5, 0, 0);
     }
 
     public DriveTrain(){
@@ -104,6 +106,25 @@ public class DriveTrain {
         frontRight.set(wheelSpeeds[1]);
         backLeft.set(wheelSpeeds[2]);
         backRight.set(wheelSpeeds[3]);
+    }
+
+    /**
+     * Moves motors a certain distance.
+     *
+     * @param dist Distance to move
+     */
+    public void moveDistance(double dist) {
+        double encchange = dist * DIST_TO_ENC;
+
+        frontLeft.changeControlMode(CANTalon.TalonControlMode.Position);
+        frontRight.changeControlMode(CANTalon.TalonControlMode.Position);
+        backLeft.changeControlMode(CANTalon.TalonControlMode.Position);
+        backRight.changeControlMode(CANTalon.TalonControlMode.Position);
+
+        frontLeft.set(frontLeft.getEncPosition() + encchange);
+        frontRight.set(frontRight.getEncPosition() + encchange);
+        backLeft.set(backLeft.getEncPosition() + encchange);
+        backRight.set(backRight.getEncPosition() + encchange);
     }
 
     /**

@@ -105,24 +105,32 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void testPeriodic() {
-        if (driveStick.getRawButton(9)) {
-            System.out.println("RAISING");
-            shoot.servos.raise();
-        }
-        if (driveStick.getRawButton(10)) { //slave  = back left .66 - 1  master .33 - 0
-            System.out.println("LOWERING");
-            shoot.servos.lower();
-        }
-        if (driveStick.getRawButton(11)) {
-            shoot.servos.set(0);
-        }
-        if (driveStick.getRawButton(12)) {
-            shoot.servos.set(1);
-        }
-        System.out.println(shoot.servos);
-        System.out.println(vision);
-        System.out.println("move: " + vision.findX());
-        Timer.delay(0.1);
+//        System.out.println("Ultrasonic Dist: " + us.distIn + " inches");
+//        Timer.delay(0.1);
+//        drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
+//        Timer.delay(0.1);
+        drive.moveDistance(1000);
+        Timer.delay(1);
+        drive.moveDistance(-1000);
+        Timer.delay(1);
+//         if (driveStick.getRawButton(9)) {
+//             System.out.println("RAISING");
+//             shoot.servos.raise();
+//         }
+//         if (driveStick.getRawButton(10)) { //slave  = back left .66 - 1  master .33 - 0
+//             System.out.println("LOWERING");
+//             shoot.servos.lower();
+//         }
+//         if (driveStick.getRawButton(11)) {
+//             shoot.servos.set(0);
+//         }
+//         if (driveStick.getRawButton(12)) {
+//             shoot.servos.set(1);
+//         }
+//         System.out.println(shoot.servos);
+//         System.out.println(vision);
+//         System.out.println("move: " + vision.findX());
+//         Timer.delay(0.1);
     }
 
     @Override
