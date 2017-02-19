@@ -31,6 +31,10 @@ public class Frame {
         return -1;
     }
 
+    public double getRealDistance(int pixels){
+        return pixels * getPixelConstant();
+    }
+
     public List<Block> getFrameData() {
         return frameData;
     }

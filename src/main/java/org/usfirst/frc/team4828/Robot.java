@@ -97,6 +97,7 @@ public class Robot extends IterativeRobot {
     @Override
     public void testPeriodic() {
         System.out.println(vision);
+        System.out.println(vision.findX());
         Timer.delay(0.1);
     }
 

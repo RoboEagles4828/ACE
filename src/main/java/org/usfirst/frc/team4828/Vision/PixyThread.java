@@ -9,12 +9,12 @@ import java.net.Socket;
 import java.util.*;
 
 public class PixyThread extends Thread {
-    public volatile Frame lastFrame;
-    public volatile Frame currentFrame;
     private static final String HOST = "pixyco.local";
     private static final int PORT = 5800;
     private static final int WINDOW_SIZE = 30;
     private static final double SUPPLIED_VOLTAGE = 5.0;
+    public volatile Frame lastFrame;
+    public volatile Frame currentFrame;
     public double distCm = 0;
     public double distIn = 0;
     private BufferedReader in;
@@ -35,6 +35,10 @@ public class PixyThread extends Thread {
         String[] temp = {"0 1 2 3 4 5 6"};
         currentFrame = new Frame(temp, .5);
         //start();
+    }
+
+    public double getDistIn() {
+        return distIn;
     }
 
     /**
@@ -85,7 +89,7 @@ public class PixyThread extends Thread {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if(currentFrame.numBlocks() >= 2){
+            if (currentFrame.numBlocks() >= 2) {
                 lastFrame = currentFrame;
             }
             values.add(sensor.getVoltage());
