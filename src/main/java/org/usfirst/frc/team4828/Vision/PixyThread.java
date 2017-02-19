@@ -132,11 +132,12 @@ public class PixyThread extends Thread {
 
     public void terminate() {
         try {
-            soc.close();
             in.close();
+            soc.close();
         } catch (IOException e) {
-
+            e.printStackTrace();
         }
+        sensor.free();
         enabled = false;
         t = null;
     }
