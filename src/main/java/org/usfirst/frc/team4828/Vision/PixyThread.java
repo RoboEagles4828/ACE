@@ -34,7 +34,6 @@ public class PixyThread extends Thread {
         values = new LinkedList<>();
         String[] temp = {"0 1 2 3 4 5 6"};
         currentFrame = new Frame(temp, .5);
-        //start();
     }
 
     public double getDistIn() {

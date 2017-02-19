@@ -26,7 +26,6 @@ public class Ports {
 
     // Sensors
     public static final int US_CHANNEL = 0;
-    public static final int PIXY_CHANNEL = 1;
 
     // Switch
     public static final int DIPSWITCH_1 = 6;
