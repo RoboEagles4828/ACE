@@ -35,7 +35,7 @@ public class Shooter extends Thread {
     }
 
     /**
-     * Calibrates the indexer
+     * Calibrate the indexer
      *
      * @param open double 0-1 open position
      * @param close double 0-1 close position
@@ -45,6 +45,9 @@ public class Shooter extends Thread {
         indexerClose = close;
     }
 
+    /**
+     * Start the shooter wheel using the default shooter speed
+     */
     public void spinUp() {
         shooterMotor.set(SHOOTER_SPEED * (1 - servos.get() * SERVO_MULTIPLIER));
     }

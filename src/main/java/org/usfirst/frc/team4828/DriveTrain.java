@@ -14,6 +14,7 @@ public class DriveTrain {
 
     /**
      * Create drive train object containing mecanum motor functionality.
+     *
      * @param frontLeftPort port of the front left motor
      * @param backLeftPort port of the back left motor
      * @param frontRightPort port of the front right motor
@@ -30,13 +31,18 @@ public class DriveTrain {
         backRight.setPID(0.5, 0, 0);
     }
 
+    /**
+     * Test drive train object
+     */
     public DriveTrain(){
         //for testing purposes
         System.out.println("Created dummy drivetrain");
     }
 
     /**
-     * Ensures that wheel speeds are valid numbers
+     * Ensure that wheel speeds are valid numbers
+     *
+     * @param wheelSpeeds wheel speeds
      */
     public static void normalize(double[] wheelSpeeds) {
         double maxMagnitude = Math.abs(wheelSpeeds[0]);
@@ -56,10 +62,10 @@ public class DriveTrain {
     /**
      * Rotate a vector in Cartesian space.
      *
-     * @param xcomponent X component of the vector
-     * @param ycomponent Y component of the vector
-     * @param angle      Angle by which to rotate the vector
-     * @return The resultant vector as a double[2]
+     * @param xcomponent x component of the vector
+     * @param ycomponent y component of the vector
+     * @param angle angle by which to rotate the vector
+     * @return resultant vector as a double[2]
      */
     public static double[] rotateVector(double xcomponent, double ycomponent, double angle) {
         double cosA = Math.cos(angle * (3.14159 / 180.0));
@@ -72,6 +78,10 @@ public class DriveTrain {
 
     /**
      * Adjust motor speeds according to joystick input.
+     *
+     * @param xcomponent x component of the joystick
+     * @param ycomponent y component of the joystick
+     * @param rotation rotation of the joystick
      */
     public void mecanumDrive(double xcomponent, double ycomponent, double rotation) {
         mecanumDrive(xcomponent, ycomponent, rotation, 0);
@@ -80,6 +90,11 @@ public class DriveTrain {
     /**
      * Adjust motor speeds according to heading and joystick input.
      * Uses input from the gyroscope to determine field orientation.
+     *
+     * @param xcomponent x component of the joystick
+     * @param ycomponent y component of the joystick
+     * @param rotation rotation of the joystick
+     * @param gyroAngle gyroscope angle
      */
     public void mecanumDrive(double xcomponent, double ycomponent,
                              double rotation, double gyroAngle) {
@@ -109,9 +124,9 @@ public class DriveTrain {
     }
 
     /**
-     * Moves motors a certain distance.
+     * Move motors a certain distance.
      *
-     * @param dist Distance to move
+     * @param dist distance
      */
     public void moveDistance(double dist) {
         double encchange = dist * DIST_TO_ENC;
@@ -140,10 +155,10 @@ public class DriveTrain {
     /**
      * Turn all wheels at set speeds
      *
-     * @param fl Speed for Front Left Wheel
-     * @param fr Speed for Front Right Wheel
-     * @param bl Speed for Back Left Wheel
-     * @param br Speed for Back Right Wheel
+     * @param fl speed for front left wheel
+     * @param fr speed for front right wheel
+     * @param bl speed for back left wheel
+     * @param br speed for back right wheel
      */
     public void testMotors(int fl, int fr, int bl, int br) {
         frontLeft.set(fl);
