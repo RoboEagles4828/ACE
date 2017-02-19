@@ -1,9 +1,9 @@
 package org.usfirst.frc.team4828.Vision;
 
 public class Block {
-    public static final int X_CENTER = 319 / 2;
+    static final int X_CENTER = 319 / 2;
     //private static final int Y_CENTER = 199/2;
-    public double angle;
+    double angle;
     private int frame;
     private int block_type;
     private int signature;

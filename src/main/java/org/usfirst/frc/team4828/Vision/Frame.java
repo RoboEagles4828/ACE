@@ -14,7 +14,7 @@ public class Frame {
      * @param data raw string  array of comma separated blocks
      * @param dist current ultrasonic sensor reading
      */
-    public Frame(String[] data, double dist) {
+    Frame(String[] data, double dist) {
         frameData = new ArrayList<>();
         for (String i : data) {
             frameData.add(new Block(i.split(" ")));
@@ -28,7 +28,7 @@ public class Frame {
     /**
      * @return conversion constant pixels -> inches
      */
-    double getPixelConstant() {
+    private double getPixelConstant() {
         if (numBlocks() >= 2) {
             return WIDTH_BETWEEN_TARGET / (Math.abs(frameData.get(0).getX() - frameData.get(1).getX()));
         }

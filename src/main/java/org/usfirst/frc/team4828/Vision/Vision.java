@@ -27,7 +27,7 @@ public class Vision {
         else if(pixy.lastFrame.numBlocks() == 1){
             return pixy.lastFrame.getRealDistance(pixy.lastFrame.getFrameData().get(0).getX() - Block.X_CENTER);
         }
-        return 0;
+        return 1000;
     }
 
     public void terminate() {
