@@ -45,6 +45,10 @@ public class Shooter extends Thread {
         indexerClose = close;
     }
 
+    public void spinUp() {
+        shooterMotor.set(SHOOTER_SPEED * (1 - servos.get() * SERVO_MULTIPLIER));
+    }
+
     /**
      * Start the shooter wheel.
      *
