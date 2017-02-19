@@ -60,17 +60,17 @@ public class Robot extends IterativeRobot {
                 // Place gear on right side
                 drive.moveDistance(-distance);
                 drive.turnDegrees(45, 'L');
-                drive.placeGear();
+                drive.placeGear('R');
                 break;
             case 2:
                 // Place gear on center
-                drive.placeGear();
+                drive.placeGear('M');
                 break;
             case 3:
                 // Place gear on left side
                 drive.moveDistance(distance);
                 drive.turnDegrees(45, 'L');
-                drive.placeGear();
+                drive.placeGear('L');
                 break;
             case 4:
                 // TODO: Shoot 10 fuel and place gear on left side

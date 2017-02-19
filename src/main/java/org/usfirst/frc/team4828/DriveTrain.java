@@ -131,7 +131,19 @@ public class DriveTrain {
         backRight.set(backRight.getEncPosition() + encchange);
     }
 
-    public void placeGear() {
+    public void placeGear(char position) {
+        if (position == 'L') {
+            turnDegrees(45, 'R');
+        } else if (position == 'R') {
+            turnDegrees(315, 'L');
+        } else if (position == 'M') {
+            if (navx.getAngle() > 180) {
+                turnDegrees(0, 'R');
+            } else if (navx.getAngle() <= 180) {
+                turnDegrees(0, 'L');
+            }
+        }
+
 
     }
 
@@ -168,11 +180,10 @@ public class DriveTrain {
     /**
      * Turn a certain amount of degrees
      *
-     * @param degrees   Degrees to turn
+     * @param degrees   Degrees to turn to
      * @param direction Direction to turn in (L or R)
      */
     public void turnDegrees(double degrees, char direction) {
-        double angle = navx.getAngle() + degrees;
         while(navx.getAngle() + TURN_DEADZONE > degrees || navx.getAngle() - TURN_DEADZONE < degrees) {
             turn(TURN_SPEED, direction);
         }
