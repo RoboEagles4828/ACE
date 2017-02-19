@@ -14,9 +14,9 @@ public class Vision {
 
     /**
      *
-     * @return horizontal offset of lift or vision target if only one is detected
+     * @return horizontal offset in inches of lift or vision target, if only one block is detected
      */
-    public double findX() {
+    public double findHorizontalOffset() {
         if (pixy.lastFrame.numBlocks() == 2) {
             return pixy.lastFrame.getRealDistance(((pixy.lastFrame.getFrameData().get(0).getX()
                     + pixy.lastFrame.getFrameData().get(1).getX()) / 2) - Block.X_CENTER);

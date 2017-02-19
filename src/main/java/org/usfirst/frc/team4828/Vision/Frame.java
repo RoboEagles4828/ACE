@@ -26,45 +26,55 @@ public class Frame {
     }
 
     /**
-     *
      * @return conversion constant pixels -> inches
      */
-    public double getPixelConstant() {
+    double getPixelConstant() {
         if (numBlocks() >= 2) {
             return WIDTH_BETWEEN_TARGET / (Math.abs(frameData.get(0).getX() - frameData.get(1).getX()));
         }
         return -1;
     }
 
-    public double getRealDistance(int pixels){
+    double getRealDistance(int pixels) {
         return pixels * getPixelConstant();
     }
 
-    public List<Block> getFrameData() {
+    List<Block> getFrameData() {
         return frameData;
     }
 
-    public int numBlocks() {
+    int numBlocks() {
         return frameData.size();
     }
 
     /**
-     * filter framedata down to 2 blocks
+     * trys to filter frameData down to 2 blocks using various methods
      */
     private void filter() {
-        for (int i = 0; i < frameData.size(); i++) {
-            for (int j = 0; j < frameData.size(); j++) {
-                if (i != j && (Math.abs(frameData.get(i).getX() - frameData.get(j).getX()) < 10)) {
-                    frameData.add(new Block(
-                            frameData.get(i).getFrame(),
-                            frameData.get(i).getBlock_type(),
-                            frameData.get(i).getSignature(),
-                            (frameData.get(i).getX() + frameData.get(j).getX()) / 2,
-                            (frameData.get(i).getY() + frameData.get(j).getY()) / 2,
-                            (frameData.get(i).getWidth() + frameData.get(j).getWidth()) / 2,
-                            frameData.get(i).getHeight() + frameData.get(j).getHeight() / 2));
+        //filter by x coordinate
+        if(numBlocks() > 2) {
+            for (int i = 0; i < frameData.size(); i++) {
+                for (int j = 0; j < frameData.size(); j++) {
+                    if (i != j && (Math.abs(frameData.get(i).getX() - frameData.get(j).getX()) < 10)) {
+                        frameData.add(new Block(
+                                frameData.get(i).getFrame(),
+                                frameData.get(i).getBlock_type(),
+                                frameData.get(i).getSignature(),
+                                (frameData.get(i).getX() + frameData.get(j).getX()) / 2,
+                                (frameData.get(i).getY() + frameData.get(j).getY()) / 2,
+                                (frameData.get(i).getWidth() + frameData.get(j).getWidth()) / 2,
+                                frameData.get(i).getHeight() + frameData.get(j).getHeight() / 2));
+                        frameData.remove(i);
+                        frameData.remove(j);
+                    }
+                }
+            }
+        }
+        //filter by dimensions, accuracy decreases with distance
+        if(numBlocks() > 2){
+            for (int i=0; i<frameData.size(); i++){
+                if(frameData.get(i).getHeight() < frameData.get(i).getWidth()){
                     frameData.remove(i);
-                    frameData.remove(j);
                 }
             }
         }

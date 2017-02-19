@@ -97,7 +97,7 @@ public class Robot extends IterativeRobot {
     @Override
     public void testPeriodic() {
         System.out.println(vision);
-        System.out.println("move: " + vision.findX());
+        System.out.println("move: " + vision.findHorizontalOffset() + " inches");
         Timer.delay(0.1);
     }
 
