@@ -1,5 +1,7 @@
 package org.usfirst.frc.team4828.Vision;
 
+import com.kauailabs.navx.frc.AHRS;
+
 public class Vision {
     private PixyThread pixy;
 

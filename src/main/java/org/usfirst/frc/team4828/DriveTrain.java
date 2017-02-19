@@ -1,14 +1,24 @@
 package org.usfirst.frc.team4828;
 
 import com.ctre.CANTalon;
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SPI;
+
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SPI;
+
 
 public class DriveTrain {
     private CANTalon frontLeft;
     private CANTalon frontRight;
     private CANTalon backLeft;
     private CANTalon backRight;
+    private AHRS navx;
 
     private static final double TWIST_THRESHOLD = 0.15;
+    private static final double DIST_TO_ENC = 1;
+    private static final double TURN_DEADZONE  = 1;
+    private static final double TURN_SPEED = 48;
 
     /**
      * Create drive train object containing mecanum motor functionality.
@@ -22,10 +32,13 @@ public class DriveTrain {
         frontRight = new CANTalon(frontRightPort);
         backLeft = new CANTalon(backLeftPort);
         backRight = new CANTalon(backRightPort);
+
         frontLeft.setPID(0.6, 0, 0);
         frontRight.setPID(0.6, 0, 0);
         backLeft.setPID(0.6, 0, 0);
         backRight.setPID(0.6, 0, 0);
+
+        navx = new AHRS(SPI.Port.kMXP);
     }
 
     public DriveTrain(){
@@ -56,10 +69,10 @@ public class DriveTrain {
      *
      * @param xcomponent X component of the vector
      * @param ycomponent Y component of the vector
-     * @param angle      Angle by which to rotate the vector
      * @return The resultant vector as a double[2]
      */
-    public static double[] rotateVector(double xcomponent, double ycomponent, double angle) {
+    public double[] rotateVector(double xcomponent, double ycomponent) {
+        double angle = navx.getAngle();
         double cosA = Math.cos(angle * (3.14159 / 180.0));
         double sinA = Math.sin(angle * (3.14159 / 180.0));
         double[] out = new double[2];
@@ -69,18 +82,11 @@ public class DriveTrain {
     }
 
     /**
-     * Adjust motor speeds according to joystick input.
-     */
-    public void mecanumDrive(double xcomponent, double ycomponent, double rotation) {
-        mecanumDrive(xcomponent, ycomponent, rotation, 0);
-    }
-
-    /**
      * Adjust motor speeds according to heading and joystick input.
      * Uses input from the gyroscope to determine field orientation.
      */
     public void mecanumDrive(double xcomponent, double ycomponent,
-                             double rotation, double gyroAngle) {
+                             double rotation) {
         // Ignore tiny inadvertent joystick rotations
         if (Math.abs(rotation) <= TWIST_THRESHOLD) {
             rotation = 0.0;
@@ -89,7 +95,7 @@ public class DriveTrain {
         // Negate y for the joystick.
         ycomponent = -ycomponent;
         // Compensate for gyro angle.
-        double[] rotated = rotateVector(xcomponent, ycomponent, gyroAngle);
+        double[] rotated = rotateVector(xcomponent, ycomponent);
         xcomponent = rotated[0];
         ycomponent = rotated[1];
 
@@ -107,6 +113,41 @@ public class DriveTrain {
     }
 
     /**
+     * Moves motors a certain distance.
+     *
+     * @param dist Distance to move
+     */
+    public void moveDistance(double dist) {
+        double encchange = dist * DIST_TO_ENC;
+
+        frontLeft.changeControlMode(CANTalon.TalonControlMode.Position);
+        frontRight.changeControlMode(CANTalon.TalonControlMode.Position);
+        backLeft.changeControlMode(CANTalon.TalonControlMode.Position);
+        backRight.changeControlMode(CANTalon.TalonControlMode.Position);
+
+        frontLeft.set(frontLeft.getEncPosition() + encchange);
+        frontRight.set(frontRight.getEncPosition() + encchange);
+        backLeft.set(backLeft.getEncPosition() + encchange);
+        backRight.set(backRight.getEncPosition() + encchange);
+    }
+
+    public void placeGear(char position) {
+        if (position == 'L') {
+            turnDegrees(45, 'R');
+        } else if (position == 'R') {
+            turnDegrees(315, 'L');
+        } else if (position == 'M') {
+            if (navx.getAngle() > 180) {
+                turnDegrees(0, 'R');
+            } else if (navx.getAngle() <= 180) {
+                turnDegrees(0, 'L');
+            }
+        }
+
+
+    }
+
+    /**
      * Turn all wheels slowly for testing purposes.
      */
     public void testMotors() {
@@ -114,6 +155,38 @@ public class DriveTrain {
         frontRight.set(.2);
         backLeft.set(.2);
         backRight.set(.2);
+    }
+
+    /**
+     * Turns at a certain speed and direction.
+     *
+     * @param speed      Speed to turn at
+     * @param direction  Direction to turn in (L or R)
+     */
+    public void turn(double speed, char direction) {
+        if(direction == 'L') {
+            frontLeft.set(speed);
+            backLeft.set(speed);
+            frontRight.set(-speed);
+            backRight.set(-speed);
+        } else if (direction == 'R') {
+            frontLeft.set(-speed);
+            backLeft.set(-speed);
+            frontRight.set(speed);
+            backRight.set(speed);
+        }
+    }
+
+    /**
+     * Turn a certain amount of degrees
+     *
+     * @param degrees   Degrees to turn to
+     * @param direction Direction to turn in (L or R)
+     */
+    public void turnDegrees(double degrees, char direction) {
+        while(navx.getAngle() + TURN_DEADZONE > degrees || navx.getAngle() - TURN_DEADZONE < degrees) {
+            turn(TURN_SPEED, direction);
+        }
     }
 
     /**
@@ -153,5 +226,9 @@ public class DriveTrain {
         frontRight.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
         backRight.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
         backLeft.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+    }
+
+    public void reset() {
+        navx.reset();
     }
 }
