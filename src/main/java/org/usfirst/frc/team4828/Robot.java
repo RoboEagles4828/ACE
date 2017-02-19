@@ -8,6 +8,8 @@ public class Robot extends IterativeRobot {
     private Joystick driveStick;
     private DriveTrain drive;
     private AHRS navx;
+    private DigitalInput ir;
+    private Shooter shoot;
     private Vision vision;
     private DigitalInput[] dipSwitch;
     private int autonSelect;
@@ -27,6 +29,11 @@ public class Robot extends IterativeRobot {
         navx = new AHRS(SPI.Port.kMXP);
         climb = new Climber(7, 8);
         navx = new AHRS(SPI.Port.kMXP);
+        shoot = new Shooter(Ports.MOTOR_LEFT, Ports.INDEXER_LEFT, Ports.SERVO_LEFT_MASTER, Ports.SERVO_LEFT_SLAVE);
+        // Master is the one on the right if you are looking at the back of the shooter
+        shoot.servos.calibrate(1, .3, 0);
+        shoot.servos.calibrate(2, .6, 1);
+
         dipSwitch = new DigitalInput[4];
         dipSwitch[0] = new DigitalInput(Ports.DIPSWITCH_1);
         dipSwitch[1] = new DigitalInput(Ports.DIPSWITCH_2);
@@ -84,18 +91,35 @@ public class Robot extends IterativeRobot {
         if (driveStick.getRawButton(11)) {
             navx.reset();
         }
+        //System.out.println("Angle: " + navx.getAngle());
     }
 
     @Override
     public void testInit() {
         super.testInit();
         System.out.println("Entering test...");
+        shoot.servos.set(.5);
         vision = new Vision(Ports.US_CHANNEL);
         vision.start();
     }
 
     @Override
     public void testPeriodic() {
+        if (driveStick.getRawButton(9)) {
+            System.out.println("RAISING");
+            shoot.servos.raise();
+        }
+        if (driveStick.getRawButton(10)) { //slave  = back left .66 - 1  master .33 - 0
+            System.out.println("LOWERING");
+            shoot.servos.lower();
+        }
+        if (driveStick.getRawButton(11)) {
+            shoot.servos.set(0);
+        }
+        if (driveStick.getRawButton(12)) {
+            shoot.servos.set(1);
+        }
+        System.out.println(shoot.servos);
         System.out.println(vision);
         System.out.println("move: " + vision.findX());
         Timer.delay(0.1);
@@ -103,6 +127,7 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void disabledInit() {
+        System.out.println("Disabling robot");
         if (vision != null) {
             vision.terminate();
         }
