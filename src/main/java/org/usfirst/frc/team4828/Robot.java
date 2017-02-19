@@ -9,7 +9,6 @@ public class Robot extends IterativeRobot {
     private DriveTrain drive;
     private AHRS navx;
     private DigitalInput ir;
-    private UltraThread us;
     private Shooter shoot;
     private Vision vision;
     private DigitalInput[] dipSwitch;
@@ -30,7 +29,6 @@ public class Robot extends IterativeRobot {
         navx = new AHRS(SPI.Port.kMXP);
         climb = new Climber(7, 8);
         navx = new AHRS(SPI.Port.kMXP);
-        us = new UltraThread(Ports.US_CHANNEL);
         shoot = new Shooter(Ports.MOTOR_LEFT, Ports.INDEXER_LEFT, Ports.SERVO_LEFT_MASTER, Ports.SERVO_LEFT_SLAVE);
         // Master is the one on the right if you are looking at the back of the shooter
         shoot.servos.calibrate(1, .3, 0);
