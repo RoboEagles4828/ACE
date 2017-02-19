@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Frame {
-    //8.5 in between targets
-    private static final double WIDTH_BETWEEN_TARGET = 8.5;
+    //8.25 in between targets
+    private static final double WIDTH_BETWEEN_TARGET = 8.25;
     private List<Block> frameData;
 
     /**

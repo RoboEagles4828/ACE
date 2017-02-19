@@ -1,7 +1,5 @@
 package org.usfirst.frc.team4828.Vision;
 
-import com.kauailabs.navx.frc.AHRS;
-
 public class Vision {
     public PixyThread pixy;
 
@@ -15,8 +13,7 @@ public class Vision {
     }
 
     /**
-     *
-     * @return horizontal offset in inches of lift or vision target, if only one block is detected
+     * @return horizontal offset in inches of lift or vision target from camera, if only one block is detected
      */
     public double findHorizontalOffset() {
         if (pixy.lastFrame.numBlocks() == 2) {
@@ -24,9 +21,10 @@ public class Vision {
                     + pixy.lastFrame.getFrameData().get(1).getX()) / 2) - Block.X_CENTER);
         }
         //if only one vision target is detected
-        else if(pixy.lastFrame.numBlocks() == 1){
+        else if (pixy.lastFrame.numBlocks() == 1) {
             return pixy.lastFrame.getRealDistance(pixy.lastFrame.getFrameData().get(0).getX() - Block.X_CENTER);
         }
+        //if no vision targets are detected
         return 1000;
     }
 

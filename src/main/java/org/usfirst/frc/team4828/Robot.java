@@ -127,7 +127,7 @@ public class Robot extends IterativeRobot {
         System.out.println("Disabling robot");
         if (vision != null) {
             vision.terminate();
+            System.out.println("Stopping thread");
         }
-        System.out.println("Stopping thread");
     }
 }
