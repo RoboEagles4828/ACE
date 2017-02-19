@@ -131,6 +131,10 @@ public class DriveTrain {
         backRight.set(backRight.getEncPosition() + encchange);
     }
 
+    public void placeGear() {
+
+    }
+
     /**
      * Turn all wheels slowly for testing purposes.
      */

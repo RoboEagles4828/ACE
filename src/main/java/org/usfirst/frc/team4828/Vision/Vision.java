@@ -1,5 +1,7 @@
 package org.usfirst.frc.team4828.Vision;
 
+import com.kauailabs.navx.frc.AHRS;
+
 public class Vision {
     private PixyThread pixy;
 
@@ -18,10 +20,6 @@ public class Vision {
                     + pixy.lastFrame.getFrameData().get(1).getX()) / 2) - Block.X_CENTER);
         }
         return 0;
-    }
-    
-    public void placeGear() {
-        System.out.println("Placed Gear");
     }
 
     public void terminate() {
