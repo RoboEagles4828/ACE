@@ -14,10 +14,18 @@ public class Vision {
         pixy = new PixyThread(port);
     }
 
-    public double findX() {
+    /**
+     *
+     * @return horizontal offset in inches of lift or vision target, if only one block is detected
+     */
+    public double findHorizontalOffset() {
         if (pixy.lastFrame.numBlocks() == 2) {
             return pixy.lastFrame.getRealDistance(((pixy.lastFrame.getFrameData().get(0).getX()
                     + pixy.lastFrame.getFrameData().get(1).getX()) / 2) - Block.X_CENTER);
+        }
+        //if only one vision target is detected
+        else if(pixy.lastFrame.numBlocks() == 1){
+            return pixy.lastFrame.getRealDistance(pixy.lastFrame.getFrameData().get(0).getX() - Block.X_CENTER);
         }
         return 0;
     }

@@ -112,6 +112,10 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void testPeriodic() {
+//         System.out.println(vision);
+//         System.out.println("move: " + vision.findHorizontalOffset() + " inches");
+//         Timer.delay(0.1);
+
 //        System.out.println("Ultrasonic Dist: " + us.distIn + " inches");
 //        Timer.delay(0.1);
 //        drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
