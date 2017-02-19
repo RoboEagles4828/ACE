@@ -25,8 +25,8 @@ public class Ports {
     public static final int INDEXER_LEFT = 11;  // use port 1 on the navx as port 11
 
     // Sensors
-    public static final int IR_CHANNEL = 2;
-    public static final int US_CHANNEL = 0; // Analog
+    public static final int US_CHANNEL = 0;
+    public static final int PIXY_CHANNEL = 1;
 
     // Switch
     public static final int DIPSWITCH_1 = 6;

@@ -20,6 +20,10 @@ public class Vision {
         return 0;
     }
 
+    public void placeGear() {
+        System.out.println("Placed Gear");
+    }
+
     public void terminate() {
         pixy.terminate();
     }
