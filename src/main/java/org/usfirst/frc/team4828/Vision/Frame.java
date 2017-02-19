@@ -25,6 +25,10 @@ public class Frame {
         }
     }
 
+    /**
+     *
+     * @return conversion constant pixels -> inches
+     */
     public double getPixelConstant() {
         if (numBlocks() >= 2) {
             return WIDTH_BETWEEN_TARGET / (Math.abs(frameData.get(0).getX() - frameData.get(1).getX()));
@@ -44,6 +48,9 @@ public class Frame {
         return frameData.size();
     }
 
+    /**
+     * filter framedata down to 2 blocks
+     */
     private void filter() {
         for (int i = 0; i < frameData.size(); i++) {
             for (int j = 0; j < frameData.size(); j++) {

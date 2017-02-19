@@ -12,10 +12,18 @@ public class Vision {
         pixy = new PixyThread(port);
     }
 
+    /**
+     *
+     * @return horizontal offset of lift or vision target if only one is detected
+     */
     public double findX() {
         if (pixy.lastFrame.numBlocks() == 2) {
             return pixy.lastFrame.getRealDistance(((pixy.lastFrame.getFrameData().get(0).getX()
                     + pixy.lastFrame.getFrameData().get(1).getX()) / 2) - Block.X_CENTER);
+        }
+        //if only one vision target is detected
+        else if(pixy.lastFrame.numBlocks() == 1){
+            return pixy.lastFrame.getRealDistance(pixy.lastFrame.getFrameData().get(0).getX() - Block.X_CENTER);
         }
         return 0;
     }

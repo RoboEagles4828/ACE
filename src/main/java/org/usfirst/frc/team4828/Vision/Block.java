@@ -27,6 +27,17 @@ public class Block {
         height = Integer.parseInt(data[6]);
     }
 
+    /**
+     * Create block object storing relevant fields
+     *
+     * @param frame
+     * @param block_type
+     * @param signature
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     */
     public Block(int frame, int block_type, int signature, int x, int y, int width, int height) {
         this.frame = frame;
         this.block_type = block_type;
@@ -57,6 +68,12 @@ public class Block {
         return height;
     }
 
+    /**
+     *
+     * @param pixelConstant conversion constant pixels -> inches
+     * @param distance distance to wall in inches from ultrasonic sensor
+     * @return angle to detected block
+     */
     public double computeAngle(double pixelConstant, double distance) {
         double horizontalDistance = (x - X_CENTER) * pixelConstant;
         return Math.toDegrees(Math.atan(horizontalDistance / distance));
