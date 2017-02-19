@@ -141,6 +141,9 @@ public class PixyThread extends Thread {
     }
 
     public String toString() {
-        return lastFrame.toString();
+        if(lastFrame != null) {
+            return lastFrame.toString();
+        }
+        else{return currentFrame.toString();}
     }
 }
