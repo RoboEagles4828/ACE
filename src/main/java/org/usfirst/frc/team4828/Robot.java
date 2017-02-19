@@ -64,7 +64,6 @@ public class Robot extends IterativeRobot {
                 break;
             case 2:
                 // Place gear on center
-                drive.moveDistance(distance);
                 vision.placeGear();
                 break;
             case 3:
