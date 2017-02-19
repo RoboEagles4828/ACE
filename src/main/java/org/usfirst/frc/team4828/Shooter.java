@@ -34,6 +34,12 @@ public class Shooter extends Thread {
         servos = new ServoGroup(masterPort, slavePort);
     }
 
+    /**
+     * Calibrates the indexer
+     *
+     * @param open double 0-1 open position
+     * @param close double 0-1 close position
+     */
     public void calibrateIndexer(double open, double close){
         indexerOpen = open;
         indexerClose = close;

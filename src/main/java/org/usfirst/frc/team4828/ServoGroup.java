@@ -11,6 +11,12 @@ public class ServoGroup {
     private double[] slaveRange;
     private double position;
 
+    /**
+     * Creates a ServoGroup with the given ports
+     *
+     * @param masterPort port of the master servo
+     * @param slavePort port of the slave servo
+     */
     ServoGroup(int masterPort, int slavePort) {
         master = new Servo(masterPort);
         slave = new Servo(slavePort);
@@ -18,6 +24,16 @@ public class ServoGroup {
         slaveRange = new double[2];
     }
 
+    /**
+     * Creates a ServoGroup with the given ports and range values
+     *
+     * @param masterPort port of the master servo
+     * @param slavePort port of the slave servo
+     * @param masterMin minimum position of the master servo
+     * @param masterMax maximum position of the master servo
+     * @param slaveMin minimum position of the slave servo
+     * @param slaveMax maximum position of the slave servo
+     */
     ServoGroup(int masterPort, int slavePort, double masterMin, double masterMax, double slaveMin, double slaveMax) {
         master = new Servo(masterPort);
         slave = new Servo(slavePort);
