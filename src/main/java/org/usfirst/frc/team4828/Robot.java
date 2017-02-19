@@ -51,18 +51,27 @@ public class Robot extends IterativeRobot {
     @Override
     public void autonomousPeriodic() {
         super.autonomousPeriodic();
+        double distance = 93.3;
         switch (autonSelect) {
             case 0:
                 // TODO: Shoot 10 fuel
                 break;
             case 1:
-                // TODO: Place gear on right side
+                // Place gear on right side
+                drive.moveDistance(-distance);
+                drive.turnDegrees(45, 'L');
+                vision.placeGear();
                 break;
             case 2:
-                // TODO: Place gear on center
+                // Place gear on center
+                drive.moveDistance(distance);
+                vision.placeGear();
                 break;
             case 3:
-                // TODO: Place gear on left side
+                // Place gear on left side
+                drive.moveDistance(distance);
+                drive.turnDegrees(45, 'L');
+                vision.placeGear();
                 break;
             case 4:
                 // TODO: Shoot 10 fuel and place gear on left side
