@@ -4,6 +4,10 @@ import com.ctre.CANTalon;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SPI;
+
+
 public class DriveTrain {
     private CANTalon frontLeft;
     private CANTalon frontRight;
@@ -12,6 +16,7 @@ public class DriveTrain {
     private AHRS navx;
 
     private static final double TWIST_THRESHOLD = 0.15;
+    private static final double DIST_TO_ENC = 1;
     private static final double TURN_DEADZONE  = 1;
     private static final double TURN_SPEED = 48;
 
@@ -27,6 +32,7 @@ public class DriveTrain {
         frontRight = new CANTalon(frontRightPort);
         backLeft = new CANTalon(backLeftPort);
         backRight = new CANTalon(backRightPort);
+
         frontLeft.setPID(0.6, 0, 0);
         frontRight.setPID(0.6, 0, 0);
         backLeft.setPID(0.6, 0, 0);
@@ -104,6 +110,25 @@ public class DriveTrain {
         frontRight.set(wheelSpeeds[1]);
         backLeft.set(wheelSpeeds[2]);
         backRight.set(wheelSpeeds[3]);
+    }
+
+    /**
+     * Moves motors a certain distance.
+     *
+     * @param dist Distance to move
+     */
+    public void moveDistance(double dist) {
+        double encchange = dist * DIST_TO_ENC;
+
+        frontLeft.changeControlMode(CANTalon.TalonControlMode.Position);
+        frontRight.changeControlMode(CANTalon.TalonControlMode.Position);
+        backLeft.changeControlMode(CANTalon.TalonControlMode.Position);
+        backRight.changeControlMode(CANTalon.TalonControlMode.Position);
+
+        frontLeft.set(frontLeft.getEncPosition() + encchange);
+        frontRight.set(frontRight.getEncPosition() + encchange);
+        backLeft.set(backLeft.getEncPosition() + encchange);
+        backRight.set(backRight.getEncPosition() + encchange);
     }
 
     /**

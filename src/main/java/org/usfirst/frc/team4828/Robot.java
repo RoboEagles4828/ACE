@@ -6,6 +6,8 @@ import org.usfirst.frc.team4828.Vision.Vision;
 public class Robot extends IterativeRobot {
     private Joystick driveStick;
     private DriveTrain drive;
+    private DigitalInput ir;
+    private Shooter shoot;
     private Vision vision;
     private DigitalInput[] dipSwitch;
     private int autonSelect;
@@ -23,6 +25,12 @@ public class Robot extends IterativeRobot {
                 Ports.DT_BACK_RIGHT
         );*/
         climb = new Climber(7, 8);
+
+        shoot = new Shooter(Ports.MOTOR_LEFT, Ports.INDEXER_LEFT, Ports.SERVO_LEFT_MASTER, Ports.SERVO_LEFT_SLAVE);
+        // Master is the one on the right if you are looking at the back of the shooter
+        shoot.servos.calibrate(1, .3, 0);
+        shoot.servos.calibrate(2, .6, 1);
+
         dipSwitch = new DigitalInput[4];
         dipSwitch[0] = new DigitalInput(Ports.DIPSWITCH_1);
         dipSwitch[1] = new DigitalInput(Ports.DIPSWITCH_2);
@@ -81,25 +89,53 @@ public class Robot extends IterativeRobot {
         if (driveStick.getRawButton(11)) {
             drive.reset();
         }
+        //System.out.println("Angle: " + navx.getAngle());
     }
 
     @Override
     public void testInit() {
         super.testInit();
         System.out.println("Entering test...");
+
         vision = new Vision(Ports.PIXY_CHANNEL);
+
         vision.start();
     }
 
     @Override
     public void testPeriodic() {
-        System.out.println(vision);
-        Timer.delay(0.1);
+//        System.out.println("Ultrasonic Dist: " + us.distIn + " inches");
+//        Timer.delay(0.1);
+//        drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
+//        Timer.delay(0.1);
+        drive.moveDistance(1000);
+        Timer.delay(1);
+        drive.moveDistance(-1000);
+        Timer.delay(1);
+//         if (driveStick.getRawButton(9)) {
+//             System.out.println("RAISING");
+//             shoot.servos.raise();
+//         }
+//         if (driveStick.getRawButton(10)) { //slave  = back left .66 - 1  master .33 - 0
+//             System.out.println("LOWERING");
+//             shoot.servos.lower();
+//         }
+//         if (driveStick.getRawButton(11)) {
+//             shoot.servos.set(0);
+//         }
+//         if (driveStick.getRawButton(12)) {
+//             shoot.servos.set(1);
+//         }
+//         System.out.println(shoot.servos);
+//         System.out.println(vision);
+//         System.out.println("move: " + vision.findX());
+//         Timer.delay(0.1);
     }
 
     @Override
     public void disabledInit() {
-        if(vision != null) {
+        System.out.println("Disabling robot");
+        if (vision != null) {
             vision.terminate();
         }
         System.out.println("Stopping thread");
