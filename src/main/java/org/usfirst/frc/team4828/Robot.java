@@ -59,7 +59,6 @@ public class Robot extends IterativeRobot {
             case 1:
                 // Place gear on right side
                 drive.moveDistance(-distance);
-                drive.turnDegrees(45, 'L');
                 drive.placeGear('R', vision);
                 break;
             case 2:
@@ -69,7 +68,6 @@ public class Robot extends IterativeRobot {
             case 3:
                 // Place gear on left side
                 drive.moveDistance(distance);
-                drive.turnDegrees(45, 'L');
                 drive.placeGear('L', vision);
                 break;
             case 4:

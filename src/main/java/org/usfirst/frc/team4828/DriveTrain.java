@@ -136,9 +136,9 @@ public class DriveTrain {
     }
 
     public void placeGear(char position, Vision vision) {
-        if (position == 'L') {
+        if (position == 'R') {
             turnDegrees(45, 'R');
-        } else if (position == 'R') {
+        } else if (position == 'L') {
             turnDegrees(315, 'L');
         } else if (position == 'M') {
             if (navx.getAngle() > 180) {
