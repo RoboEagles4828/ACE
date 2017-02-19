@@ -28,29 +28,54 @@ public class ServoGroup {
         position = 0;
     }
 
+    /**
+     * Raises the servos by a given step size
+     *
+     * @param step double step size
+     */
     public void raise(double step) {
         set(position + step);
     }
 
+    /**
+     * Raises the servos by the default step size
+     */
     public void raise() {
         raise(STEP_SIZE);
     }
 
+    /**
+     * Lowers the servos by a given step size
+     *
+     * @param step double step size
+     */
     public void lower(double step) {
         set(position - step);
     }
 
+    /**
+     * Lowers the servos by the default step size
+     */
     public void lower() {
         lower(STEP_SIZE);
     }
 
-
+    /**
+     * Set the servos' position
+     *
+     * @param pos double 0-1 relative position within range
+     */
     public void set(double pos) {
         position = pos;
         master.set((masterRange[1] - masterRange[0]) * position + masterRange[0]);
         slave.set((slaveRange[1] - slaveRange[0]) * position + slaveRange[0]);
     }
 
+    /**
+     * Returns the current position
+     *
+     * @return double position
+     */
     public double get() {
         return position;
     }
@@ -58,7 +83,7 @@ public class ServoGroup {
     /**
      * Configure the servos' range of motion.
      *
-     * @param sel 0 = master 1 = slave
+     * @param sel 1 = master, 2 = slave
      * @param min double lowest angle
      * @param max double highest angle
      */
@@ -72,6 +97,11 @@ public class ServoGroup {
         }
     }
 
+    /**
+     * Returns a String stating the position of each servo
+     *
+     * @return String
+     */
     public String toString() {
         return "Master: " + master.get() + " Slave: " + slave.get();
     }
