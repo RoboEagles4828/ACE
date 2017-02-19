@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj.SPI;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
+import org.usfirst.frc.team4828.Vision.PixyThread;
+import org.usfirst.frc.team4828.Vision.Vision;
 
 
 public class DriveTrain {
@@ -19,6 +21,8 @@ public class DriveTrain {
     private static final double DIST_TO_ENC = 1;
     private static final double TURN_DEADZONE  = 1;
     private static final double TURN_SPEED = 48;
+    private static final double VISION_DEADZONE = 0.5;
+    private static final double PLACING_DIST= 2;
 
     /**
      * Create drive train object containing mecanum motor functionality.
@@ -131,7 +135,7 @@ public class DriveTrain {
         backRight.set(backRight.getEncPosition() + encchange);
     }
 
-    public void placeGear(char position) {
+    public void placeGear(char position, Vision vision) {
         if (position == 'L') {
             turnDegrees(45, 'R');
         } else if (position == 'R') {
@@ -144,7 +148,14 @@ public class DriveTrain {
             }
         }
 
-
+        double offset = vision.findHorizontalOffset();
+        while(offset <= VISION_DEADZONE) {
+            offset = vision.findHorizontalOffset();
+            moveDistance(offset);
+        }
+        while(vision.pixy.getDistIn() >= PLACING_DIST) {
+            mecanumDrive(0.5, 0, 0);
+        }
     }
 
     /**

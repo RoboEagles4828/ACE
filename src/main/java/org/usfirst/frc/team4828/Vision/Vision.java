@@ -3,7 +3,7 @@ package org.usfirst.frc.team4828.Vision;
 import com.kauailabs.navx.frc.AHRS;
 
 public class Vision {
-    private PixyThread pixy;
+    public PixyThread pixy;
 
     /**
      * Create an object encapsulating the vision and ultrasonic thread.
