@@ -1,6 +1,8 @@
 package org.usfirst.frc.team4828.Vision;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Frame {
@@ -78,8 +80,16 @@ public class Frame {
                 }
             }
         }
+        //nuclear option, return all but two largest blocks
+        if(numBlocks() > 2){
+            frameData.sort((a, b) -> a.compare(b, a));
+        }
+        for (int i = 2; i<frameData.size(); i++){
+            frameData.remove(i);
+        }
     }
 
+    @Override
     public String toString() {
         if (numBlocks() == 0) {
             return "NO BLOCKS DETECTED";

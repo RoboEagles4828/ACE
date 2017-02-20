@@ -36,6 +36,7 @@ public class Vision {
         pixy.start();
     }
 
+    @Override
     public String toString() {
         return pixy.toString();
     }

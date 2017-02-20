@@ -1,6 +1,8 @@
 package org.usfirst.frc.team4828.Vision;
 
-public class Block {
+import java.util.Comparator;
+
+public class Block implements Comparator<Block> {
     static final int X_CENTER = 319 / 2;
     //private static final int Y_CENTER = 199/2;
     double angle;
@@ -89,5 +91,18 @@ public class Block {
 
      double getAngle() {
         return angle;
+    }
+
+    @Override
+    public int compare(Block o1, Block o2) {
+        if((o1.getHeight() * o1.getWidth()) < (o2.getHeight() * o2.getWidth())){
+            return -1;
+        }
+        else if((o1.getHeight() * o1.getWidth()) > (o2.getHeight() * o2.getWidth())){
+            return 1;
+        }
+        else{
+            return 0;
+        }
     }
 }
