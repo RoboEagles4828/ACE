@@ -15,7 +15,7 @@ public class Vision {
     /**
      * @return horizontal offset in inches of lift or vision target from camera, if only one block is detected
      */
-    public double findHorizontalOffset() {
+    public double horizontalOffset() {
         if (pixy.lastFrame.numBlocks() == 2) {
             return pixy.lastFrame.getRealDistance(((pixy.lastFrame.getFrameData().get(0).getX()
                     + pixy.lastFrame.getFrameData().get(1).getX()) / 2) - Block.X_CENTER);
@@ -26,6 +26,13 @@ public class Vision {
         }
         //if no vision targets are detected
         return 1000;
+    }
+
+    /**
+     * @return distance from robot to the end of the peg inches
+     */
+    public double transverseOffset() {
+        return pixy.getDistIn() - 10.5;
     }
 
     public void terminate() {
