@@ -143,7 +143,8 @@ public class DriveTrain {
         } else if (position == 'M') {
             if (navx.getAngle() > 180) {
                 turnDegrees(0, 'R');
-            } else if (navx.getAngle() <= 180) {
+            }
+            else if (navx.getAngle() <= 180) {
                 turnDegrees(0, 'L');
             }
         }

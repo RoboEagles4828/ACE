@@ -60,6 +60,8 @@ public class Robot extends IterativeRobot {
         switch (autonSelect) {
             case 0:
                 // TODO: Shoot 10 fuel
+                shoot.startShooter();
+                shoot.spinUp(); //add speed here?
                 break;
             case 1:
                 // Place gear on right side
