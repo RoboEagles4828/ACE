@@ -113,7 +113,7 @@ public class PixyThread extends Thread {
                     soc = new Socket(HOST, PORT);
                     in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
                     scanning = false;
-                } catch (Exception e) {
+                } catch (IOException e) {
                     System.out.println("Connect failed, waiting and trying again");
                     try {
                         Thread.sleep(1000);
