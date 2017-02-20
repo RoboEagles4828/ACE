@@ -25,7 +25,7 @@ public class Hopper {
     }
 
     /**
-     * Start stirring the hopper
+     * Start stirring the hopper.
      */
     public void stir(){
         leftMotor.set(AGITATOR_SPEED);
@@ -33,7 +33,7 @@ public class Hopper {
     }
 
     /**
-     * Stop stirring the hopper
+     * Stop stirring the hopper.
      */
     public void stopStir(){
         leftMotor.set(0);
@@ -41,14 +41,14 @@ public class Hopper {
     }
 
     /**
-     * Start the intake
+     * Start the intake.
      */
     public void intake(){
         intakeMotor.set(INTAKE_SPEED);
     }
 
     /**
-     * Stop the intake
+     * Stop the intake.
      */
     public void stopIntake(){
         intakeMotor.set(0);

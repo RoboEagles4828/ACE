@@ -32,7 +32,7 @@ public class DriveTrain {
     }
 
     /**
-     * Test drive train object
+     * Test drive train object.
      */
     public DriveTrain(){
         //for testing purposes
@@ -40,7 +40,7 @@ public class DriveTrain {
     }
 
     /**
-     * Ensure that wheel speeds are valid numbers
+     * Ensure that wheel speeds are valid numbers.
      *
      * @param wheelSpeeds wheel speeds
      */
@@ -153,7 +153,7 @@ public class DriveTrain {
     }
 
     /**
-     * Turn all wheels at set speeds
+     * Turn all wheels at set speeds.
      *
      * @param fl speed for front left wheel
      * @param fr speed for front right wheel
@@ -168,7 +168,7 @@ public class DriveTrain {
     }
 
     /**
-     * Use PID to lock the robot in its current position
+     * Use PID to lock the robot in its current position.
      */
     public void lock(){
         frontLeft.changeControlMode(CANTalon.TalonControlMode.Position);
@@ -182,7 +182,7 @@ public class DriveTrain {
     }
 
     /**
-     * Set the motors back to normal speed control
+     * Set the motors back to normal speed control.
      */
     public void unlock(){
         frontLeft.changeControlMode(CANTalon.TalonControlMode.PercentVbus);

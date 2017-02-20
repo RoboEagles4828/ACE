@@ -21,7 +21,7 @@ public class Climber {
     }
 
     /**
-     * Raise the robot at a given speed
+     * Raise the robot at a given speed.
      *
      * @param speed double speed
      */
@@ -31,7 +31,7 @@ public class Climber {
     }
 
     /**
-     * Raise the robot at the default speed
+     * Raise the robot at the default speed.
      */
     public void raise(){
         climberMotor1.set(RAISE_SPEED);
@@ -39,7 +39,7 @@ public class Climber {
     }
 
     /**
-     * Lower the robot at a given speed
+     * Lower the robot at a given speed.
      *
      * @param speed double speed (positive)
      */
@@ -49,7 +49,7 @@ public class Climber {
     }
 
     /**
-     * Lower the robot at the default speed
+     * Lower the robot at the default speed.
      */
     public void lower(){
         climberMotor1.set(LOWER_SPEED);
@@ -57,7 +57,7 @@ public class Climber {
     }
 
     /**
-     * Stop raising or lowering the robot
+     * Stop raising or lowering the robot.
      */
     public void stop(){
         climberMotor1.set(0);
