@@ -147,13 +147,11 @@ public class DriveTrain {
                 turnDegrees(0, 'L');
             }
         }
-
-        double offset = vision.horizontalOffset();
-        while(offset <= VISION_DEADZONE) {
-            offset = vision.horizontalOffset();
-            moveDistance(offset);
+        
+        while(vision.horizontalOffset() <= VISION_DEADZONE) {
+            moveDistance(vision.horizontalOffset());
         }
-        while(vision.pixy.getDistIn() >= PLACING_DIST) {
+        while(vision.transverseOffset() >= PLACING_DIST) {
             mecanumDrive(0.5, 0, 0);
         }
         mecanumDrive(0, 0, 0);
