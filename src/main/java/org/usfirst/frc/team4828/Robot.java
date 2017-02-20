@@ -1,6 +1,9 @@
 package org.usfirst.frc.team4828;
 
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import org.usfirst.frc.team4828.Vision.Vision;
 
 public class Robot extends IterativeRobot {

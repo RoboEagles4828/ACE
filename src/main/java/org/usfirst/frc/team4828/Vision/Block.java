@@ -1,8 +1,6 @@
 package org.usfirst.frc.team4828.Vision;
 
-import java.util.Comparator;
-
-public class Block implements Comparator<Block> {
+public class Block {
     static final int X_CENTER = 319 / 2;
     //private static final int Y_CENTER = 199/2;
     double angle;
@@ -32,13 +30,13 @@ public class Block implements Comparator<Block> {
     /**
      * Create block object storing relevant fields
      *
-     * @param frame frame pixy
-     * @param block_type  from pixy
-     * @param signature from pixy
-     * @param x in pixels
-     * @param y in pixels
-     * @param width of block
-     * @param height of block
+     * @param frame      frame pixy
+     * @param block_type from pixy
+     * @param signature  from pixy
+     * @param x          in pixels
+     * @param y          in pixels
+     * @param width      of block
+     * @param height     of block
      */
     Block(int frame, int block_type, int signature, int x, int y, int width, int height) {
         this.frame = frame;
@@ -50,59 +48,49 @@ public class Block implements Comparator<Block> {
         this.height = height;
     }
 
-     int getFrame() {
+    int getArea() {
+        return width * height;
+    }
+
+    int getFrame() {
         return frame;
     }
 
-     int getBlock_type() {
+    int getBlock_type() {
         return block_type;
     }
 
-     int getSignature() {
+    int getSignature() {
         return signature;
     }
 
-     int getWidth() {
+    int getWidth() {
         return width;
     }
 
-     int getHeight() {
+    int getHeight() {
         return height;
     }
 
     /**
-     *
      * @param pixelConstant conversion constant pixels -> inches
-     * @param distance distance to wall in inches from ultrasonic sensor
+     * @param distance      distance to wall in inches from ultrasonic sensor
      * @return angle to detected block
      */
-     double computeAngle(double pixelConstant, double distance) {
+    double computeAngle(double pixelConstant, double distance) {
         double horizontalDistance = (x - X_CENTER) * pixelConstant;
         return Math.toDegrees(Math.atan(horizontalDistance / distance));
     }
 
-     int getX() {
+    int getX() {
         return x;
     }
 
-     int getY() {
+    int getY() {
         return y;
     }
 
-     double getAngle() {
+    double getAngle() {
         return angle;
-    }
-
-    @Override
-    public int compare(Block o1, Block o2) {
-        if((o1.getHeight() * o1.getWidth()) < (o2.getHeight() * o2.getWidth())){
-            return -1;
-        }
-        else if((o1.getHeight() * o1.getWidth()) > (o2.getHeight() * o2.getWidth())){
-            return 1;
-        }
-        else{
-            return 0;
-        }
     }
 }

@@ -1,7 +1,6 @@
 package org.usfirst.frc.team4828.Vision;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -50,11 +49,11 @@ public class Frame {
     }
 
     /**
-     * trys to filter frameData down to 2 blocks using various methods
+     * tries to filter frameData down to 2 blocks using various methods
      */
     private void filter() {
         //filter by x coordinate
-        if(numBlocks() > 2) {
+        if (numBlocks() > 2) {
             for (int i = 0; i < frameData.size(); i++) {
                 for (int j = 0; j < frameData.size(); j++) {
                     if (i != j && (Math.abs(frameData.get(i).getX() - frameData.get(j).getX()) < 10)) {
@@ -72,20 +71,20 @@ public class Frame {
                 }
             }
         }
-        //filter by dimensions, accuracy decreases with distance
-        if(numBlocks() > 2){
-            for (int i=0; i<frameData.size(); i++){
-                if(frameData.get(i).getHeight() < frameData.get(i).getWidth()){
+        //filter by dimensions, accuracy decreases with distance to target
+        if (numBlocks() > 2) {
+            for (int i = 0; i < frameData.size(); i++) {
+                if (frameData.get(i).getHeight() < frameData.get(i).getWidth()) {
                     frameData.remove(i);
                 }
             }
         }
-        //nuclear option, return all but two largest blocks
-        if(numBlocks() > 2){
-            frameData.sort((a, b) -> a.compare(b, a));
-        }
-        for (int i = 2; i<frameData.size(); i++){
-            frameData.remove(i);
+        //nuclear option, remove all but two largest blocks
+        if (numBlocks() > 2) {
+            frameData.sort(Comparator.comparing(Block::getArea));
+            for (int i = 0; i < frameData.size() - 2; i++) {
+                frameData.remove(i);
+            }
         }
     }
 

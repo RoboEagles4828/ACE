@@ -142,9 +142,10 @@ public class PixyThread extends Thread {
 
     @Override
     public String toString() {
-        if(lastFrame != null) {
+        if (lastFrame != null) {
             return lastFrame.toString();
+        } else {
+            return currentFrame.toString();
         }
-        else{return currentFrame.toString();}
     }
 }
