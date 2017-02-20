@@ -148,14 +148,15 @@ public class DriveTrain {
             }
         }
 
-        double offset = vision.findHorizontalOffset();
+        double offset = vision.horizontalOffset();
         while(offset <= VISION_DEADZONE) {
-            offset = vision.findHorizontalOffset();
+            offset = vision.horizontalOffset();
             moveDistance(offset);
         }
         while(vision.pixy.getDistIn() >= PLACING_DIST) {
             mecanumDrive(0.5, 0, 0);
         }
+        mecanumDrive(0, 0, 0);
     }
 
     /**

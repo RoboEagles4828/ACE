@@ -120,7 +120,7 @@ public class Robot extends IterativeRobot {
         drive.moveDistance(-1000);
         Timer.delay(1);
         System.out.println(vision);
-        System.out.println("Move " + vision.findHorizontalOffset() + " inches");
+        System.out.println("Move " + vision.horizontalOffset() + " inches");
     }
 
     @Override
