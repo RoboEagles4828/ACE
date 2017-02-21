@@ -27,6 +27,7 @@ public class Ports {
     // Sensors
     public static final int IR_CHANNEL = 2;
     public static final int US_CHANNEL = 0; // Analog
+    public static final int HALLEFFECT_PORT = 0;
 
     // Switch
     public static final int DIPSWITCH_1 = 6;
