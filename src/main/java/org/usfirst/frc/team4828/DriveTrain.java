@@ -19,17 +19,18 @@ public class DriveTrain {
 
     private static final double TWIST_THRESHOLD = 0.15;
     private static final double DIST_TO_ENC = 1;
-    private static final double TURN_DEADZONE  = 1;
+    private static final double TURN_DEADZONE = 1;
     private static final double TURN_SPEED = 48;
     private static final double VISION_DEADZONE = 0.5;
-    private static final double PLACING_DIST= 2;
+    private static final double PLACING_DIST = 2;
 
     /**
      * Create drive train object containing mecanum motor functionality.
-     * @param frontLeftPort port of the front left motor
-     * @param backLeftPort port of the back left motor
+     *
+     * @param frontLeftPort  port of the front left motor
+     * @param backLeftPort   port of the back left motor
      * @param frontRightPort port of the front right motor
-     * @param backRightPort port of the back right motor
+     * @param backRightPort  port of the back right motor
      */
     public DriveTrain(int frontLeftPort, int backLeftPort, int frontRightPort, int backRightPort) {
         frontLeft = new CANTalon(frontLeftPort);
@@ -45,7 +46,10 @@ public class DriveTrain {
         navx = new AHRS(SPI.Port.kMXP);
     }
 
-    public DriveTrain(){
+    public DriveTrain(boolean gyro) {
+        if (gyro) {
+            navx = new AHRS(SPI.Port.kMXP);
+        }
         //for testing purposes
         System.out.println("Created dummy drivetrain");
     }
@@ -135,32 +139,32 @@ public class DriveTrain {
         backRight.set(backRight.getEncPosition() + encchange);
     }
 
-    public void placeGear(char position, Vision vision) {
-        if (position == 'R') {
-            turnDegrees(45, 'R');
-        } else if (position == 'L') {
-            turnDegrees(315, 'L');
-        } else if (position == 'M') {
-            if (navx.getAngle() > 180) {
-                turnDegrees(0, 'R');
-            }
-            else if (navx.getAngle() <= 180) {
-                turnDegrees(0, 'L');
-            }
+    /**
+     * @param pos    1 = Right, 2 = Middle, 3 = Right
+     * @param vision
+     */
+    public void placeGear(int pos, Vision vision) {
+        if (pos == 1) {
+            turnDegrees(30);
+        } else if (pos == 2) {
+            turnDegrees(90);
+        } else {
+            turnDegrees(150);
         }
-        
-        while(vision.horizontalOffset() <= VISION_DEADZONE) {
+
+        while (vision.horizontalOffset() <= VISION_DEADZONE) {
             moveDistance(vision.horizontalOffset());
         }
-        while(vision.transverseOffset() >= PLACING_DIST) {
+        while (vision.transverseOffset() >= PLACING_DIST) {
             mecanumDrive(0.5, 0, 0);
         }
-        mecanumDrive(0, 0, 0);
+        brake();
     }
 
     /**
      * Turn all wheels slowly for testing purposes.
      */
+
     public void testMotors() {
         frontLeft.set(.2);
         frontRight.set(.2);
@@ -169,34 +173,27 @@ public class DriveTrain {
     }
 
     /**
-     * Turns at a certain speed and direction.
+     * Turns at a certain speed
      *
-     * @param speed      Speed to turn at
-     * @param direction  Direction to turn in (L or R)
+     * @param speed double -1-1
      */
-    public void turn(double speed, char direction) {
-        if(direction == 'L') {
-            frontLeft.set(speed);
-            backLeft.set(speed);
-            frontRight.set(-speed);
-            backRight.set(-speed);
-        } else if (direction == 'R') {
-            frontLeft.set(-speed);
-            backLeft.set(-speed);
-            frontRight.set(speed);
-            backRight.set(speed);
-        }
+    public void turn(double speed) {
+        frontLeft.set(-speed);
+        backLeft.set(-speed);
+        frontRight.set(speed);
+        backRight.set(speed);
     }
 
     /**
      * Turn a certain amount of degrees
      *
-     * @param degrees   Degrees to turn to
-     * @param direction Direction to turn in (L or R)
+     * @param degrees target degrees
      */
-    public void turnDegrees(double degrees, char direction) {
-        while(navx.getAngle() + TURN_DEADZONE > degrees || navx.getAngle() - TURN_DEADZONE < degrees) {
-            turn(TURN_SPEED, direction);
+    public void turnDegrees(double degrees) {
+        if (navx.getAngle() % 360 + TURN_DEADZONE > degrees) {
+            turn(TURN_SPEED);
+        } else {
+            turn(-TURN_SPEED);
         }
     }
 
@@ -218,7 +215,7 @@ public class DriveTrain {
     /**
      * Use PID to lock the robot in its current position
      */
-    public void lock(){
+    public void lock() {
         frontLeft.changeControlMode(CANTalon.TalonControlMode.Position);
         frontRight.changeControlMode(CANTalon.TalonControlMode.Position);
         backRight.changeControlMode(CANTalon.TalonControlMode.Position);
@@ -230,9 +227,26 @@ public class DriveTrain {
     }
 
     /**
+     * Stop all motors
+     */
+    public void brake() {
+        frontLeft.set(0);
+        frontRight.set(0);
+        backRight.set(0);
+        backLeft.set(0);
+    }
+
+    /**
+     * @return the current gyro heading
+     */
+    public String toString() {
+        return Double.toString(navx.getAngle());
+    }
+
+    /**
      * Set the motors back to normal speed control
      */
-    public void unlock(){
+    public void unlock() {
         frontLeft.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
         frontRight.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
         backRight.changeControlMode(CANTalon.TalonControlMode.PercentVbus);

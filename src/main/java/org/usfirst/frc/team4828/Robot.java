@@ -11,7 +11,7 @@ public class Robot extends IterativeRobot {
     private DriveTrain drive;
     private DigitalInput ir;
     private Shooter shoot;
-    private Vision vision;
+    private Vision vision = null;
     private DigitalInput[] dipSwitch;
     private int autonSelect;
     private Climber climb;
@@ -66,16 +66,16 @@ public class Robot extends IterativeRobot {
             case 1:
                 // Place gear on right side
                 drive.moveDistance(-distance);
-                drive.placeGear('R', vision);
+                drive.placeGear(3, vision);
                 break;
             case 2:
                 // Place gear on center
-                drive.placeGear('M', vision);
+                drive.placeGear(2, vision);
                 break;
             case 3:
                 // Place gear on left side
                 drive.moveDistance(distance);
-                drive.placeGear('L', vision);
+                drive.placeGear(1, vision);
                 break;
             case 4:
                 // TODO: Shoot 10 fuel and place gear on left side
@@ -98,7 +98,7 @@ public class Robot extends IterativeRobot {
     @Override
     public void teleopPeriodic() {
         super.teleopPeriodic();
-        drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
+        drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist()/4);
         if (driveStick.getRawButton(11)) {
             drive.reset();
         }
@@ -108,21 +108,12 @@ public class Robot extends IterativeRobot {
     @Override
     public void testInit() {
         super.testInit();
-        System.out.println("Entering test...");
-
-        vision = new Vision(Ports.US_CHANNEL);
-
-        vision.start();
     }
 
     @Override
     public void testPeriodic() {
-        drive.moveDistance(1000);
-        Timer.delay(1);
-        drive.moveDistance(-1000);
-        Timer.delay(1);
-        System.out.println(vision);
-        System.out.println("Move " + vision.horizontalOffset() + " inches");
+        System.out.println(drive);
+        Timer.delay(.1);
     }
 
     @Override
