@@ -11,6 +11,7 @@ public class Climber {
 
     /**
      * Create climber object encapsulating the climber motor.
+     *
      * @param motorPort1 port of the first climber motor
      * @param motorPort2 port of the second climber motor
      */
@@ -19,30 +20,45 @@ public class Climber {
         climberMotor2 = new Victor(motorPort2);
     }
 
+    /**
+     * Raise the robot at a given speed.
+     *
+     * @param speed double speed
+     */
     public void raise(double speed){
         climberMotor1.set(speed);
         climberMotor2.set(speed);
     }
 
+    /**
+     * Raise the robot at the default speed.
+     */
     public void raise(){
         climberMotor1.set(RAISE_SPEED);
         climberMotor2.set(RAISE_SPEED);
     }
 
     /**
-     * Lower the robot at a set speed.
-     * @param speed NOTE: STILL USE POSITIVE NUMBERS
+     * Lower the robot at a given speed.
+     *
+     * @param speed double speed (positive)
      */
     public void lower(double speed){
         climberMotor1.set(-speed);
         climberMotor2.set(-speed);
     }
 
+    /**
+     * Lower the robot at the default speed.
+     */
     public void lower(){
         climberMotor1.set(LOWER_SPEED);
         climberMotor2.set(LOWER_SPEED);
     }
 
+    /**
+     * Stop raising or lowering the robot.
+     */
     public void stop(){
         climberMotor1.set(0);
         climberMotor2.set(0);

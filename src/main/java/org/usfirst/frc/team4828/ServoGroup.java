@@ -12,7 +12,7 @@ public class ServoGroup {
     private double position;
 
     /**
-     * Create a ServoGroup with the given ports.
+     * Create servo group object using the given ports.
      *
      * @param masterPort port of the master servo
      * @param slavePort port of the slave servo
@@ -25,7 +25,7 @@ public class ServoGroup {
     }
 
     /**
-     * Creates a ServoGroup with the given ports and range values.
+     * Create servo group object using the given ports and range values.
      *
      * @param masterPort port of the master servo
      * @param slavePort port of the slave servo
@@ -45,7 +45,7 @@ public class ServoGroup {
     }
 
     /**
-     * Raises the servos by a given step size.
+     * Raise the servos by a given step size.
      *
      * @param step double step size
      */
@@ -103,7 +103,7 @@ public class ServoGroup {
     }
 
     /**
-     * Returns the current position
+     * Get the current position.
      *
      * @return double position
      */
@@ -129,7 +129,7 @@ public class ServoGroup {
     }
 
     /**
-     * Returns a String stating the position of each servo
+     * Get a String stating the position of each servo.
      *
      * @return String
      */

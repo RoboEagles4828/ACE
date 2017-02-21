@@ -26,6 +26,9 @@ public class Shooter extends Thread {
         servos = new ServoGroup(masterPort, slavePort);
     }
 
+    /**
+     * Start the shooter wheel using the default shooter speed.
+     */
     public void spinUp() {
         shooterMotor.set(SHOOTER_SPEED * (1 - servos.get() * SERVO_MULTIPLIER));
     }
