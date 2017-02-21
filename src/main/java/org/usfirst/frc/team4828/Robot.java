@@ -4,6 +4,8 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.*;
 import org.usfirst.frc.team4828.Vision.Vision;
 
+import javax.sound.sampled.Port;
+
 public class Robot extends IterativeRobot {
     private Joystick driveStick;
     private DriveTrain drive;
@@ -27,7 +29,7 @@ public class Robot extends IterativeRobot {
                 Ports.DT_BACK_RIGHT
         );*/
         navx = new AHRS(SPI.Port.kMXP);
-        climb = new Climber(7, 8);
+        climb = new Climber(Ports.CLIMBER_1, Ports.CLIMBER_2, Ports.HALLEFFECT_PORT);
         navx = new AHRS(SPI.Port.kMXP);
         shoot = new Shooter(Ports.MOTOR_LEFT, Ports.INDEXER_LEFT, Ports.SERVO_LEFT_MASTER, Ports.SERVO_LEFT_SLAVE);
         // Master is the one on the right if you are looking at the back of the shooter
