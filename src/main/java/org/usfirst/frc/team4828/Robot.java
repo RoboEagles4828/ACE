@@ -14,6 +14,8 @@ public class Robot extends IterativeRobot {
     private int autonSelect;
     private Climber climb;
     private Hopper hopper;
+    private ServoGroup gearGobbler;
+    Servo servo;
 
     @Override
     public void robotInit() {
@@ -50,6 +52,7 @@ public class Robot extends IterativeRobot {
         dipSwitch[1] = new DigitalInput(Ports.DIPSWITCH_2);
         dipSwitch[2] = new DigitalInput(Ports.DIPSWITCH_3);
         dipSwitch[3] = new DigitalInput(Ports.DIPSWITCH_4);
+
     }
 
     @Override
@@ -110,10 +113,15 @@ public class Robot extends IterativeRobot {
     public void testInit() {
         super.testInit();
         System.out.println("Entering test...");
+        servo = new Servo(10);
     }
 
     @Override
     public void testPeriodic() {
+        servo.set(0.5);
+        if(driveStick.getRawButton(12)){
+            servo.set(0);
+        }
         Timer.delay(.1);
     }
 
