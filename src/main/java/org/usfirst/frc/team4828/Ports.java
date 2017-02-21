@@ -33,6 +33,9 @@ public class Ports {
     public static final int DIPSWITCH_3 = 5;
     public static final int DIPSWITCH_4 = 3;
 
+    public static final int ACTIVE_GEAR_LEFT = 12;
+    public static final int ACTIVE_GEAR_RIGHT = 13;
+
     private Ports(){
         throw new AssertionError(
                 "A Summoner has Disconnected.\n"
