@@ -4,8 +4,6 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.*;
 import org.usfirst.frc.team4828.Vision.Vision;
 
-import javax.sound.sampled.Port;
-
 public class Robot extends IterativeRobot {
     private Joystick driveStick;
     private DriveTrain drive;
