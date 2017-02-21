@@ -12,7 +12,7 @@ public class ServoGroup {
     private double position;
 
     /**
-     * Creates a ServoGroup with the given ports
+     * Create a ServoGroup with the given ports.
      *
      * @param masterPort port of the master servo
      * @param slavePort port of the slave servo
@@ -25,7 +25,7 @@ public class ServoGroup {
     }
 
     /**
-     * Creates a ServoGroup with the given ports and range values
+     * Creates a ServoGroup with the given ports and range values.
      *
      * @param masterPort port of the master servo
      * @param slavePort port of the slave servo
@@ -45,7 +45,7 @@ public class ServoGroup {
     }
 
     /**
-     * Raises the servos by a given step size
+     * Raises the servos by a given step size.
      *
      * @param step double step size
      */
@@ -54,14 +54,14 @@ public class ServoGroup {
     }
 
     /**
-     * Raises the servos by the default step size
+     * Raise the servos by the default step size.
      */
     public void raise() {
         raise(STEP_SIZE);
     }
 
     /**
-     * Lowers the servos by a given step size
+     * Lower the servos by a given step size.
      *
      * @param step double step size
      */
@@ -70,14 +70,14 @@ public class ServoGroup {
     }
 
     /**
-     * Lowers the servos by the default step size
+     * Lower the servos by the default step size.
      */
     public void lower() {
         lower(STEP_SIZE);
     }
 
     /**
-     * Set the servos' position
+     * Set the servos' position.
      *
      * @param pos double 0-1 relative position within range
      */
@@ -85,6 +85,21 @@ public class ServoGroup {
         position = pos;
         master.set((masterRange[1] - masterRange[0]) * position + masterRange[0]);
         slave.set((slaveRange[1] - slaveRange[0]) * position + slaveRange[0]);
+    }
+
+    /**
+     * Set a single servo's position.
+     *
+     * @param sel 1 = master, 2 = slave
+     * @param pos -1-1
+     */
+    public void setAbsolute(int sel, double pos){
+        if(sel==1){
+            master.set(pos);
+        }
+        else{
+            slave.set(pos);
+        }
     }
 
     /**
