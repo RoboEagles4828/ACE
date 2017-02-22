@@ -53,8 +53,8 @@ public class Robot extends IterativeRobot {
         dipSwitch[3] = new DigitalInput(Ports.DIPSWITCH_4);
 
         gearGobbler = new ServoGroup(Ports.ACTIVE_GEAR_LEFT, Ports.ACTIVE_GEAR_RIGHT);
-        gearGobbler.calibrate(1, 0, 1);
-        gearGobbler.calibrate(2, 0, 1);
+        gearGobbler.calibrate(1, 0.45, 0.08);
+        gearGobbler.calibrate(2, 0.287, 0.702);
     }
 
     @Override
@@ -125,6 +125,10 @@ public class Robot extends IterativeRobot {
         if(driveStick.getRawButton(10)){
             gearGobbler.setAbsolute(2, (-driveStick.getThrottle() + 1) / 2);
         }
+        if(driveStick.getRawButton(11)){
+            gearGobbler.set((-driveStick.getThrottle() + 1) / 2);
+        }
+        System.out.println(gearGobbler);
         Timer.delay(.1);
     }
 
