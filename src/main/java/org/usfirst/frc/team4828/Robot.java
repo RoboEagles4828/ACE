@@ -43,6 +43,7 @@ public class Robot extends IterativeRobot {
         leftShooter.servos.calibrate(2, .3, .75);
 
         // Start pointing straight up
+        //TODO: check if setting servos in robotInit actually works
         rightShooter.servos.set(0);
         leftShooter.servos.set(0);
 
@@ -92,7 +93,6 @@ public class Robot extends IterativeRobot {
     @Override
     public void autonomousPeriodic() {
         Timer.delay(.1);
-        super.autonomousPeriodic();
     }
 
     @Override
@@ -119,13 +119,13 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void testPeriodic() {
-        if(driveStick.getRawButton(9)){
+        if (driveStick.getRawButton(9)) {
             gearGobbler.setAbsolute(1, (-driveStick.getThrottle() + 1) / 2);
         }
-        if(driveStick.getRawButton(10)){
+        if (driveStick.getRawButton(10)) {
             gearGobbler.setAbsolute(2, (-driveStick.getThrottle() + 1) / 2);
         }
-        if(driveStick.getRawButton(11)){
+        if (driveStick.getRawButton(11)) {
             gearGobbler.set((-driveStick.getThrottle() + 1) / 2);
         }
         System.out.println(gearGobbler);
