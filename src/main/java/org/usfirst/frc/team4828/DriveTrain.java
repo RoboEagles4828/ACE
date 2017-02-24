@@ -3,7 +3,6 @@ package org.usfirst.frc.team4828;
 import com.ctre.CANTalon;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
-
 import org.usfirst.frc.team4828.Vision.PixyThread;
 
 
@@ -15,11 +14,11 @@ public class DriveTrain {
     private AHRS navx;
 
     private static final double TWIST_THRESHOLD = 0.15;
-    private static final double DIST_TO_ENC = 1;
+    private static final double DIST_TO_ENC = 1.0; //todo: determine conversion factor
     private static final double TURN_DEADZONE = 1;
-    private static final double TURN_SPEED = 48;
+    private static final double TURN_SPEED = .25;
     private static final double VISION_DEADZONE = 0.5;
-    private static final double PLACING_DIST = 2;
+    private static final double PLACING_DIST = 2; //todo: determine distance from the wall to stop when placing gear
 
     /**
      * Create drive train object containing mecanum motor functionality.
@@ -34,25 +33,23 @@ public class DriveTrain {
         frontRight = new CANTalon(frontRightPort);
         backLeft = new CANTalon(backLeftPort);
         backRight = new CANTalon(backRightPort);
-
-        frontLeft.setPID(0.6, 0, 0);
-        frontRight.setPID(0.6, 0, 0);
-        backLeft.setPID(0.6, 0, 0);
-        backRight.setPID(0.6, 0, 0);
-
         navx = new AHRS(SPI.Port.kMXP);
     }
 
+    /**
+     * Test drive train object.
+     */
     public DriveTrain(boolean gyro) {
         if (gyro) {
             navx = new AHRS(SPI.Port.kMXP);
         }
-        //for testing purposes
         System.out.println("Created dummy drivetrain");
     }
 
     /**
-     * Ensures that wheel speeds are valid numbers
+     * Ensure that wheel speeds are valid numbers.
+     *
+     * @param wheelSpeeds wheel speeds
      */
     public static void normalize(double[] wheelSpeeds) {
         double maxMagnitude = Math.abs(wheelSpeeds[0]);
@@ -74,7 +71,7 @@ public class DriveTrain {
      *
      * @param xcomponent X component of the vector
      * @param ycomponent Y component of the vector
-     * @return The resultant vector as a double[2]
+     * @return the resultant vector as a double[2]
      */
     public double[] rotateVector(double xcomponent, double ycomponent) {
         double angle = navx.getAngle();
@@ -87,11 +84,41 @@ public class DriveTrain {
     }
 
     /**
+     * Adjust motor speeds according to joystick input.
+     *
+     * @param xcomponent x component of the joystick
+     * @param ycomponent y component of the joystick
+     * @param rotation   rotation of the joystick
+     */
+    public void mecanumDriveAbsolute(double xcomponent, double ycomponent, double rotation) {
+        if (Math.abs(rotation) <= TWIST_THRESHOLD) {
+            rotation = 0.0;
+        }
+
+        // Negate y for the joystick.
+        ycomponent = -ycomponent;
+        double[] wheelSpeeds = new double[4];
+        wheelSpeeds[0] = xcomponent + ycomponent + rotation;
+        wheelSpeeds[1] = -xcomponent + ycomponent - rotation;
+        wheelSpeeds[2] = -xcomponent + ycomponent + rotation;
+        wheelSpeeds[3] = xcomponent + ycomponent - rotation;
+
+        normalize(wheelSpeeds);
+        frontLeft.set(wheelSpeeds[0]);
+        frontRight.set(wheelSpeeds[1]);
+        backLeft.set(wheelSpeeds[2]);
+        backRight.set(wheelSpeeds[3]);
+    }
+
+    /**
      * Adjust motor speeds according to heading and joystick input.
      * Uses input from the gyroscope to determine field orientation.
+     *
+     * @param xcomponent x component of the joystick
+     * @param ycomponent y component of the joystick
+     * @param rotation   rotation of the joystick
      */
-    public void mecanumDrive(double xcomponent, double ycomponent,
-                             double rotation) {
+    public void mecanumDrive(double xcomponent, double ycomponent, double rotation) {
         // Ignore tiny inadvertent joystick rotations
         if (Math.abs(rotation) <= TWIST_THRESHOLD) {
             rotation = 0.0;
@@ -118,29 +145,22 @@ public class DriveTrain {
     }
 
     /**
-     * Moves motors a certain distance.
+     * Move motors a certain distance.
      *
-     * @param dist Distance to move
+     * @param dist distance
      */
     public void moveDistance(double dist) {
         double encchange = dist * DIST_TO_ENC;
-
-        frontLeft.changeControlMode(CANTalon.TalonControlMode.Position);
-        frontRight.changeControlMode(CANTalon.TalonControlMode.Position);
-        backLeft.changeControlMode(CANTalon.TalonControlMode.Position);
-        backRight.changeControlMode(CANTalon.TalonControlMode.Position);
-
-        frontLeft.set(frontLeft.getEncPosition() + encchange);
-        frontRight.set(frontRight.getEncPosition() + encchange);
-        backLeft.set(backLeft.getEncPosition() + encchange);
-        backRight.set(backRight.getEncPosition() + encchange);
+        //todo: move forward or backward according to the sign of dist
     }
 
     /**
-     * @param pos    1 = Right, 2 = Middle, 3 = Right
+     *
+     * @param pos  1 = Right, 2 = Middle, 3 = Right
      * @param pixy
      */
     public void placeGear(int pos, PixyThread pixy) {
+        //todo: confirm angles for each side
         if (pos == 1) {
             turnDegrees(30);
         } else if (pos == 2) {
@@ -153,15 +173,31 @@ public class DriveTrain {
             moveDistance(pixy.horizontalOffset());
         }
         while (pixy.transverseOffset() >= PLACING_DIST) {
-            mecanumDrive(0.5, 0, 0);
+            // center relative to the target
+            while (pixy.horizontalOffset() <= VISION_DEADZONE) {
+                moveDistance(pixy.horizontalOffset());
+            }
+            // approach the target
+            //todo: use ultrasonic to verify dist?
+            while (pixy.transverseOffset() >= PLACING_DIST) {
+                mecanumDrive(0.5, 0, 0);
+            }
+            brake();
         }
-        brake();
+    }
+
+    /**
+     * Teleop version finds nearest angle before starting.
+     *
+     * @param pixy
+     */
+    public void placeGear(PixyThread pixy) {
+        //todo: round to nearest angle
     }
 
     /**
      * Turn all wheels slowly for testing purposes.
      */
-
     public void testMotors() {
         frontLeft.set(.2);
         frontRight.set(.2);
@@ -195,12 +231,12 @@ public class DriveTrain {
     }
 
     /**
-     * Turn all wheels at set speeds
+     * Turn all wheels at set speeds.
      *
-     * @param fl Speed for Front Left Wheel
-     * @param fr Speed for Front Right Wheel
-     * @param bl Speed for Back Left Wheel
-     * @param br Speed for Back Right Wheel
+     * @param fl speed for front left wheel
+     * @param fr speed for front right wheel
+     * @param bl speed for back left wheel
+     * @param br speed for back right wheel
      */
     public void testMotors(int fl, int fr, int bl, int br) {
         frontLeft.set(fl);
@@ -210,21 +246,7 @@ public class DriveTrain {
     }
 
     /**
-     * Use PID to lock the robot in its current position
-     */
-    public void lock() {
-        frontLeft.changeControlMode(CANTalon.TalonControlMode.Position);
-        frontRight.changeControlMode(CANTalon.TalonControlMode.Position);
-        backRight.changeControlMode(CANTalon.TalonControlMode.Position);
-        backLeft.changeControlMode(CANTalon.TalonControlMode.Position);
-        frontLeft.set(frontLeft.get());
-        frontRight.set(frontRight.get());
-        backRight.set(backRight.get());
-        backLeft.set(backLeft.get());
-    }
-
-    /**
-     * Stop all motors
+     * Stop all motors.
      */
     public void brake() {
         frontLeft.set(0);
@@ -241,15 +263,15 @@ public class DriveTrain {
     }
 
     /**
-     * Set the motors back to normal speed control
+     * Prints current average encoder values.
      */
-    public void unlock() {
-        frontLeft.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
-        frontRight.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
-        backRight.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
-        backLeft.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+    public void debugEncoders() {
+        System.out.print((backLeft.getPosition() + backRight.getPosition() + frontLeft.getPosition() + frontRight.getPosition()) / 4);
     }
 
+    /**
+     * Zero the gyro.
+     */
     public void reset() {
         navx.reset();
     }
