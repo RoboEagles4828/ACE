@@ -4,14 +4,14 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
-import org.usfirst.frc.team4828.Vision.Vision;
+import org.usfirst.frc.team4828.Vision.PixyThread;
 
 public class Robot extends IterativeRobot {
     private Joystick driveStick;
     private DriveTrain drive;
     private DigitalInput ir;
     private Shooter shoot;
-    private Vision vision = null;
+    private PixyThread pixy;
     private DigitalInput[] dipSwitch;
     private int autonSelect;
     private Climber climb;
@@ -37,10 +37,9 @@ public class Robot extends IterativeRobot {
         dipSwitch = new DigitalInput[4];
         dipSwitch[0] = new DigitalInput(Ports.DIPSWITCH_1);
         dipSwitch[1] = new DigitalInput(Ports.DIPSWITCH_2);
-        dipSwitch[2] = new DigitalInput(Ports.DIPSWITCH_3);
         dipSwitch[3] = new DigitalInput(Ports.DIPSWITCH_4);
-        vision = new Vision(Ports.US_CHANNEL);
-        vision.start();
+        dipSwitch[2] = new DigitalInput(Ports.DIPSWITCH_3);
+        System.out.println("robotinit check");
     }
 
     @Override
@@ -51,6 +50,7 @@ public class Robot extends IterativeRobot {
         }
         System.out.println("Entering auton number " + autonSelect);
         drive.reset();
+        //pixy.start();
     }
 
     @Override
@@ -66,16 +66,16 @@ public class Robot extends IterativeRobot {
             case 1:
                 // Place gear on right side
                 drive.moveDistance(-distance);
-                drive.placeGear(3, vision);
+                drive.placeGear(3, pixy);
                 break;
             case 2:
                 // Place gear on center
-                drive.placeGear(2, vision);
+                drive.placeGear(2, pixy);
                 break;
             case 3:
                 // Place gear on left side
                 drive.moveDistance(distance);
-                drive.placeGear(1, vision);
+                drive.placeGear(1, pixy);
                 break;
             case 4:
                 // TODO: Shoot 10 fuel and place gear on left side
@@ -108,19 +108,24 @@ public class Robot extends IterativeRobot {
     @Override
     public void testInit() {
         super.testInit();
+        pixy = new PixyThread(Ports.US_CHANNEL);
+        pixy.start();
     }
 
     @Override
     public void testPeriodic() {
         System.out.println(drive);
+        System.out.println(pixy);
+        System.out.println(pixy.horizontalOffset());
         Timer.delay(.1);
     }
 
     @Override
     public void disabledInit() {
         System.out.println("Disabling robot");
-        if (vision != null) {
-            vision.terminate();
+        if (pixy != null) {
+            //System.out.println(pixy);
+            pixy.terminate();
             System.out.println("Stopping thread");
         }
     }

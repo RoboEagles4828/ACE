@@ -4,10 +4,7 @@ import com.ctre.CANTalon;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 
-import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.SPI;
 import org.usfirst.frc.team4828.Vision.PixyThread;
-import org.usfirst.frc.team4828.Vision.Vision;
 
 
 public class DriveTrain {
@@ -141,9 +138,9 @@ public class DriveTrain {
 
     /**
      * @param pos    1 = Right, 2 = Middle, 3 = Right
-     * @param vision
+     * @param pixy
      */
-    public void placeGear(int pos, Vision vision) {
+    public void placeGear(int pos, PixyThread pixy) {
         if (pos == 1) {
             turnDegrees(30);
         } else if (pos == 2) {
@@ -152,10 +149,10 @@ public class DriveTrain {
             turnDegrees(150);
         }
 
-        while (vision.horizontalOffset() <= VISION_DEADZONE) {
-            moveDistance(vision.horizontalOffset());
+        while (pixy.horizontalOffset() <= VISION_DEADZONE) {
+            moveDistance(pixy.horizontalOffset());
         }
-        while (vision.transverseOffset() >= PLACING_DIST) {
+        while (pixy.transverseOffset() >= PLACING_DIST) {
             mecanumDrive(0.5, 0, 0);
         }
         brake();

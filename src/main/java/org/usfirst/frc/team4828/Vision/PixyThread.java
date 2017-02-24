@@ -16,7 +16,7 @@ public class PixyThread extends Thread {
     volatile Frame lastFrame;
     private volatile Frame currentFrame;
     private double distCm = 0;
-    private double distIn = 0;
+    private volatile double distIn = 0;
     private BufferedReader in;
     private Socket soc;
     private Thread t;
@@ -26,18 +26,36 @@ public class PixyThread extends Thread {
     private Queue<Double> values;
 
     /**
-     * Create object encapsulating the last frame and ultrasonic data.
      * loops while it's alive
+     * Create object encapsulating the last frame and ultrasonic data.
      */
-    PixyThread(int port) {
+    public PixyThread(int port) {
+        System.out.println("constructing pixythread");
         sensor = new AnalogInput(port);
         values = new LinkedList<>();
         String[] temp = {"0 1 2 3 4 5 6"};
         currentFrame = new Frame(temp, .5);
+        lastFrame = currentFrame;
     }
 
-    public double getDistIn() {
-        return distIn;
+    public double horizontalOffset() {
+        if (lastFrame.numBlocks() == 2) {
+            return lastFrame.getRealDistance(((lastFrame.getFrameData().get(0).getX()
+                    + lastFrame.getFrameData().get(1).getX()) / 2) - Block.X_CENTER);
+        }
+        //if only one vision target is detected
+        else if (lastFrame.numBlocks() == 1) {
+            return lastFrame.getRealDistance(lastFrame.getFrameData().get(0).getX() - Block.X_CENTER);
+        }
+        //if no vision targets are detected
+        return 1000;
+    }
+
+    /**
+     * @return distance from robot to the end of the peg inches
+     */
+    public double transverseOffset() {
+        return distIn - 10.5;
     }
 
     /**
@@ -106,7 +124,7 @@ public class PixyThread extends Thread {
     public void start() {
         enabled = true;
         if (t == null) {
-            System.out.println("Thread starting: " + threadName);
+            System.out.println("starting: " + threadName);
             boolean scanning = true;
             while (scanning) {
                 try {
@@ -128,7 +146,7 @@ public class PixyThread extends Thread {
         }
     }
 
-    void terminate() {
+    public void terminate() {
         try {
             in.close();
             soc.close();
