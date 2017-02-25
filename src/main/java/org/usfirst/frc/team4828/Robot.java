@@ -145,10 +145,10 @@ public class Robot extends IterativeRobot {
             System.out.println("horizontal: " + pixy.horizontalOffset() + " transverse: " + pixy.distanceFromLift());
         }
         if(buttonToggles[12]){
-            System.out.println("frontLeft: " + drive.frontLeft.getEncPosition());
-            System.out.println("frontRight: " + drive.frontRight.getEncPosition());
-            System.out.println("backLeft: " + drive.backLeft.getEncPosition());
-            System.out.println("backRight: " + drive.backRight.getEncPosition());
+            System.out.println("frontLeft: " + drive.getFrontLeft().getEncPosition());
+            System.out.println("frontRight: " + drive.getFrontRight().getEncPosition());
+            System.out.println("backLeft: " + drive.getBackLeft().getEncPosition());
+            System.out.println("backRight: " + drive.getBackRight().getEncPosition());
         }
         gearGobbler.setAbsolute((-driveStick.getThrottle() + 1)/2);
         Timer.delay(.1);
