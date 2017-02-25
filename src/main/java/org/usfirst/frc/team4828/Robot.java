@@ -51,6 +51,8 @@ public class Robot extends IterativeRobot {
         //TODO: check if setting servos in robotInit actually works
         rightShooter.servos.set(0);
         leftShooter.servos.set(0);
+
+        pixy = new PixyThread(Ports.US_CHANNEL);
     }
 
     @Override
@@ -122,6 +124,7 @@ public class Robot extends IterativeRobot {
     public void testInit() {
         super.testInit();
         System.out.println("Entering test...");
+        pixy.start();
     }
 
     @Override

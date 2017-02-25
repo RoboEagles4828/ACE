@@ -3,7 +3,6 @@ package org.usfirst.frc.team4828;
 import com.ctre.CANTalon;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
 import org.usfirst.frc.team4828.Vision.PixyThread;
 
@@ -17,12 +16,11 @@ public class DriveTrain {
 
     private static final double TWIST_THRESHOLD = 0.15;
     private static final double DIST_TO_ENC = 1.0; //todo: determine conversion factor
-    private static final double AUTON_SPEED = 0.2; //todo: calibrate speed
+    private static final double AUTON_SPEED = 0.3; //todo: calibrate speed
     private static final double TURN_DEADZONE = 1;
     private static final double TURN_SPEED = .25;
     private static final double VISION_DEADZONE = 0.5;
-    private static final double PLACING_DIST = 2; //todo: determine distance from the wall to stop when placing gear
-    private static final double PIXY_TO_GEAR_OFFSET = 9;
+    private static final double PLACING_DIST = -3; //todo: determine distance from the wall to stop when placing gear
 
     /**
      * Create drive train object containing mecanum motor functionality.
@@ -176,7 +174,7 @@ public class DriveTrain {
             turnDegrees(-30);
         } else if (pos == 2) {
             turnDegrees(-90);
-        } else if (pos == 3){
+        } else if (pos == 3) {
             turnDegrees(-150);
         } else {
             turnDegrees(0);
@@ -187,10 +185,10 @@ public class DriveTrain {
             if (pixy.horizontalOffset() < 0) {
                 dir = -1;
             }
+            // center relative to the target
             mecanumDrive(0, AUTON_SPEED * dir, 0);
         }
         while (pixy.distanceFromLift() >= PLACING_DIST) {
-            // center relative to the target
             // approach the target
             dir = 1;
             if (pixy.horizontalOffset() < 0) {
@@ -247,7 +245,7 @@ public class DriveTrain {
      */
     public void turnDegrees(double degrees) {
         int dir = getOptimalDirection(getTrueAngle(), degrees);
-        while(getTrueAngle() - TURN_DEADZONE > degrees || getTrueAngle() + TURN_DEADZONE < degrees){
+        while (getTrueAngle() - TURN_DEADZONE > degrees || getTrueAngle() + TURN_DEADZONE < degrees) {
             turn(TURN_SPEED * dir);
         }
         brake();
@@ -260,7 +258,7 @@ public class DriveTrain {
      */
     public double getTrueAngle() {
         double angle = navx.getAngle() % 360;
-        if (angle < 0){
+        if (angle < 0) {
             return 360 + angle;
         }
         return angle;
@@ -270,17 +268,17 @@ public class DriveTrain {
      * Get the best direction to turn
      *
      * @param current current angle
-     * @param target target angle
+     * @param target  target angle
      * @return -1 = left, 1 = right
      */
-    public int getOptimalDirection(double current, double target){
+    public int getOptimalDirection(double current, double target) {
         if (Math.abs(current - target) <= 180) {
             if (current > target) {
                 return -1;
             }
             return 1;
         }
-        if(current > target){
+        if (current > target) {
             return 1;
         }
         return -1;

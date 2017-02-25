@@ -14,9 +14,9 @@ public class Hopper {
      * Create hopper encapsulating the intake and agitator functionality.
      *
      * @param agitatorPort port of the agitator motor
-     * @param intakePort port of the intake motor
+     * @param intakePort   port of the intake motor
      */
-    public Hopper(int agitatorPort, int intakePort){
+    public Hopper(int agitatorPort, int intakePort) {
         agitator = new Spark(agitatorPort);
         intakeMotor = new Spark(intakePort);
     }
@@ -24,28 +24,28 @@ public class Hopper {
     /**
      * Start stirring the hopper.
      */
-    public void stir(){
+    public void stir() {
         agitator.set(AGITATOR_SPEED);
     }
 
     /**
      * Stop stirring the hopper.
      */
-    public void stopStir(){
+    public void stopStir() {
         agitator.set(0);
     }
 
     /**
      * Start the intake.
      */
-    public void intake(){
+    public void intake() {
         intakeMotor.set(INTAKE_SPEED);
     }
 
     /**
      * Stop the intake.
      */
-    public void stopIntake(){
+    public void stopIntake() {
         intakeMotor.set(0);
     }
 

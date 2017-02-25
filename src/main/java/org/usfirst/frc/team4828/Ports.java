@@ -34,7 +34,7 @@ public class Ports {
 
     public static final int SERVO_GEAR_GOBBLER = 12;
 
-    private Ports(){
+    private Ports() {
         throw new AssertionError(
                 "A Summoner has Disconnected.\n"
                         + "(Assertion Error 'cause you instantiated class Ports.\n"
