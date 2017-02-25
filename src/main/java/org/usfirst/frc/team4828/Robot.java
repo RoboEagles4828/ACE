@@ -14,6 +14,7 @@ public class Robot extends IterativeRobot {
     private Climber climb;
     private Hopper hopper;
     private GearGobbler gearGobbler;
+    private boolean[] buttonToggles;
 
     @Override
     public void robotInit() {
@@ -52,6 +53,10 @@ public class Robot extends IterativeRobot {
         leftShooter.servos.set(0);
 
         pixy = new PixyThread(Ports.US_CHANNEL);
+        buttonToggles = new boolean[12];
+        for (boolean toggle: buttonToggles){
+            toggle = false;
+        }
 
         rightShooter.calibrateIndexer(0, 1);
         leftShooter.calibrateIndexer(0, 1);
@@ -67,7 +72,6 @@ public class Robot extends IterativeRobot {
         }
         System.out.println("Entering auton number " + autonSelect);
         drive.reset();
-        //pixy.start();
     }
 
     @Override
@@ -131,9 +135,24 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void testPeriodic() {
-        System.out.println(drive);
-        System.out.println(pixy);
-        System.out.println(pixy.horizontalOffset());
+        if(driveStick.getRawButton(11)){
+            buttonToggles[10] = !buttonToggles[10];
+        }
+        if(driveStick.getRawButton(12)){
+            buttonToggles[11] = !buttonToggles[11];
+        }
+        if(buttonToggles[10]){
+            System.out.println(drive);
+            System.out.println(pixy);
+            System.out.println("horizontal: " + pixy.horizontalOffset() + " transverse: " + pixy.distanceFromLift());
+        }
+        if(buttonToggles[11]){
+            System.out.println("frontLeft: " + drive.getFrontLeft().getEncPosition());
+            System.out.println("frontRight: " + drive.getFrontRight().getEncPosition());
+            System.out.println("backLeft: " + drive.getBackLeft().getEncPosition());
+            System.out.println("backRight: " + drive.getBackRight().getEncPosition());
+        }
+        gearGobbler.setAbsolute((-driveStick.getThrottle() + 1)/2);
         Timer.delay(.1);
     }
 
@@ -141,7 +160,6 @@ public class Robot extends IterativeRobot {
     public void disabledInit() {
         System.out.println("Disabling robot");
         if (pixy != null) {
-            //System.out.println(pixy);
             pixy.terminate();
             System.out.println("Stopping thread");
         }

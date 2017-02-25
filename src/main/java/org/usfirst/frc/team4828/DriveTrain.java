@@ -8,6 +8,22 @@ import org.usfirst.frc.team4828.Vision.PixyThread;
 
 
 public class DriveTrain {
+    public CANTalon getFrontLeft() {
+        return frontLeft;
+    }
+
+    public CANTalon getFrontRight() {
+        return frontRight;
+    }
+
+    public CANTalon getBackLeft() {
+        return backLeft;
+    }
+
+    public CANTalon getBackRight() {
+        return backRight;
+    }
+
     private CANTalon frontLeft;
     private CANTalon frontRight;
     private CANTalon backLeft;
