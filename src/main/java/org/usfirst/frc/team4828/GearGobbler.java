@@ -1,35 +1,17 @@
 package org.usfirst.frc.team4828;
 
-import edu.wpi.first.wpilibj.Servo;
-
 public class GearGobbler {
-    private Servo servo;
-    private double openPos, closePos;
+    public ServoGroup servo;
 
-    GearGobbler(int servoPort) {
-        servo = new Servo(servoPort);
-    }
-
-    GearGobbler(int servoPort, double openPos, double closePos) {
-        servo = new Servo(servoPort);
-        calibrate(openPos, closePos);
-    }
-
-    public void calibrate(double open, double close) {
-        openPos = open;
-        closePos = close;
-    }
-
-    public void setAbsolute(double pos) {
-        System.out.println("GearServo Pos: " + pos);
-        servo.set(pos);
+    GearGobbler(int leftServoPort, int rightServoPort) {
+        servo = new ServoGroup(leftServoPort, rightServoPort);
     }
 
     public void open() {
-        servo.set(openPos);
+        servo.set(1);
     }
 
     public void close() {
-        servo.set(closePos);
+        servo.set(0);
     }
 }

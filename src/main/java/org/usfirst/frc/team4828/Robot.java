@@ -14,7 +14,6 @@ public class Robot extends IterativeRobot {
     private Climber climb;
     private Hopper hopper;
     private GearGobbler gearGobbler;
-    private boolean[] buttonToggles;
 
     @Override
     public void robotInit() {
@@ -37,15 +36,15 @@ public class Robot extends IterativeRobot {
         rightShooter.servos.calibrate(2, .6, 1);
         leftShooter.servos.calibrate(1, .75, .35);
         leftShooter.servos.calibrate(2, .3, .75);
+        gearGobbler = new GearGobbler(Ports.LEFT_GEAR_GOBBLER, Ports.RIGHT_GEAR_GOBBLER);
+        gearGobbler.servo.calibrate(1, 0, 1);
+        gearGobbler.servo.calibrate(2, 0, 1);
 
         dipSwitch = new DigitalInput[4];
         dipSwitch[0] = new DigitalInput(Ports.DIPSWITCH_1);
         dipSwitch[1] = new DigitalInput(Ports.DIPSWITCH_2);
         dipSwitch[2] = new DigitalInput(Ports.DIPSWITCH_3);
         dipSwitch[3] = new DigitalInput(Ports.DIPSWITCH_4);
-
-        gearGobbler = new GearGobbler(Ports.SERVO_GEAR_GOBBLER);
-        gearGobbler.calibrate(0, 1);
 
         // Starting servo positions
         //TODO: check if setting servos in robotInit actually works
@@ -54,10 +53,6 @@ public class Robot extends IterativeRobot {
         gearGobbler.close();
 
         pixy = new PixyThread(Ports.US_CHANNEL);
-        buttonToggles = new boolean[12];
-        for (boolean toggle: buttonToggles){
-            toggle = false;
-        }
 
         rightShooter.calibrateIndexer(0, 1);
         leftShooter.calibrateIndexer(0, 1);
@@ -137,24 +132,19 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void testPeriodic() {
-        if(driveStick.getRawButton(11)){
-            buttonToggles[10] = !buttonToggles[10];
+        if (driveStick.getRawButton(10)) {
+            gearGobbler.servo.setAbsolute(1, (-driveStick.getThrottle() + 1) / 2);
+            gearGobbler.servo.setAbsolute(2, (-driveStick.getThrottle() + 1) / 2);
+            System.out.println("Pos: " + (-driveStick.getThrottle() + 1) / 2);
         }
-        if(driveStick.getRawButton(12)){
-            buttonToggles[11] = !buttonToggles[11];
-        }
-        if(buttonToggles[10]){
-            System.out.println(drive);
-            System.out.println(pixy);
+        if (driveStick.getRawButton(11)) {
+            System.out.print("navx " + drive);
+            System.out.println("pixy data: " + pixy);
             System.out.println("horizontal: " + pixy.horizontalOffset() + " transverse: " + pixy.distanceFromLift());
         }
-        if(buttonToggles[11]){
-            System.out.println("frontLeft: " + drive.getFrontLeft().getEncPosition());
-            System.out.println("frontRight: " + drive.getFrontRight().getEncPosition());
-            System.out.println("backLeft: " + drive.getBackLeft().getEncPosition());
-            System.out.println("backRight: " + drive.getBackRight().getEncPosition());
+        if (driveStick.getRawButton(12)) {
+            drive.debugEncoders();
         }
-        gearGobbler.setAbsolute((-driveStick.getThrottle() + 1)/2);
         Timer.delay(.1);
     }
 

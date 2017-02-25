@@ -8,22 +8,6 @@ import org.usfirst.frc.team4828.Vision.PixyThread;
 
 
 public class DriveTrain {
-    public CANTalon getFrontLeft() {
-        return frontLeft;
-    }
-
-    public CANTalon getFrontRight() {
-        return frontRight;
-    }
-
-    public CANTalon getBackLeft() {
-        return backLeft;
-    }
-
-    public CANTalon getBackRight() {
-        return backRight;
-    }
-
     private CANTalon frontLeft;
     private CANTalon frontRight;
     private CANTalon backLeft;
@@ -186,7 +170,7 @@ public class DriveTrain {
      */
     public void placeGear(int pos, PixyThread pixy, GearGobbler gobbler) {
         //todo: confirm angles for each side
-        if(pixy.isBlocksDetected()) {
+        if (pixy.isBlocksDetected()) {
             if (pos == 1) {
                 turnDegrees(-30);
             } else if (pos == 2) {
@@ -338,7 +322,7 @@ public class DriveTrain {
      * Prints current average encoder values.
      */
     public void debugEncoders() {
-        System.out.print((backLeft.getPosition() + backRight.getPosition() + frontLeft.getPosition() + frontRight.getPosition()) / 4);
+        System.out.print("bl " + backLeft.getPosition() + " br " + backRight.getPosition() + " fl " + frontLeft.getPosition() + " fr " + frontRight.getPosition());
     }
 
     /**
