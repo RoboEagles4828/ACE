@@ -162,11 +162,13 @@ public class DriveTrain {
     public void placeGear(int pos, PixyThread pixy) {
         //todo: confirm angles for each side
         if (pos == 1) {
-            turnDegrees(30);
+            turnDegrees(-30);
         } else if (pos == 2) {
-            turnDegrees(90);
+            turnDegrees(-90);
+        } else if (pos == 3){
+            turnDegrees(-150);
         } else {
-            turnDegrees(150);
+            turnDegrees(0);
         }
 
         while (pixy.horizontalOffset() <= VISION_DEADZONE) {
@@ -223,11 +225,44 @@ public class DriveTrain {
      * @param degrees target degrees
      */
     public void turnDegrees(double degrees) {
-        if (navx.getAngle() % 360 + TURN_DEADZONE > degrees) {
-            turn(TURN_SPEED);
-        } else {
-            turn(-TURN_SPEED);
+        int dir = getOptimalDirection(getTrueAngle(), degrees);
+        while(getTrueAngle() - TURN_DEADZONE > degrees || getTrueAngle() + TURN_DEADZONE < degrees){
+            turn(TURN_SPEED * dir);
         }
+        brake();
+    }
+
+    /**
+     * Get the true navx angle
+     *
+     * @return 0 <= angle < 360
+     */
+    public double getTrueAngle() {
+        double angle = navx.getAngle() % 360;
+        if (angle < 0){
+            return 360 + angle;
+        }
+        return angle;
+    }
+
+    /**
+     * Get the best direction to turn
+     *
+     * @param current current angle
+     * @param target target angle
+     * @return -1 = left, 1 = right
+     */
+    public int getOptimalDirection(double current, double target){
+        if (Math.abs(current - target) <= 180) {
+            if (current > target) {
+                return -1;
+            }
+            return 1;
+        }
+        if(current > target){
+            return 1;
+        }
+        return -1;
     }
 
     /**
