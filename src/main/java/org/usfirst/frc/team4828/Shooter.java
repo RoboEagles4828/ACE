@@ -14,6 +14,11 @@ public class Shooter extends Thread {
     private static final double I = 0;
     private static final double D = 0;
 
+    private double indexerOpen;
+    private double indexerClose;
+
+    private Servo indexer;
+
     /**
      * Create shooter object that encapsulates all associated servos and motors.
      *
@@ -21,9 +26,10 @@ public class Shooter extends Thread {
      * @param masterPort port of master angle control servo
      * @param slavePort port of slave angle control servo
      */
-    public Shooter(int motorPort, int masterPort, int slavePort) {
+    public Shooter(int motorPort, int masterPort, int slavePort, int indexerPort) {
         shooterMotor = new CANTalon(motorPort);
         servos = new ServoGroup(masterPort, slavePort);
+        indexer = new Servo(indexerPort);
     }
 
     /**
@@ -52,6 +58,25 @@ public class Shooter extends Thread {
     public void spinDown() {
         shooterMotor.set(0);
     }
+
+    public void calibrateIndexer(double open, double close){
+        indexerOpen = open;
+        indexerClose = close;
+    }
+
+    public void open(){
+        indexer.set(indexerOpen);
+    }
+
+    public void close(){
+        indexer.set(indexerClose);
+    }
+
+    public void setAbsolute(double pos){
+        indexer.set(pos);
+    }
+
+
 
     /**
      * Change the shooter motor back to normal speed control instead of PID.
