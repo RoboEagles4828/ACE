@@ -21,6 +21,7 @@ public class GearGobbler {
     }
 
     public void setAbsolute(double pos) {
+        System.out.println("GearServo Pos: " + pos);
         servo.set(pos);
     }
 

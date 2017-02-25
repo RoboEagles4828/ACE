@@ -8,10 +8,10 @@ import org.usfirst.frc.team4828.Vision.PixyThread;
 
 
 public class DriveTrain {
-    private CANTalon frontLeft;
-    private CANTalon frontRight;
-    private CANTalon backLeft;
-    private CANTalon backRight;
+    public CANTalon frontLeft;
+    public CANTalon frontRight;
+    public CANTalon backLeft;
+    public CANTalon backRight;
     private AHRS navx;
 
     private static final double TWIST_THRESHOLD = 0.15;
