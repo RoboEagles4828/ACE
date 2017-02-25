@@ -28,8 +28,8 @@ public class Ports {
 
     // Switch
     public static final int DIPSWITCH_1 = 6;
-    public static final int DIPSWITCH_2 = 4;
-    public static final int DIPSWITCH_3 = 5;
+    public static final int DIPSWITCH_2 = 5;
+    public static final int DIPSWITCH_3 = 4;
     public static final int DIPSWITCH_4 = 3;
 
     public static final int ACTIVE_GEAR_LEFT = 12;
