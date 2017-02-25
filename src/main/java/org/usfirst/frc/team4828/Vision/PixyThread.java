@@ -25,6 +25,12 @@ public class PixyThread extends Thread {
     private AnalogInput sensor;
     private Queue<Double> values;
 
+    public boolean isBlocksDetected() {
+        return blocksDetected;
+    }
+
+    private boolean blocksDetected = false;
+
     /**
      * loops while it's alive
      * Create object encapsulating the last frame and ultrasonic data.
@@ -33,9 +39,6 @@ public class PixyThread extends Thread {
         System.out.println("constructing pixythread");
         sensor = new AnalogInput(port);
         values = new LinkedList<>();
-        String[] temp = {"0 1 2 3 4 5 6"};
-        currentFrame = new Frame(temp, .5);
-        lastFrame = currentFrame;
     }
 
     public double horizontalOffset() {
@@ -48,6 +51,7 @@ public class PixyThread extends Thread {
             return lastFrame.getRealDistance(lastFrame.getFrameData().get(0).getX() - Block.X_CENTER);
         }
         //if no vision targets are detected
+        blocksDetected = false;
         return 1000;
     }
 
@@ -106,9 +110,12 @@ public class PixyThread extends Thread {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (currentFrame.numBlocks() >= 2) {
+
+            if (currentFrame.numBlocks() >= 2 || (lastFrame == null && currentFrame.numBlocks() == 1)) {
+                blocksDetected = true;
                 lastFrame = currentFrame;
             }
+
             values.add(sensor.getVoltage());
             while (values.size() > WINDOW_SIZE) {
                 values.remove();
@@ -155,6 +162,7 @@ public class PixyThread extends Thread {
         }
         sensor.free();
         enabled = false;
+        blocksDetected = false;
         t = null;
     }
 
