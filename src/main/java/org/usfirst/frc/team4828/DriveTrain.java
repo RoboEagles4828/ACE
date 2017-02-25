@@ -170,36 +170,38 @@ public class DriveTrain {
      */
     public void placeGear(int pos, PixyThread pixy, GearGobbler gobbler) {
         //todo: confirm angles for each side
-        if (pos == 1) {
-            turnDegrees(-30);
-        } else if (pos == 2) {
-            turnDegrees(-90);
-        } else if (pos == 3) {
-            turnDegrees(-150);
-        } else {
-            turnDegrees(0);
-        }
-        int dir;
-        while (Math.abs(pixy.horizontalOffset()) > VISION_DEADZONE) {
-            dir = 1;
-            if (pixy.horizontalOffset() < 0) {
-                dir = -1;
+        if(pixy.isBlocksDetected()) {
+            if (pos == 1) {
+                turnDegrees(-30);
+            } else if (pos == 2) {
+                turnDegrees(-90);
+            } else if (pos == 3) {
+                turnDegrees(-150);
+            } else {
+                turnDegrees(0);
             }
-            // center relative to the target
-            mecanumDrive(0, AUTON_SPEED * dir, 0);
-        }
-        while (pixy.distanceFromLift() >= PLACING_DIST) {
-            // approach the target
-            dir = 1;
-            if (pixy.horizontalOffset() < 0) {
-                dir = -1;
+            int dir;
+            while (Math.abs(pixy.horizontalOffset()) > VISION_DEADZONE) {
+                dir = 1;
+                if (pixy.horizontalOffset() < 0) {
+                    dir = -1;
+                }
+                // center relative to the target
+                mecanumDrive(0, AUTON_SPEED * dir, 0);
             }
-            mecanumDrive(AUTON_SPEED, AUTON_SPEED * dir, 0);
+            while (pixy.distanceFromLift() >= PLACING_DIST) {
+                // approach the target
+                dir = 1;
+                if (pixy.horizontalOffset() < 0) {
+                    dir = -1;
+                }
+                mecanumDrive(AUTON_SPEED, AUTON_SPEED * dir, 0);
+            }
+            brake();
+            gobbler.open();
+            Timer.delay(.5);
+            gobbler.close();
         }
-        brake();
-        gobbler.open();
-        Timer.delay(.5);
-        gobbler.close();
 
     }
 
