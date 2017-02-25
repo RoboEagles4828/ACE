@@ -136,17 +136,17 @@ public class Robot extends IterativeRobot {
     @Override
     public void testPeriodic() {
         if(driveStick.getRawButton(11)){
-            buttonToggles[11] = !buttonToggles[11];
+            buttonToggles[10] = !buttonToggles[10];
         }
         if(driveStick.getRawButton(12)){
-            buttonToggles[12] = !buttonToggles[12];
+            buttonToggles[11] = !buttonToggles[11];
         }
-        if(buttonToggles[11]){
+        if(buttonToggles[10]){
             System.out.println(drive);
             System.out.println(pixy);
             System.out.println("horizontal: " + pixy.horizontalOffset() + " transverse: " + pixy.distanceFromLift());
         }
-        if(buttonToggles[12]){
+        if(buttonToggles[11]){
             System.out.println("frontLeft: " + drive.getFrontLeft().getEncPosition());
             System.out.println("frontRight: " + drive.getFrontRight().getEncPosition());
             System.out.println("backLeft: " + drive.getBackLeft().getEncPosition());
