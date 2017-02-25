@@ -88,6 +88,21 @@ public class ServoGroup {
     }
 
     /**
+     * Set a single servo's position.
+     *
+     * @param sel 1 = master, 2 = slave
+     * @param pos -1-1
+     */
+    public void setAbsolute(int sel, double pos){
+        if(sel==1){
+            master.set(pos);
+        }
+        else{
+            slave.set(pos);
+        }
+    }
+
+    /**
      * Get the current position.
      *
      * @return double position

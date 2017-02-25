@@ -13,10 +13,10 @@ public class PixyThread extends Thread {
     private static final int PORT = 5800;
     private static final int WINDOW_SIZE = 30;
     private static final double SUPPLIED_VOLTAGE = 5.0;
-    public volatile Frame lastFrame;
-    public volatile Frame currentFrame;
-    public double distCm = 0;
-    public double distIn = 0;
+    volatile Frame lastFrame;
+    private volatile Frame currentFrame;
+    private double distCm = 0;
+    private volatile double distIn = 0;
     private BufferedReader in;
     private Socket soc;
     private Thread t;
@@ -24,22 +24,43 @@ public class PixyThread extends Thread {
     private String threadName = "pixy thread";
     private AnalogInput sensor;
     private Queue<Double> values;
+    private static final double pixyOffset = 0;
 
-    /**
-     * Create object encapsulating the last frame and ultrasonic data.
-     * loops while it's alive
-     */
-    public PixyThread(int port) {
-        sensor = new AnalogInput(port);
-        values = new LinkedList<>();
-        String[] temp = {"0 1 2 3 4 5 6"};
-        currentFrame = new Frame(temp, .5);
-        lastFrame = new Frame(temp, .5);
-        //start();
+    public boolean isBlocksDetected() {
+        return blocksDetected;
     }
 
-    public double getDistIn() {
-        return distIn;
+    private boolean blocksDetected = false;
+
+    /**
+     * loops while it's alive
+     * Create object encapsulating the last frame and ultrasonic data.
+     */
+    public PixyThread(int port) {
+        System.out.println("constructing pixythread");
+        sensor = new AnalogInput(port);
+        values = new LinkedList<>();
+    }
+
+    public double horizontalOffset() {
+        if (lastFrame.numBlocks() == 2) {
+            return lastFrame.getRealDistance(((lastFrame.getFrameData().get(0).getX()
+                    + lastFrame.getFrameData().get(1).getX()) / 2) - Block.X_CENTER) + pixyOffset;
+        }
+        //if only one vision target is detected
+        else if (lastFrame.numBlocks() == 1) {
+            return lastFrame.getRealDistance(lastFrame.getFrameData().get(0).getX() - Block.X_CENTER) + pixyOffset;
+        }
+        //if no vision targets are detected
+        blocksDetected = false;
+        return 1000;
+    }
+
+    /**
+     * @return distance from robot to the end of the peg inches
+     */
+    public double distanceFromLift() {
+        return distIn - 10.5;
     }
 
     /**
@@ -90,9 +111,12 @@ public class PixyThread extends Thread {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (currentFrame.numBlocks() >= 2) {
+
+            if (currentFrame.numBlocks() >= 2 || (lastFrame == null && currentFrame.numBlocks() == 1)) {
+                blocksDetected = true;
                 lastFrame = currentFrame;
             }
+
             values.add(sensor.getVoltage());
             while (values.size() > WINDOW_SIZE) {
                 values.remove();
@@ -108,14 +132,14 @@ public class PixyThread extends Thread {
     public void start() {
         enabled = true;
         if (t == null) {
-            System.out.println("Thread starting: " + threadName);
+            System.out.println("starting: " + threadName);
             boolean scanning = true;
             while (scanning) {
                 try {
                     soc = new Socket(HOST, PORT);
                     in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
                     scanning = false;
-                } catch (Exception e) {
+                } catch (IOException e) {
                     System.out.println("Connect failed, waiting and trying again");
                     try {
                         Thread.sleep(1000);
@@ -139,10 +163,16 @@ public class PixyThread extends Thread {
         }
         sensor.free();
         enabled = false;
+        blocksDetected = false;
         t = null;
     }
 
+    @Override
     public String toString() {
-        return lastFrame.toString();
+        if (lastFrame != null) {
+            return lastFrame.toString();
+        } else {
+            return currentFrame.toString();
+        }
     }
 }

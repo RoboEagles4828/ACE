@@ -1,41 +1,50 @@
 package org.usfirst.frc.team4828;
 
 import com.ctre.CANTalon;
-import org.omg.IOP.ENCODING_CDR_ENCAPS;
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
+import org.usfirst.frc.team4828.Vision.PixyThread;
+
 
 public class DriveTrain {
     private CANTalon frontLeft;
     private CANTalon frontRight;
     private CANTalon backLeft;
     private CANTalon backRight;
+    private AHRS navx;
 
     private static final double TWIST_THRESHOLD = 0.15;
-    private static final double DIST_TO_ENC  = 0;
+    private static final double DIST_TO_ENC = 1.0; //todo: determine conversion factor
+    private static final double AUTON_SPEED = 0.3; //todo: calibrate speed
+    private static final double TURN_DEADZONE = 1;
+    private static final double TURN_SPEED = .25;
+    private static final double VISION_DEADZONE = 0.5;
+    private static final double PLACING_DIST = -3; //todo: determine distance from the wall to stop when placing gear
 
     /**
      * Create drive train object containing mecanum motor functionality.
      *
-     * @param frontLeftPort port of the front left motor
-     * @param backLeftPort port of the back left motor
+     * @param frontLeftPort  port of the front left motor
+     * @param backLeftPort   port of the back left motor
      * @param frontRightPort port of the front right motor
-     * @param backRightPort port of the back right motor
+     * @param backRightPort  port of the back right motor
      */
     public DriveTrain(int frontLeftPort, int backLeftPort, int frontRightPort, int backRightPort) {
         frontLeft = new CANTalon(frontLeftPort);
         frontRight = new CANTalon(frontRightPort);
         backLeft = new CANTalon(backLeftPort);
         backRight = new CANTalon(backRightPort);
-        frontLeft.setPID(0.5, 0, 0);
-        frontRight.setPID(0.5, 0, 0);
-        backLeft.setPID(0.5, 0, 0);
-        backRight.setPID(0.5, 0, 0);
+        navx = new AHRS(SPI.Port.kMXP);
     }
 
     /**
      * Test drive train object.
      */
-    public DriveTrain(){
-        //for testing purposes
+    public DriveTrain(boolean gyro) {
+        if (gyro) {
+            navx = new AHRS(SPI.Port.kMXP);
+        }
         System.out.println("Created dummy drivetrain");
     }
 
@@ -62,12 +71,12 @@ public class DriveTrain {
     /**
      * Rotate a vector in Cartesian space.
      *
-     * @param xcomponent x component of the vector
-     * @param ycomponent y component of the vector
-     * @param angle angle by which to rotate the vector
-     * @return resultant vector as a double[2]
+     * @param xcomponent X component of the vector
+     * @param ycomponent Y component of the vector
+     * @return the resultant vector as a double[2]
      */
-    public static double[] rotateVector(double xcomponent, double ycomponent, double angle) {
+    public double[] rotateVector(double xcomponent, double ycomponent) {
+        double angle = navx.getAngle();
         double cosA = Math.cos(angle * (3.14159 / 180.0));
         double sinA = Math.sin(angle * (3.14159 / 180.0));
         double[] out = new double[2];
@@ -81,10 +90,26 @@ public class DriveTrain {
      *
      * @param xcomponent x component of the joystick
      * @param ycomponent y component of the joystick
-     * @param rotation rotation of the joystick
+     * @param rotation   rotation of the joystick
      */
-    public void mecanumDrive(double xcomponent, double ycomponent, double rotation) {
-        mecanumDrive(xcomponent, ycomponent, rotation, 0);
+    public void mecanumDriveAbsolute(double xcomponent, double ycomponent, double rotation) {
+        if (Math.abs(rotation) <= TWIST_THRESHOLD) {
+            rotation = 0.0;
+        }
+
+        // Negate y for the joystick.
+        ycomponent = -ycomponent;
+        double[] wheelSpeeds = new double[4];
+        wheelSpeeds[0] = xcomponent + ycomponent + rotation;
+        wheelSpeeds[1] = -xcomponent + ycomponent - rotation;
+        wheelSpeeds[2] = -xcomponent + ycomponent + rotation;
+        wheelSpeeds[3] = xcomponent + ycomponent - rotation;
+
+        normalize(wheelSpeeds);
+        frontLeft.set(wheelSpeeds[0]);
+        frontRight.set(wheelSpeeds[1]);
+        backLeft.set(wheelSpeeds[2]);
+        backRight.set(wheelSpeeds[3]);
     }
 
     /**
@@ -93,11 +118,9 @@ public class DriveTrain {
      *
      * @param xcomponent x component of the joystick
      * @param ycomponent y component of the joystick
-     * @param rotation rotation of the joystick
-     * @param gyroAngle gyroscope angle
+     * @param rotation   rotation of the joystick
      */
-    public void mecanumDrive(double xcomponent, double ycomponent,
-                             double rotation, double gyroAngle) {
+    public void mecanumDrive(double xcomponent, double ycomponent, double rotation) {
         // Ignore tiny inadvertent joystick rotations
         if (Math.abs(rotation) <= TWIST_THRESHOLD) {
             rotation = 0.0;
@@ -106,7 +129,7 @@ public class DriveTrain {
         // Negate y for the joystick.
         ycomponent = -ycomponent;
         // Compensate for gyro angle.
-        double[] rotated = rotateVector(xcomponent, ycomponent, gyroAngle);
+        double[] rotated = rotateVector(xcomponent, ycomponent);
         xcomponent = rotated[0];
         ycomponent = rotated[1];
 
@@ -129,17 +152,70 @@ public class DriveTrain {
      * @param dist distance
      */
     public void moveDistance(double dist) {
-        double encchange = dist * DIST_TO_ENC;
+        double encoderChange = Math.abs(dist * DIST_TO_ENC);
+        int dir = 1;
+        frontLeft.setEncPosition(0);
+        if (dist < 0) {
+            dir = -1;
+        }
+        while (frontLeft.getEncPosition() < encoderChange) {
+            mecanumDrive(0, AUTON_SPEED * dir, 0);
+        }
+        brake();
+    }
 
-        frontLeft.changeControlMode(CANTalon.TalonControlMode.Position);
-        frontRight.changeControlMode(CANTalon.TalonControlMode.Position);
-        backLeft.changeControlMode(CANTalon.TalonControlMode.Position);
-        backRight.changeControlMode(CANTalon.TalonControlMode.Position);
+    /**
+     * @param pos  1 = Right, 2 = Middle, 3 = Right
+     * @param pixy
+     */
+    public void placeGear(int pos, PixyThread pixy, GearGobbler gobbler) {
+        //todo: confirm angles for each side
+        if(pixy.isBlocksDetected()) {
+            if (pos == 1) {
+                turnDegrees(-30);
+            } else if (pos == 2) {
+                turnDegrees(-90);
+            } else if (pos == 3) {
+                turnDegrees(-150);
+            } else {
+                turnDegrees(0);
+            }
+            int dir;
+            while (Math.abs(pixy.horizontalOffset()) > VISION_DEADZONE) {
+                dir = 1;
+                if (pixy.horizontalOffset() < 0) {
+                    dir = -1;
+                }
+                // center relative to the target
+                mecanumDrive(0, AUTON_SPEED * dir, 0);
+            }
+            while (pixy.distanceFromLift() >= PLACING_DIST) {
+                // approach the target
+                dir = 1;
+                if (pixy.horizontalOffset() < 0) {
+                    dir = -1;
+                }
+                mecanumDrive(AUTON_SPEED, AUTON_SPEED * dir, 0);
+            }
+            brake();
+            gobbler.open();
+            Timer.delay(.5);
+            gobbler.close();
+        }
 
-        frontLeft.set(frontLeft.getEncPosition() + encchange);
-        frontRight.set(frontRight.getEncPosition() + encchange);
-        backLeft.set(backLeft.getEncPosition() + encchange);
-        backRight.set(backRight.getEncPosition() + encchange);
+    }
+
+    /**
+     * Teleop version finds nearest angle before starting.
+     *
+     * @param pixy
+     */
+    public void placeGear(PixyThread pixy, GearGobbler gobbler) {
+        //todo: round to nearest angle
+        double angle = navx.getAngle();
+        if (angle > 0 && angle < 60) {
+            placeGear(1, pixy, gobbler);
+        }
     }
 
     /**
@@ -150,6 +226,64 @@ public class DriveTrain {
         frontRight.set(.2);
         backLeft.set(.2);
         backRight.set(.2);
+    }
+
+    /**
+     * Turns at a certain speed
+     *
+     * @param speed double -1-1
+     */
+    public void turn(double speed) {
+        frontLeft.set(-speed);
+        backLeft.set(-speed);
+        frontRight.set(speed);
+        backRight.set(speed);
+    }
+
+    /**
+     * Turn a certain amount of degrees
+     *
+     * @param degrees target degrees
+     */
+    public void turnDegrees(double degrees) {
+        int dir = getOptimalDirection(getTrueAngle(), degrees);
+        while (getTrueAngle() - TURN_DEADZONE > degrees || getTrueAngle() + TURN_DEADZONE < degrees) {
+            turn(TURN_SPEED * dir);
+        }
+        brake();
+    }
+
+    /**
+     * Get the true navx angle
+     *
+     * @return 0 <= angle < 360
+     */
+    public double getTrueAngle() {
+        double angle = navx.getAngle() % 360;
+        if (angle < 0) {
+            return 360 + angle;
+        }
+        return angle;
+    }
+
+    /**
+     * Get the best direction to turn
+     *
+     * @param current current angle
+     * @param target  target angle
+     * @return -1 = left, 1 = right
+     */
+    public int getOptimalDirection(double current, double target) {
+        if (Math.abs(current - target) <= 180) {
+            if (current > target) {
+                return -1;
+            }
+            return 1;
+        }
+        if (current > target) {
+            return 1;
+        }
+        return -1;
     }
 
     /**
@@ -168,26 +302,33 @@ public class DriveTrain {
     }
 
     /**
-     * Use PID to lock the robot in its current position.
+     * Stop all motors.
      */
-    public void lock(){
-        frontLeft.changeControlMode(CANTalon.TalonControlMode.Position);
-        frontRight.changeControlMode(CANTalon.TalonControlMode.Position);
-        backRight.changeControlMode(CANTalon.TalonControlMode.Position);
-        backLeft.changeControlMode(CANTalon.TalonControlMode.Position);
-        frontLeft.set(frontLeft.get());
-        frontRight.set(frontRight.get());
-        backRight.set(backRight.get());
-        backLeft.set(backLeft.get());
+    public void brake() {
+        frontLeft.set(0);
+        frontRight.set(0);
+        backRight.set(0);
+        backLeft.set(0);
     }
 
     /**
-     * Set the motors back to normal speed control.
+     * @return the current gyro heading
      */
-    public void unlock(){
-        frontLeft.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
-        frontRight.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
-        backRight.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
-        backLeft.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+    public String toString() {
+        return Double.toString(navx.getAngle());
+    }
+
+    /**
+     * Prints current average encoder values.
+     */
+    public void debugEncoders() {
+        System.out.print((backLeft.getPosition() + backRight.getPosition() + frontLeft.getPosition() + frontRight.getPosition()) / 4);
+    }
+
+    /**
+     * Zero the gyro.
+     */
+    public void reset() {
+        navx.reset();
     }
 }
