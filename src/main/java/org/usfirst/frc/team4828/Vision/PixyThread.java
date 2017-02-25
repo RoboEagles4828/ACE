@@ -24,6 +24,11 @@ public class PixyThread extends Thread {
     private String threadName = "pixy thread";
     private AnalogInput sensor;
     private Queue<Double> values;
+
+    public boolean isBlocksDetected() {
+        return blocksDetected;
+    }
+
     private boolean blocksDetected = false;
 
     /**
