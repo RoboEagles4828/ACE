@@ -46,10 +46,11 @@ public class Robot extends IterativeRobot {
         gearGobbler = new GearGobbler(Ports.SERVO_GEAR_GOBBLER);
         gearGobbler.calibrate(0, 1);
 
-        // Start pointing straight up
+        // Starting servo positions
         //TODO: check if setting servos in robotInit actually works
         rightShooter.servos.set(0);
         leftShooter.servos.set(0);
+        gearGobbler.close();
 
         pixy = new PixyThread(Ports.US_CHANNEL);
     }
@@ -98,6 +99,7 @@ public class Robot extends IterativeRobot {
                 break;
             case 15:
                 System.out.println("Safe Auton... doing nothing");
+                break;
             default:
                 // Do nothing
         }
