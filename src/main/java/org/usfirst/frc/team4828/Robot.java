@@ -27,7 +27,7 @@ public class Robot extends IterativeRobot {
                 Ports.DT_BACK_RIGHT
         );
 
-        climb = new Climber(Ports.CLIMBER_1, Ports.CLIMBER_2);
+        climb = new Climber(Ports.CLIMBER_1, Ports.CLIMBER_2, Ports.HALLEFFECT_PORT);
         hopper = new Hopper(Ports.AGITATOR, Ports.INTAKE);
         // Master is the one on the right if you are looking at the back of the shooter
         rightShooter = new Shooter(Ports.MOTOR_RIGHT, Ports.SERVO_RIGHT_MASTER, Ports.SERVO_RIGHT_SLAVE);
