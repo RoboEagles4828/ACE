@@ -61,6 +61,7 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {
         super.autonomousInit();
         // Bit shift the switches repeatedly to read it into an int
+        autonSelect = 0;
         for (int i = 0; i < 4; i++) {
             autonSelect += (dipSwitch[i].get() ? 1 : 0) * (1 << i);
         }
