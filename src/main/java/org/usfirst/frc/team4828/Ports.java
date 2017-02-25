@@ -32,8 +32,7 @@ public class Ports {
     public static final int DIPSWITCH_3 = 4;
     public static final int DIPSWITCH_4 = 3;
 
-    public static final int ACTIVE_GEAR_LEFT = 12;
-    public static final int ACTIVE_GEAR_RIGHT = 13;
+    public static final int SERVO_GEAR_GOBBLER = 12;
 
     private Ports(){
         throw new AssertionError(

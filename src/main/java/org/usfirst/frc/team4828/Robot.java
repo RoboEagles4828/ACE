@@ -1,9 +1,6 @@
 package org.usfirst.frc.team4828;
 
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.*;
 import org.usfirst.frc.team4828.Vision.PixyThread;
 
 public class Robot extends IterativeRobot {
@@ -16,7 +13,7 @@ public class Robot extends IterativeRobot {
     private int autonSelect;
     private Climber climb;
     private Hopper hopper;
-    private ServoGroup gearGobbler;
+    private GearGobbler gearGobbler;
 
     @Override
     public void robotInit() {
@@ -47,9 +44,8 @@ public class Robot extends IterativeRobot {
         dipSwitch[2] = new DigitalInput(Ports.DIPSWITCH_3);
         dipSwitch[3] = new DigitalInput(Ports.DIPSWITCH_4);
 
-        gearGobbler = new ServoGroup(Ports.ACTIVE_GEAR_LEFT, Ports.ACTIVE_GEAR_RIGHT);
-        gearGobbler.calibrate(1, 0.45, 0.08);
-        gearGobbler.calibrate(2, 0.287, 0.702);
+        gearGobbler = new GearGobbler(Ports.SERVO_GEAR_GOBBLER);
+        gearGobbler.calibrate(0, 1);
 
         // Start pointing straight up
         //TODO: check if setting servos in robotInit actually works
@@ -73,31 +69,34 @@ public class Robot extends IterativeRobot {
     @Override
     public void autonomousPeriodic() {
         super.autonomousPeriodic();
-        double distance = 93.3; //inches
+        double distance = 93.3; //inches to move from wall for gear placement
         switch (autonSelect) {
             case 0:
-                // Shoot 10 fuel from the base of the boiler
+                // DO NOTHING
                 break;
             case 1:
                 // Place gear on right side
-                drive.moveDistance(-distance);
-                drive.placeGear(3, pixy);
+                drive.moveDistance(distance);
+                drive.placeGear(3, pixy, gearGobbler);
                 break;
             case 2:
                 // Place gear on center
-                drive.placeGear(2, pixy);
+                drive.moveDistance(distance / 2);
+                drive.placeGear(2, pixy, gearGobbler);
                 break;
             case 3:
                 // Place gear on left side
                 drive.moveDistance(distance);
-                drive.placeGear(1, pixy);
+                drive.placeGear(1, pixy, gearGobbler);
                 break;
             case 4:
-                // Shoot 10 fuel and place gear on left side
+                // Shoot 10 fuel
                 break;
             case 5:
                 // The crazy running into hopper and shooting tons of balls plan
                 break;
+            case 15:
+                System.out.println("Safe Auton... doing nothing");
             default:
                 // Do nothing
         }
@@ -113,7 +112,7 @@ public class Robot extends IterativeRobot {
     @Override
     public void teleopPeriodic() {
         super.teleopPeriodic();
-        drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist()/4);
+        drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 4);
         if (driveStick.getRawButton(11)) {
             drive.reset();
         }

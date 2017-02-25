@@ -3,6 +3,8 @@ package org.usfirst.frc.team4828;
 import com.ctre.CANTalon;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.Timer;
 import org.usfirst.frc.team4828.Vision.PixyThread;
 
 
@@ -15,10 +17,12 @@ public class DriveTrain {
 
     private static final double TWIST_THRESHOLD = 0.15;
     private static final double DIST_TO_ENC = 1.0; //todo: determine conversion factor
+    private static final double AUTON_SPEED = 0.2; //todo: calibrate speed
     private static final double TURN_DEADZONE = 1;
     private static final double TURN_SPEED = .25;
     private static final double VISION_DEADZONE = 0.5;
     private static final double PLACING_DIST = 2; //todo: determine distance from the wall to stop when placing gear
+    private static final double PIXY_TO_GEAR_OFFSET = 9;
 
     /**
      * Create drive train object containing mecanum motor functionality.
@@ -150,16 +154,23 @@ public class DriveTrain {
      * @param dist distance
      */
     public void moveDistance(double dist) {
-        double encchange = dist * DIST_TO_ENC;
-        //todo: move forward or backward according to the sign of dist
+        double encoderChange = Math.abs(dist * DIST_TO_ENC);
+        int dir = 1;
+        frontLeft.setEncPosition(0);
+        if (dist < 0) {
+            dir = -1;
+        }
+        while (frontLeft.getEncPosition() < encoderChange) {
+            mecanumDrive(0, AUTON_SPEED * dir, 0);
+        }
+        brake();
     }
 
     /**
-     *
      * @param pos  1 = Right, 2 = Middle, 3 = Right
      * @param pixy
      */
-    public void placeGear(int pos, PixyThread pixy) {
+    public void placeGear(int pos, PixyThread pixy, GearGobbler gobbler) {
         //todo: confirm angles for each side
         if (pos == 1) {
             turnDegrees(30);
@@ -168,22 +179,28 @@ public class DriveTrain {
         } else {
             turnDegrees(150);
         }
-
-        while (pixy.horizontalOffset() <= VISION_DEADZONE) {
-            moveDistance(pixy.horizontalOffset());
+        int dir;
+        while (Math.abs(pixy.horizontalOffset()) > VISION_DEADZONE) {
+            dir = 1;
+            if (pixy.horizontalOffset() < 0) {
+                dir = -1;
+            }
+            mecanumDrive(0, AUTON_SPEED * dir, 0);
         }
-        while (pixy.transverseOffset() >= PLACING_DIST) {
+        while (pixy.distanceFromLift() >= PLACING_DIST) {
             // center relative to the target
-            while (pixy.horizontalOffset() <= VISION_DEADZONE) {
-                moveDistance(pixy.horizontalOffset());
-            }
             // approach the target
-            //todo: use ultrasonic to verify dist?
-            while (pixy.transverseOffset() >= PLACING_DIST) {
-                mecanumDrive(0.5, 0, 0);
+            dir = 1;
+            if (pixy.horizontalOffset() < 0) {
+                dir = -1;
             }
-            brake();
+            mecanumDrive(AUTON_SPEED, AUTON_SPEED * dir, 0);
         }
+        brake();
+        gobbler.open();
+        Timer.delay(.5);
+        gobbler.close();
+
     }
 
     /**
@@ -191,8 +208,12 @@ public class DriveTrain {
      *
      * @param pixy
      */
-    public void placeGear(PixyThread pixy) {
+    public void placeGear(PixyThread pixy, GearGobbler gobbler) {
         //todo: round to nearest angle
+        double angle = navx.getAngle();
+        if (angle > 0 && angle < 60) {
+            placeGear(1, pixy, gobbler);
+        }
     }
 
     /**
