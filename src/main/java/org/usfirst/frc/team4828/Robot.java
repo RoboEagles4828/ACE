@@ -28,12 +28,11 @@ public class Robot extends IterativeRobot {
                 Ports.DT_BACK_RIGHT
         );
 
-        climb = new Climber(Ports.CLIMBER_1, Ports.CLIMBER_2);
+        climb = new Climber(Ports.CLIMBER_1, Ports.CLIMBER_2, Ports.HALLEFFECT_PORT);
         hopper = new Hopper(Ports.AGITATOR, Ports.INTAKE);
-
         // Master is the one on the right if you are looking at the back of the shooter
-        rightShooter = new Shooter(Ports.MOTOR_RIGHT, Ports.SERVO_RIGHT_MASTER, Ports.SERVO_RIGHT_SLAVE);
-        leftShooter = new Shooter(Ports.MOTOR_LEFT, Ports.SERVO_LEFT_MASTER, Ports.SERVO_LEFT_SLAVE);
+        rightShooter = new Shooter(Ports.MOTOR_RIGHT, Ports.SERVO_RIGHT_MASTER, Ports.SERVO_RIGHT_SLAVE, Ports.INDEXER_RIGHT);
+        leftShooter = new Shooter(Ports.MOTOR_LEFT, Ports.SERVO_LEFT_MASTER, Ports.SERVO_LEFT_SLAVE, Ports.INDEXER_LEFT);
         rightShooter.servos.calibrate(1, .3, 0);
         rightShooter.servos.calibrate(2, .6, 1);
         leftShooter.servos.calibrate(1, .75, .35);
@@ -58,6 +57,9 @@ public class Robot extends IterativeRobot {
         for (boolean toggle: buttonToggles){
             toggle = false;
         }
+
+        rightShooter.calibrateIndexer(0, 1);
+        leftShooter.calibrateIndexer(0, 1);
     }
 
     @Override
