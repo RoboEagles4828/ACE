@@ -24,6 +24,7 @@ public class PixyThread extends Thread {
     private String threadName = "pixy thread";
     private AnalogInput sensor;
     private Queue<Double> values;
+    private static final double pixyOffset = 0;
 
     public boolean isBlocksDetected() {
         return blocksDetected;
@@ -44,11 +45,11 @@ public class PixyThread extends Thread {
     public double horizontalOffset() {
         if (lastFrame.numBlocks() == 2) {
             return lastFrame.getRealDistance(((lastFrame.getFrameData().get(0).getX()
-                    + lastFrame.getFrameData().get(1).getX()) / 2) - Block.X_CENTER);
+                    + lastFrame.getFrameData().get(1).getX()) / 2) - Block.X_CENTER) + pixyOffset;
         }
         //if only one vision target is detected
         else if (lastFrame.numBlocks() == 1) {
-            return lastFrame.getRealDistance(lastFrame.getFrameData().get(0).getX() - Block.X_CENTER);
+            return lastFrame.getRealDistance(lastFrame.getFrameData().get(0).getX() - Block.X_CENTER) + pixyOffset;
         }
         //if no vision targets are detected
         blocksDetected = false;
