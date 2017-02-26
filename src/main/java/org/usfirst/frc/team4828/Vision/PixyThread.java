@@ -155,16 +155,18 @@ public class PixyThread extends Thread {
     }
 
     public void terminate() {
-        try {
-            in.close();
-            soc.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (t != null) {
+            try {
+                in.close();
+                soc.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            sensor.free();
+            enabled = false;
+            blocksDetected = false;
+            t = null;
         }
-        sensor.free();
-        enabled = false;
-        blocksDetected = false;
-        t = null;
     }
 
     @Override

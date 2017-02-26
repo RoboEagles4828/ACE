@@ -30,15 +30,15 @@ public class Robot extends IterativeRobot {
         climb = new Climber(Ports.CLIMBER_1, Ports.CLIMBER_2, Ports.HALLEFFECT_PORT);
         hopper = new Hopper(Ports.AGITATOR, Ports.INTAKE);
         // Master is the one on the right if you are looking at the back of the shooter
-        rightShooter = new Shooter(Ports.MOTOR_RIGHT, Ports.SERVO_RIGHT_MASTER, Ports.SERVO_RIGHT_SLAVE, Ports.INDEXER_RIGHT);
-        leftShooter = new Shooter(Ports.MOTOR_LEFT, Ports.SERVO_LEFT_MASTER, Ports.SERVO_LEFT_SLAVE, Ports.INDEXER_LEFT);
-        rightShooter.servos.calibrate(1, .3, 0);
-        rightShooter.servos.calibrate(2, .6, 1);
-        leftShooter.servos.calibrate(1, .75, .35);
-        leftShooter.servos.calibrate(2, .3, .75);
+//        rightShooter = new Shooter(Ports.MOTOR_RIGHT, Ports.SERVO_RIGHT_MASTER, Ports.SERVO_RIGHT_SLAVE, Ports.INDEXER_RIGHT);
+//        leftShooter = new Shooter(Ports.MOTOR_LEFT, Ports.SERVO_LEFT_MASTER, Ports.SERVO_LEFT_SLAVE, Ports.INDEXER_LEFT);
+//        rightShooter.servos.calibrate(1, .3, 0);
+//        rightShooter.servos.calibrate(2, .6, 1);
+//        leftShooter.servos.calibrate(1, .75, .35);
+//        leftShooter.servos.calibrate(2, .3, .75);
         gearGobbler = new GearGobbler(Ports.LEFT_GEAR_GOBBLER, Ports.RIGHT_GEAR_GOBBLER);
-        gearGobbler.servo.calibrate(1, 0, 1);
-        gearGobbler.servo.calibrate(2, 0, 1);
+        gearGobbler.servo.calibrate(2, 1, .85);
+        gearGobbler.servo.calibrate(1, 0, .15);
 
         dipSwitch = new DigitalInput[4];
         dipSwitch[0] = new DigitalInput(Ports.DIPSWITCH_1);
@@ -48,14 +48,14 @@ public class Robot extends IterativeRobot {
 
         // Starting servo positions
         //TODO: check if setting servos in robotInit actually works
-        rightShooter.servos.set(0);
-        leftShooter.servos.set(0);
+//        rightShooter.servos.set(0);
+//        leftShooter.servos.set(0);
         gearGobbler.close();
 
         pixy = new PixyThread(Ports.US_CHANNEL);
 
-        rightShooter.calibrateIndexer(0, 1);
-        leftShooter.calibrateIndexer(0, 1);
+//        rightShooter.calibrateIndexer(0, 1);
+//        leftShooter.calibrateIndexer(0, 1);
     }
 
     @Override
@@ -130,11 +130,15 @@ public class Robot extends IterativeRobot {
         pixy.start();
     }
 
+
+    //ENCODERS bl - br + fl - fr +
+    //TICK TO ROTATION 4100 -7861.0 br 10932.0 fl -280.0 fr 6304.0
+    //bl -49386.0 br 54039.0 fl -41040.0 fr 47859.0
+
     @Override
     public void testPeriodic() {
         if (driveStick.getRawButton(10)) {
-            gearGobbler.servo.setAbsolute(1, (-driveStick.getThrottle() + 1) / 2);
-            gearGobbler.servo.setAbsolute(2, (-driveStick.getThrottle() + 1) / 2);
+            gearGobbler.servo.set((-driveStick.getThrottle() + 1) / 2);
             System.out.println("Pos: " + (-driveStick.getThrottle() + 1) / 2);
         }
         if (driveStick.getRawButton(11)) {
@@ -145,15 +149,20 @@ public class Robot extends IterativeRobot {
         if (driveStick.getRawButton(12)) {
             drive.debugEncoders();
         }
+        if(driveStick.getRawButton(7)){
+            drive.moveDistance(2);
+        }
+        if(driveStick.getRawButton(8)){
+            climb.printDebug();
+            climb.reset();
+        }
         Timer.delay(.1);
     }
 
     @Override
     public void disabledInit() {
         System.out.println("Disabling robot");
-        if (pixy != null) {
-            pixy.terminate();
-            System.out.println("Stopping thread");
-        }
+        pixy.terminate();
+        System.out.println("Stopping thread");
     }
 }

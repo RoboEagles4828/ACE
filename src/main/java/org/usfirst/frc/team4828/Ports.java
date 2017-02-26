@@ -25,7 +25,7 @@ public class Ports {
 
     // Sensors
     public static final int US_CHANNEL = 0; // Analog
-    public static final int HALLEFFECT_PORT = 0;
+    public static final int HALLEFFECT_PORT = 1;
 
     // Switch
     public static final int DIPSWITCH_1 = 6;
@@ -33,8 +33,8 @@ public class Ports {
     public static final int DIPSWITCH_3 = 4;
     public static final int DIPSWITCH_4 = 3;
 
-    public static final int LEFT_GEAR_GOBBLER = 12;
-    public static final int RIGHT_GEAR_GOBBLER = 13;
+    public static final int LEFT_GEAR_GOBBLER = 4;
+    public static final int RIGHT_GEAR_GOBBLER = 5;
 
     private Ports() {
         throw new AssertionError(

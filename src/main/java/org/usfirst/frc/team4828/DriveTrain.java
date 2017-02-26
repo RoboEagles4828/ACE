@@ -15,7 +15,7 @@ public class DriveTrain {
     private AHRS navx;
 
     private static final double TWIST_THRESHOLD = 0.15;
-    private static final double DIST_TO_ENC = 1.0; //todo: determine conversion factor
+    private static final double DIST_TO_ENC = 4000.0; //todo: determine conversion factor
     private static final double AUTON_SPEED = 0.3; //todo: calibrate speed
     private static final double TURN_DEADZONE = 1;
     private static final double TURN_SPEED = .25;
@@ -322,7 +322,7 @@ public class DriveTrain {
      * Prints current average encoder values.
      */
     public void debugEncoders() {
-        System.out.print("bl " + backLeft.getPosition() + " br " + backRight.getPosition() + " fl " + frontLeft.getPosition() + " fr " + frontRight.getPosition());
+        System.out.println("bl " + backLeft.getPosition() + " br " + backRight.getPosition() + " fl " + frontLeft.getPosition() + " fr " + frontRight.getPosition());
     }
 
     /**

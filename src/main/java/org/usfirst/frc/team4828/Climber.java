@@ -41,7 +41,7 @@ public class Climber {
     }
 
     public void reset() {
-        while(!halleffect.get()) {
+        while(halleffect.get()) {
             climberMotor1.set(MOTOR_SPEED);
             climberMotor2.set(-MOTOR_SPEED);
         }
@@ -71,6 +71,10 @@ public class Climber {
     public void stop(){
         climberMotor1.set(0);
         climberMotor2.set(0);
+    }
+
+    public void printDebug(){
+        System.out.println(halleffect.get());
     }
 
 }
