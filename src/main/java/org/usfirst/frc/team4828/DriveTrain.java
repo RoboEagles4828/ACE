@@ -19,7 +19,7 @@ public class DriveTrain {
     private static final double TURN_DEADZONE = 1;
     private static final double TURN_SPEED = .25;
     private static final double VISION_DEADZONE = 0.5;
-    private static final double PLACING_DIST = -3; //todo: determine distance from the wall to stop when placing gear
+    private static final double PLACING_DIST = 8; //todo: determine distance from the wall to stop when placing gear
 
     /**
      * Create drive train object containing mecanum motor functionality.
@@ -34,6 +34,10 @@ public class DriveTrain {
         frontRight = new CANTalon(frontRightPort);
         backLeft = new CANTalon(backLeftPort);
         backRight = new CANTalon(backRightPort);
+        frontLeft.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
+        frontRight.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
+        backLeft.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
+        backRight.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
         navx = new AHRS(SPI.Port.kMXP);
     }
 
@@ -325,5 +329,12 @@ public class DriveTrain {
      */
     public void reset() {
         navx.reset();
+    }
+
+    public void zeroEncoders() {
+        frontLeft.setPosition(0);
+        frontRight.setPosition(0);
+        backLeft.setPosition(0);
+        backRight.setPosition(0);
     }
 }

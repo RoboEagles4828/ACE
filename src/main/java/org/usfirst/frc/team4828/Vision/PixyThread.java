@@ -60,7 +60,7 @@ public class PixyThread extends Thread {
      * @return distance from robot to the end of the peg inches
      */
     public double distanceFromLift() {
-        return distIn - 10.5;
+        return distIn;
     }
 
     /**

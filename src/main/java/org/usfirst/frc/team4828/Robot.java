@@ -142,9 +142,8 @@ public class Robot extends IterativeRobot {
             drive.turnDegrees(driveStick.getThrottle() * 360);
         }
         if (driveStick.getRawButton(11)) {
-            System.out.print("navx " + drive);
-            System.out.println("    pixy data: " + pixy);
-            System.out.println("horizontal: " + pixy.horizontalOffset() + " transverse: " + pixy.distanceFromLift());
+            System.out.println("navx " + drive + "    pixy data: " + pixy);
+            System.out.println("horizontal: " + pixy.horizontalOffset() + " distance: " + pixy.distanceFromLift());
         }
         if (driveStick.getRawButton(2)) {
             drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 4);
@@ -153,6 +152,7 @@ public class Robot extends IterativeRobot {
             drive.reset();
         }
         if (driveStick.getRawButton(12)) {
+            drive.zeroEncoders();
             drive.debugEncoders();
         }
         if (driveStick.getRawButton(8)) {
