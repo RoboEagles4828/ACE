@@ -38,6 +38,8 @@ public class DriveTrain {
         frontRight.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
         backLeft.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
         backRight.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
+        backLeft.reverseSensor(true);
+        frontLeft.reverseSensor(true);
         navx = new AHRS(SPI.Port.kMXP);
     }
 
@@ -156,11 +158,11 @@ public class DriveTrain {
      */
     public void moveDistance(double dist) {
         int dir = 1;
-        frontLeft.setEncPosition(0);
+        zeroEncoders();
         if (dist < 0) {
             dir = -1;
         }
-        while (frontLeft.getEncPosition() < dist) {
+        while (frontLeft.getEncPosition() < Math.abs(dist)) {
             mecanumDrive(0, AUTON_SPEED * dir, 0);
         }
         brake();
