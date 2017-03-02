@@ -15,7 +15,6 @@ public class DriveTrain {
     private AHRS navx;
 
     private static final double TWIST_THRESHOLD = 0.15;
-    private static final double DIST_TO_ENC = 4000.0; //todo: determine conversion factor
     private static final double AUTON_SPEED = 0.3; //todo: calibrate speed
     private static final double TURN_DEADZONE = 1;
     private static final double TURN_SPEED = .25;
@@ -152,13 +151,12 @@ public class DriveTrain {
      * @param dist distance
      */
     public void moveDistance(double dist) {
-        double encoderChange = Math.abs(dist * DIST_TO_ENC);
         int dir = 1;
         frontLeft.setEncPosition(0);
         if (dist < 0) {
             dir = -1;
         }
-        while (frontLeft.getEncPosition() < encoderChange) {
+        while (frontLeft.getEncPosition() < dist) {
             mecanumDrive(0, AUTON_SPEED * dir, 0);
         }
         brake();

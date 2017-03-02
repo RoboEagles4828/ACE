@@ -16,7 +16,7 @@ public class Climber {
      * @param motorPort1 port of the first climber motor
      * @param motorPort2 port of the second climber motor
      */
-    public Climber(int motorPort1, int motorPort2, int halleffectPort){
+    public Climber(int motorPort1, int motorPort2, int halleffectPort) {
         climberMotor1 = new Victor(motorPort1);
         climberMotor2 = new Victor(motorPort2);
         halleffect = new DigitalInput(halleffectPort);
@@ -27,7 +27,7 @@ public class Climber {
      *
      * @param speed double speed
      */
-    public void raise(double speed){
+    public void raise(double speed) {
         climberMotor1.set(speed);
         climberMotor2.set(-speed);
     }
@@ -35,13 +35,13 @@ public class Climber {
     /**
      * Raise the robot at the default speed.
      */
-    public void raise(){
+    public void raise() {
         climberMotor1.set(MOTOR_SPEED);
         climberMotor2.set(-MOTOR_SPEED);
     }
 
     public void reset() {
-        while(halleffect.get()) {
+        while (halleffect.get()) {
             climberMotor1.set(MOTOR_SPEED);
             climberMotor2.set(-MOTOR_SPEED);
         }
@@ -52,7 +52,7 @@ public class Climber {
      *
      * @param speed double speed (positive)
      */
-    public void lower(double speed){
+    public void lower(double speed) {
         climberMotor1.set(speed);
         climberMotor2.set(-speed);
     }
@@ -60,7 +60,7 @@ public class Climber {
     /**
      * Lower the robot at the default speed.
      */
-    public void lower(){
+    public void lower() {
         climberMotor1.set(-MOTOR_SPEED);
         climberMotor2.set(MOTOR_SPEED);
     }
@@ -68,12 +68,12 @@ public class Climber {
     /**
      * Stop raising or lowering the robot.
      */
-    public void stop(){
+    public void stop() {
         climberMotor1.set(0);
         climberMotor2.set(0);
     }
 
-    public void printDebug(){
+    public void printDebug() {
         System.out.println(halleffect.get());
     }
 

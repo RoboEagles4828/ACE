@@ -138,23 +138,28 @@ public class Robot extends IterativeRobot {
     @Override
     public void testPeriodic() {
         if (driveStick.getRawButton(10)) {
-            gearGobbler.servo.set((-driveStick.getThrottle() + 1) / 2);
-            System.out.println("Pos: " + (-driveStick.getThrottle() + 1) / 2);
+            System.out.print("navx " + drive);
+            drive.turnDegrees(driveStick.getThrottle() * 360);
         }
         if (driveStick.getRawButton(11)) {
             System.out.print("navx " + drive);
-            System.out.println("pixy data: " + pixy);
+            System.out.println("    pixy data: " + pixy);
             System.out.println("horizontal: " + pixy.horizontalOffset() + " transverse: " + pixy.distanceFromLift());
+        }
+        if (driveStick.getRawButton(2)) {
+            drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 4);
+        }
+        if (driveStick.getRawButton(9)) {
+            drive.reset();
         }
         if (driveStick.getRawButton(12)) {
             drive.debugEncoders();
         }
-        if(driveStick.getRawButton(7)){
-            drive.moveDistance(2);
-        }
-        if(driveStick.getRawButton(8)){
+        if (driveStick.getRawButton(8)) {
             climb.printDebug();
-            climb.reset();
+            climb.raise();
+        } else {
+            climb.stop();
         }
         Timer.delay(.1);
     }

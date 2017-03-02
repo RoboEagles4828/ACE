@@ -22,9 +22,9 @@ public class Shooter extends Thread {
     /**
      * Create shooter object that encapsulates all associated servos and motors.
      *
-     * @param motorPort port of main shooter wheel
+     * @param motorPort  port of main shooter wheel
      * @param masterPort port of master angle control servo
-     * @param slavePort port of slave angle control servo
+     * @param slavePort  port of slave angle control servo
      */
     public Shooter(int motorPort, int masterPort, int slavePort, int indexerPort) {
         shooterMotor = new CANTalon(motorPort);
@@ -48,7 +48,7 @@ public class Shooter extends Thread {
         shooterMotor.set(speed * (1 - servos.get() * SERVO_MULTIPLIER));
     }
 
-    public void spinUpAbsolute(double speed){
+    public void spinUpAbsolute(double speed) {
         shooterMotor.set(speed);
     }
 
@@ -59,33 +59,32 @@ public class Shooter extends Thread {
         shooterMotor.set(0);
     }
 
-    public void calibrateIndexer(double open, double close){
+    public void calibrateIndexer(double open, double close) {
         indexerOpen = open;
         indexerClose = close;
     }
 
-    public void open(){
+    public void open() {
         indexer.set(indexerOpen);
     }
 
-    public void close(){
+    public void close() {
         indexer.set(indexerClose);
     }
 
-    public void setAbsolute(double pos){
+    public void setAbsolute(double pos) {
         indexer.set(pos);
     }
 
 
-
     /**
      * Change the shooter motor back to normal speed control instead of PID.
-     *
+     * <p>
      * If they don't give us enough time to calibrate shooter PID, we will
      * have to resort to the tried and true way of spinning the shooter
      * wheel and not worry about it slowing down from contacting fuel.
      */
-    public void superSecretSafetyBackup(){
+    public void superSecretSafetyBackup() {
         shooterMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
     }
 
