@@ -187,7 +187,7 @@ public class DriveTrain {
                     dir = -1;
                 }
                 // center relative to the target
-                mecanumDrive(0, AUTON_SPEED * dir, 0);
+                mecanumDriveAbsolute(0, AUTON_SPEED * dir, 0);
             }
             while (pixy.distanceFromLift() >= PLACING_DIST) {
                 // approach the target
@@ -195,7 +195,7 @@ public class DriveTrain {
                 if (pixy.horizontalOffset() < 0) {
                     dir = -1;
                 }
-                mecanumDrive(AUTON_SPEED, AUTON_SPEED * dir, 0);
+                mecanumDriveAbsolute(AUTON_SPEED, AUTON_SPEED * dir, 0);
             }
             brake();
             gobbler.open();
@@ -234,10 +234,7 @@ public class DriveTrain {
      * @param speed double -1-1
      */
     public void turn(double speed) {
-        frontLeft.set(-speed);
-        backLeft.set(-speed);
-        frontRight.set(speed);
-        backRight.set(speed);
+        mecanumDrive(0, 0, speed);
     }
 
     /**
