@@ -8,7 +8,8 @@ public class Climber {
     private Victor climberMotor1;
     private Victor climberMotor2;
     private DigitalInput halleffect;
-    private static final double MOTOR_SPEED = 0.5;
+    private static final double MOTOR_SPEED = 0.8;
+    private static final double RESET_SPEED = 0.2;
 
     /**
      * Create climber object encapsulating the climber motor.
@@ -28,22 +29,33 @@ public class Climber {
      * @param speed double speed
      */
     public void raise(double speed) {
-        climberMotor1.set(speed);
-        climberMotor2.set(-speed);
+        climberMotor1.set(-speed);
+        climberMotor2.set(speed);
     }
 
     /**
      * Raise the robot at the default speed.
      */
     public void raise() {
-        climberMotor1.set(MOTOR_SPEED);
-        climberMotor2.set(-MOTOR_SPEED);
+        climberMotor1.set(-MOTOR_SPEED);
+        climberMotor2.set(MOTOR_SPEED);
     }
 
     public void reset() {
-        while (halleffect.get()) {
-            climberMotor1.set(MOTOR_SPEED);
-            climberMotor2.set(-MOTOR_SPEED);
+        if (halleffect.get()) {
+            raise(RESET_SPEED);
+        }
+        else{
+            stop();
+        }
+    }
+
+    public void reset(double speed) {
+        if (halleffect.get()) {
+            raise(speed);
+        }
+        else{
+            stop();
         }
     }
 
@@ -61,8 +73,8 @@ public class Climber {
      * Lower the robot at the default speed.
      */
     public void lower() {
-        climberMotor1.set(-MOTOR_SPEED);
-        climberMotor2.set(MOTOR_SPEED);
+        climberMotor1.set(MOTOR_SPEED);
+        climberMotor2.set(-MOTOR_SPEED);
     }
 
     /**

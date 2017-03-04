@@ -6,8 +6,10 @@ import edu.wpi.first.wpilibj.Servo;
 public class Shooter extends Thread {
     private CANTalon shooterMotor;
     public ServoGroup servos;
+    private double currentPower = 0;
 
-    private static final double SHOOTER_SPEED = 0.8;
+    private static final int SHOOTER_SPEED = 2000;
+    private static final int SPEED_DEADZONE = 500;
     private static final double SERVO_MULTIPLIER = 0.8;
 
     private static final double P = .5;
@@ -36,7 +38,7 @@ public class Shooter extends Thread {
      * Start the shooter wheel using the default shooter speed.
      */
     public void spinUp() {
-        shooterMotor.set(SHOOTER_SPEED * (1 - servos.get() * SERVO_MULTIPLIER));
+        spinUp(SHOOTER_SPEED);
     }
 
     /**
@@ -44,8 +46,16 @@ public class Shooter extends Thread {
      *
      * @param speed double 0-1 dictates fire speed
      */
-    public void spinUp(double speed) {
-        shooterMotor.set(speed * (1 - servos.get() * SERVO_MULTIPLIER));
+    public void spinUp(int speed) {
+        int currentSpeed = shooterMotor.getEncVelocity();
+        if (speed - SPEED_DEADZONE > currentSpeed || speed + SPEED_DEADZONE < currentSpeed) {
+            if (currentSpeed < speed) {
+                currentPower += .01;
+            } else if (currentSpeed > speed) {
+                currentPower -= .01;
+            }
+        }
+        shooterMotor.set(currentPower);
     }
 
     public void spinUpAbsolute(double speed) {
@@ -88,4 +98,7 @@ public class Shooter extends Thread {
         shooterMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
     }
 
+    public String toString() {
+        return shooterMotor.getEncVelocity() + "   " + currentPower;
+    }
 }

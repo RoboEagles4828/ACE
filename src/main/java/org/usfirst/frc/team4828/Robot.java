@@ -30,12 +30,12 @@ public class Robot extends IterativeRobot {
         climb = new Climber(Ports.CLIMBER_1, Ports.CLIMBER_2, Ports.HALLEFFECT_PORT);
         hopper = new Hopper(Ports.AGITATOR, Ports.INTAKE);
         // Master is the one on the right if you are looking at the back of the shooter
-//        rightShooter = new Shooter(Ports.MOTOR_RIGHT, Ports.SERVO_RIGHT_MASTER, Ports.SERVO_RIGHT_SLAVE, Ports.INDEXER_RIGHT);
-//        leftShooter = new Shooter(Ports.MOTOR_LEFT, Ports.SERVO_LEFT_MASTER, Ports.SERVO_LEFT_SLAVE, Ports.INDEXER_LEFT);
-//        rightShooter.servos.calibrate(1, .3, 0);
-//        rightShooter.servos.calibrate(2, .6, 1);
-//        leftShooter.servos.calibrate(1, .75, .35);
-//        leftShooter.servos.calibrate(2, .3, .75);
+        rightShooter = new Shooter(Ports.MOTOR_RIGHT, Ports.SERVO_RIGHT_MASTER, Ports.SERVO_RIGHT_SLAVE, Ports.INDEXER_RIGHT);
+        leftShooter = new Shooter(Ports.MOTOR_LEFT, Ports.SERVO_LEFT_MASTER, Ports.SERVO_LEFT_SLAVE, Ports.INDEXER_LEFT);
+        rightShooter.servos.calibrate(1, .3, 0);
+        rightShooter.servos.calibrate(2, .6, 1);
+        leftShooter.servos.calibrate(1, .75, .35);
+        leftShooter.servos.calibrate(2, .3, .75);
         gearGobbler = new GearGobbler(Ports.LEFT_GEAR_GOBBLER, Ports.RIGHT_GEAR_GOBBLER);
         gearGobbler.servo.calibrate(2, 1, .85);
         gearGobbler.servo.calibrate(1, 0, .15);
@@ -48,8 +48,8 @@ public class Robot extends IterativeRobot {
 
         // Starting servo positions
         //TODO: check if setting servos in robotInit actually works
-//        rightShooter.servos.set(0);
-//        leftShooter.servos.set(0);
+        rightShooter.servos.set(0);
+        leftShooter.servos.set(0);
         gearGobbler.close();
 
         pixy = new PixyThread(Ports.US_CHANNEL);
@@ -80,18 +80,12 @@ public class Robot extends IterativeRobot {
                 break;
             case 1:
                 // Place gear on right side
-                drive.moveDistance(distance);
-                drive.placeGear(3, pixy, gearGobbler);
                 break;
             case 2:
                 // Place gear on center
-                drive.moveDistance(distance / 2);
-                drive.placeGear(2, pixy, gearGobbler);
                 break;
             case 3:
                 // Place gear on left side
-                drive.moveDistance(distance);
-                drive.placeGear(1, pixy, gearGobbler);
                 break;
             case 4:
                 // Shoot 10 fuel
@@ -118,8 +112,29 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
         super.teleopPeriodic();
         drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 4);
-        if (driveStick.getRawButton(11)) {
+
+        //INTAKE
+        if (driveStick.getRawButton(3)) {
+            hopper.intake();
+        } else {
+            hopper.stopIntake();
+        }
+
+        //GYRO
+        if (driveStick.getRawButton(7)) {
             drive.reset();
+            drive.zeroEncoders();
+        }
+
+        //CLIMBER
+        if (driveStick.getRawButton(8)) {
+            climb.printDebug();
+            climb.raise();
+        } else if (driveStick.getRawButton(1)) {
+            climb.printDebug();
+            climb.reset();
+        } else {
+            climb.stop();
         }
     }
 
@@ -130,36 +145,55 @@ public class Robot extends IterativeRobot {
         pixy.start();
     }
 
-
-    //ENCODERS bl - br + fl - fr +
-    //TICK TO ROTATION 4100 -7861.0 br 10932.0 fl -280.0 fr 6304.0
-    //bl -49386.0 br 54039.0 fl -41040.0 fr 47859.0
-
     @Override
     public void testPeriodic() {
-        if (driveStick.getRawButton(10)) {
-            System.out.print("navx " + drive);
-            drive.turnDegrees(driveStick.getThrottle() * 360);
-        }
+        double temp = ((-driveStick.getThrottle()) + 1) / 2;
+//        if (driveStick.getRawButton(10)) {
+//            System.out.print("navx " + drive);
+//            drive.turnDegrees(driveStick.getThrottle() * 360);
+//        }
+//        if (driveStick.getRawButton(11)) {
+//            System.out.println("navx " + drive + "    pixy data: " + pixy.distIn);
+//        }
+//        if (driveStick.getRawButton(9)) {
+//            drive.reset();
+//            drive.zeroEncoders();
+//        }
+//        if (driveStick.getRawButton(12)) {
+//            drive.debugEncoders();
+//        }
         if (driveStick.getRawButton(11)) {
-            System.out.println("navx " + drive + "    pixy data: " + pixy);
-            System.out.println("horizontal: " + pixy.horizontalOffset() + " distance: " + pixy.distanceFromLift());
+            System.out.println("ultra data: " + pixy.distanceFromLift());
         }
-        if (driveStick.getRawButton(2)) {
-            drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 4);
+
+        if (driveStick.getRawButton(10)) {
+            leftShooter.servos.set(temp);
+            System.out.println(leftShooter.servos);
         }
         if (driveStick.getRawButton(9)) {
-            drive.reset();
+            rightShooter.servos.set(temp);
+            System.out.println(rightShooter.servos);
         }
-        if (driveStick.getRawButton(12)) {
-            drive.zeroEncoders();
-            drive.debugEncoders();
-        }
-        if (driveStick.getRawButton(8)) {
-            climb.printDebug();
-            climb.raise();
+        if (driveStick.getRawButton(5)) {
+            System.out.println(leftShooter);
+            leftShooter.spinUp((int)(temp*10000));
         } else {
-            climb.stop();
+            leftShooter.spinDown();
+        }
+        if (driveStick.getRawButton(6)) {
+            rightShooter.spinUp((int)(temp*10000));
+            System.out.println(rightShooter);
+        } else {
+            rightShooter.spinDown();
+        }
+        if (driveStick.getRawButton(4)) {
+            hopper.stir();
+        } else {
+            hopper.stopStir();
+        }
+        if(driveStick.getRawButton(2)){
+            System.out.print("joystick pos: " + temp);
+            System.out.println(" pov pos: " + driveStick.getPOV());
         }
         Timer.delay(.1);
     }
