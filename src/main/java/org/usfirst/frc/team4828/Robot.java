@@ -36,8 +36,8 @@ public class Robot extends IterativeRobot {
         leftShooter = new Shooter(Ports.MOTOR_LEFT, Ports.SERVO_LEFT_MASTER, Ports.SERVO_LEFT_SLAVE, Ports.INDEXER_LEFT);
         rightShooter.servos.calibrate(1, .3, 0);
         rightShooter.servos.calibrate(2, .6, 1);
-        leftShooter.servos.calibrate(1, .75, .35);
-        leftShooter.servos.calibrate(2, .3, .75);
+        leftShooter.servos.calibrate(1, .75, .5);
+        leftShooter.servos.calibrate(2, .35, .7);
         gearGobbler = new GearGobbler(Ports.LEFT_GEAR_GOBBLER, Ports.RIGHT_GEAR_GOBBLER);
         gearGobbler.servo.calibrate(2, 1, .8);
         gearGobbler.servo.calibrate(1, 0, .25);
@@ -238,26 +238,17 @@ public class Robot extends IterativeRobot {
 //        }
         if (driveStick.getRawButton(11)) {
             System.out.println("ultra data: " + pixy.distanceFromLift());
+            System.out.println(pixy.toString() + "     " + pixy.horizontalOffset());
         }
 
-        if (driveStick.getRawButton(1)) {
-            rightShooter.spinUp((int) (temp * 30000));
-            leftShooter.spinUp((int) (temp * 30000));
-            hopper.stir();
-            System.out.println(leftShooter + "     " + rightShooter);
-        } else {
-            leftShooter.spinDown();
-            rightShooter.spinDown();
-            hopper.stopStir();
-        }
-        if (driveStick.getRawButton(10)) {
-            leftShooter.servos.set(temp);
-            System.out.println(leftShooter.servos);
-        }
-        if (driveStick.getRawButton(9)) {
-            rightShooter.servos.set(temp);
-            System.out.println(rightShooter.servos);
-        }
+//        if (driveStick.getRawButton(10)) {
+//            leftShooter.servos.set(temp);
+//            System.out.println(leftShooter.servos);
+//        }
+//        if (driveStick.getRawButton(9)) {
+//            rightShooter.servos.set(temp);
+//            System.out.println(rightShooter.servos);
+//        }
         if (driveStick.getRawButton(2)) {
             System.out.print("joystick pos: " + temp);
             System.out.println(" pov pos: " + driveStick.getPOV());

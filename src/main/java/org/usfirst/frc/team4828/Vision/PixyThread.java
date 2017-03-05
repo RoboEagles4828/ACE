@@ -105,63 +105,36 @@ public class PixyThread extends Thread {
         return toCm(voltage) / 2.54;
     }
 
-//  //THIS VERSION HAS PIXY
-//    @Override
-//    public void run() {
-//        while (enabled) {
-//            try {
-//                currentFrame = new Frame(in.readLine().split(","), distIn);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//
-//            if (currentFrame.numBlocks() >= 2 || (lastFrame == null && currentFrame.numBlocks() == 1)) {
-//                blocksDetected = true;
-//                lastFrame = currentFrame;
-//            }
-//
-//            values.add(sensor.getVoltage());
-//            while (values.size() > WINDOW_SIZE) {
-//                values.remove();
-//            }
-//
-//            distCm = toCm(medianFilter(values));
-//            distIn = toIn(medianFilter(values));
-//            edu.wpi.first.wpilibj.Timer.delay(0.1);
-//        }
-//    }
-
-//    // THIS VERSION HAS PIXY
-//    @Override
-//    public void start() {
-//        enabled = true;
-//        if (t == null) {
-//            System.out.println("starting: " + threadName);
-//            boolean scanning = true;
-//            while (scanning) {
-//                try {
-//                    soc = new Socket(HOST, PORT);
-//                    in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
-//                    scanning = false;
-//                } catch (IOException e) {
-//                    System.out.println("Connect failed, waiting and trying again");
-//                    try {
-//                        Thread.sleep(1000);
-//                    } catch (InterruptedException ie) {
-//                        ie.printStackTrace();
-//                    }
-//                }
-//            }
-//            System.out.println("Socket connection established");
-//            t = new Thread(this, threadName);
-//            t.start();
-//        }
-//    }
-
-
+  //THIS VERSION HAS PIXY
     @Override
     public void run() {
+        boolean scanning = true;
+        while (scanning) {
+            try {
+                soc = new Socket(HOST, PORT);
+                in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
+                scanning = false;
+            } catch (IOException e) {
+                System.out.println("Connect failed, waiting and trying again");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ie) {
+                    ie.printStackTrace();
+                }
+            }
+        }
         while (enabled) {
+            try {
+                currentFrame = new Frame(in.readLine().split(","), distIn);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (currentFrame.numBlocks() >= 2 || (lastFrame == null && currentFrame.numBlocks() == 1)) {
+                blocksDetected = true;
+                lastFrame = currentFrame;
+            }
+
             values.add(sensor.getVoltage());
             while (values.size() > WINDOW_SIZE) {
                 values.remove();
@@ -173,39 +146,66 @@ public class PixyThread extends Thread {
         }
     }
 
+    // THIS VERSION HAS PIXY
     @Override
     public void start() {
         enabled = true;
         if (t == null) {
             System.out.println("starting: " + threadName);
+            System.out.println("Socket connection established");
             t = new Thread(this, threadName);
             t.start();
         }
     }
 
-//  //THIS VERION HAS PIXY
-//    public void terminate() {
-//        if (t != null) {
-//            try {
-//                in.close();
-//                soc.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
+
+//    @Override
+//    public void run() {
+//        while (enabled) {
+//            values.add(sensor.getVoltage());
+//            while (values.size() > WINDOW_SIZE) {
+//                values.remove();
 //            }
-//            sensor.free();
-//            enabled = false;
-//            blocksDetected = false;
-//            t = null;
+//
+//            distCm = toCm(medianFilter(values));
+//            distIn = toIn(medianFilter(values));
+//            edu.wpi.first.wpilibj.Timer.delay(0.1);
 //        }
 //    }
 
+//    @Override
+//    public void start() {
+//        enabled = true;
+//        if (t == null) {
+//            System.out.println("starting: " + threadName);
+//            t = new Thread(this, threadName);
+//            t.start();
+//        }
+//    }
+
+  //THIS VERION HAS PIXY
     public void terminate() {
         if (t != null) {
+            try {
+                in.close();
+                soc.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             sensor.free();
             enabled = false;
+            blocksDetected = false;
             t = null;
         }
     }
+
+//    public void terminate() {
+//        if (t != null) {
+//            sensor.free();
+//            enabled = false;
+//            t = null;
+//        }
+//    }
 
     @Override
     public String toString() {
