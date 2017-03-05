@@ -6,11 +6,11 @@ import edu.wpi.first.wpilibj.Servo;
 public class Shooter extends Thread {
     private CANTalon shooterMotor;
     public ServoGroup servos;
-    private double currentPower = 0;
+    private double currentPower = 0.5;
 
     private static final int SHOOTER_SPEED = 2000;
-    private static final int SPEED_DEADZONE = 500;
-    private static final double SERVO_MULTIPLIER = 0.8;
+    private static final int SPEED_DEADZONE = 1000;
+    private static final double STEP_SIZE = .02;
 
     private static final double P = .5;
     private static final double I = 0;
@@ -48,11 +48,14 @@ public class Shooter extends Thread {
      */
     public void spinUp(int speed) {
         int currentSpeed = shooterMotor.getEncVelocity();
+        if(currentPower>1.0){
+            currentPower = .99;
+        }
         if (speed - SPEED_DEADZONE > currentSpeed || speed + SPEED_DEADZONE < currentSpeed) {
             if (currentSpeed < speed) {
-                currentPower += .01;
+                currentPower += STEP_SIZE;
             } else if (currentSpeed > speed) {
-                currentPower -= .01;
+                //currentPower -= STEP_SIZE;
             }
         }
         shooterMotor.set(currentPower);
@@ -67,6 +70,7 @@ public class Shooter extends Thread {
      */
     public void spinDown() {
         shooterMotor.set(0);
+        currentPower = 0;
     }
 
     public void calibrateIndexer(double open, double close) {

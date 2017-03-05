@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.*;
 import org.usfirst.frc.team4828.Vision.PixyThread;
 
 public class Robot extends IterativeRobot {
-    private Joystick driveStick;
+    private Joystick driveStick, secondaryStick;
     private DriveTrain drive;
     private Shooter shoot;
     private PixyThread pixy;
@@ -14,12 +14,14 @@ public class Robot extends IterativeRobot {
     private Climber climb;
     private Hopper hopper;
     private GearGobbler gearGobbler;
+    private double startTime = 0.0;
 
     @Override
     public void robotInit() {
         super.robotInit();
         System.out.println("THE ROBOT TURNED ON");
         driveStick = new Joystick(0);
+        secondaryStick = new Joystick(1);
         drive = new DriveTrain(
                 Ports.DT_FRONT_LEFT,
                 Ports.DT_BACK_LEFT,
@@ -37,8 +39,8 @@ public class Robot extends IterativeRobot {
         leftShooter.servos.calibrate(1, .75, .35);
         leftShooter.servos.calibrate(2, .3, .75);
         gearGobbler = new GearGobbler(Ports.LEFT_GEAR_GOBBLER, Ports.RIGHT_GEAR_GOBBLER);
-        gearGobbler.servo.calibrate(2, 1, .85);
-        gearGobbler.servo.calibrate(1, 0, .15);
+        gearGobbler.servo.calibrate(2, 1, .8);
+        gearGobbler.servo.calibrate(1, 0, .25);
 
         dipSwitch = new DigitalInput[4];
         dipSwitch[0] = new DigitalInput(Ports.DIPSWITCH_1);
@@ -50,7 +52,8 @@ public class Robot extends IterativeRobot {
         //TODO: check if setting servos in robotInit actually works
         rightShooter.servos.set(0);
         leftShooter.servos.set(0);
-        gearGobbler.close();
+        gearGobbler.retract();
+        gearGobbler.open();
 
         pixy = new PixyThread(Ports.US_CHANNEL);
 
@@ -66,32 +69,60 @@ public class Robot extends IterativeRobot {
         for (int i = 0; i < 4; i++) {
             autonSelect += (dipSwitch[i].get() ? 1 : 0) * (1 << i);
         }
+        gearGobbler.retract();
+        gearGobbler.open();
         System.out.println("Entering auton number " + autonSelect);
         drive.reset();
+        startTime = Timer.getFPGATimestamp();
     }
 
     @Override
     public void autonomousPeriodic() {
         super.autonomousPeriodic();
-        double distance = 93.3; //inches to move from wall for gear placement
+        double time = Timer.getFPGATimestamp() - startTime;
         switch (autonSelect) {
             case 0:
                 // DO NOTHING
                 break;
             case 1:
-                // Place gear on right side
+                // Shoot 10
+                rightShooter.servos.set(.6);
+                leftShooter.servos.set(.4);
+                rightShooter.spinUp(25000);
+                leftShooter.spinUp(25000);
+                hopper.stir();
                 break;
             case 2:
                 // Place gear on center
                 break;
             case 3:
-                // Place gear on left side
+                if (time < 4) {
+                    drive.mecanumDriveAbsolute(.4, 0, 0);
+                } else if (time > 6 && time < 8) {
+                    drive.mecanumDriveAbsolute(-.4, 0, 0);
+                } else if (time < 6) {
+                    drive.brake();
+                    gearGobbler.close();
+                    Timer.delay(.5);
+                    gearGobbler.push();
+                } else if (time > 10) {
+                    gearGobbler.open();
+                    gearGobbler.retract();
+                } else {
+                    drive.brake();
+                }
+
                 break;
             case 4:
                 // Shoot 10 fuel
                 break;
             case 5:
-                // The crazy running into hopper and shooting tons of balls plan
+                if(time<7){
+                    drive.mecanumDriveAbsolute(.4, 0, 0);
+                }
+                else{
+                    drive.brake();
+                }
                 break;
             case 15:
                 System.out.println("Safe Auton... doing nothing");
@@ -106,35 +137,80 @@ public class Robot extends IterativeRobot {
     public void teleopInit() {
         super.teleopInit();
         System.out.println("Entering teleop...");
+        pixy.start();
     }
 
     @Override
     public void teleopPeriodic() {
         super.teleopPeriodic();
-        drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 4);
+
+        double magnitude = ((-driveStick.getThrottle()) + 1) / 2;
+
+        //DRIVE
+        drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 2);
 
         //INTAKE
-        if (driveStick.getRawButton(3)) {
+        if (driveStick.getRawButton(11) || secondaryStick.getRawButton(11)) {
             hopper.intake();
         } else {
             hopper.stopIntake();
         }
 
-        //GYRO
-        if (driveStick.getRawButton(7)) {
+        //GYRO and ENCODERS
+        if (driveStick.getRawButton(7) || secondaryStick.getRawButton(7)) {
             drive.reset();
             drive.zeroEncoders();
         }
 
         //CLIMBER
-        if (driveStick.getRawButton(8)) {
+        if (driveStick.getRawButton(8) || secondaryStick.getRawButton(8)) {
             climb.printDebug();
             climb.raise();
-        } else if (driveStick.getRawButton(1)) {
-            climb.printDebug();
+        } else if (driveStick.getRawButton(9)) {
             climb.reset();
         } else {
             climb.stop();
+        }
+
+        //GEAR PLACEMENT
+        if (driveStick.getRawButton(12) || secondaryStick.getRawButton(12)) {
+            gearGobbler.close();
+            Timer.delay(.5);
+            gearGobbler.push();
+            Timer.delay(.4);
+        } else {
+            gearGobbler.retract();
+            gearGobbler.open();
+        }
+
+        if (driveStick.getRawButton(5)) {
+            drive.debugEncoders();
+        }
+
+        //SHOOTING
+        if (driveStick.getRawButton(1) || secondaryStick.getRawButton(1)) {
+            rightShooter.spinUp((int) (magnitude * 30000));
+            leftShooter.spinUp((int) (magnitude * 30000));
+            //leftShooter.spinUpAbsolute(magnitude);
+            //rightShooter.spinUpAbsolute(magnitude*.9);
+            hopper.stir();
+            System.out.println(leftShooter + "     " + rightShooter);
+        } else {
+            leftShooter.spinDown();
+            rightShooter.spinDown();
+            hopper.stopStir();
+        }
+
+        //SHOOTER SERVOS
+        if (driveStick.getRawButton(10) || secondaryStick.getRawButton(10)) {
+            leftShooter.servos.set(magnitude);
+            rightShooter.servos.set(magnitude*.8);
+            //System.out.println(leftShooter.servos + "      " + rightShooter.servos);
+        }
+
+        if (driveStick.getRawButton(2)) {
+            System.out.println("navx " + drive + "    pixy data: " + pixy.distanceFromLift());
+            System.out.println(magnitude * 30000 + "     " + magnitude);
         }
     }
 
@@ -152,9 +228,7 @@ public class Robot extends IterativeRobot {
 //            System.out.print("navx " + drive);
 //            drive.turnDegrees(driveStick.getThrottle() * 360);
 //        }
-//        if (driveStick.getRawButton(11)) {
-//            System.out.println("navx " + drive + "    pixy data: " + pixy.distIn);
-//        }
+
 //        if (driveStick.getRawButton(9)) {
 //            drive.reset();
 //            drive.zeroEncoders();
@@ -166,6 +240,16 @@ public class Robot extends IterativeRobot {
             System.out.println("ultra data: " + pixy.distanceFromLift());
         }
 
+        if (driveStick.getRawButton(1)) {
+            rightShooter.spinUp((int) (temp * 30000));
+            leftShooter.spinUp((int) (temp * 30000));
+            hopper.stir();
+            System.out.println(leftShooter + "     " + rightShooter);
+        } else {
+            leftShooter.spinDown();
+            rightShooter.spinDown();
+            hopper.stopStir();
+        }
         if (driveStick.getRawButton(10)) {
             leftShooter.servos.set(temp);
             System.out.println(leftShooter.servos);
@@ -174,24 +258,7 @@ public class Robot extends IterativeRobot {
             rightShooter.servos.set(temp);
             System.out.println(rightShooter.servos);
         }
-        if (driveStick.getRawButton(5)) {
-            System.out.println(leftShooter);
-            leftShooter.spinUp((int)(temp*10000));
-        } else {
-            leftShooter.spinDown();
-        }
-        if (driveStick.getRawButton(6)) {
-            rightShooter.spinUp((int)(temp*10000));
-            System.out.println(rightShooter);
-        } else {
-            rightShooter.spinDown();
-        }
-        if (driveStick.getRawButton(4)) {
-            hopper.stir();
-        } else {
-            hopper.stopStir();
-        }
-        if(driveStick.getRawButton(2)){
+        if (driveStick.getRawButton(2)) {
             System.out.print("joystick pos: " + temp);
             System.out.println(" pov pos: " + driveStick.getPOV());
         }
