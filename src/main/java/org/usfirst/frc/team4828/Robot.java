@@ -54,9 +54,6 @@ public class Robot extends IterativeRobot {
         leftShooter.servos.set(0);
         gearGobbler.retract();
         gearGobbler.open();
-
-        pixy = new PixyThread(Ports.US_CHANNEL);
-
 //        rightShooter.calibrateIndexer(0, 1);
 //        leftShooter.calibrateIndexer(0, 1);
     }
@@ -117,10 +114,9 @@ public class Robot extends IterativeRobot {
                 // Shoot 10 fuel
                 break;
             case 5:
-                if(time<7){
+                if (time < 7) {
                     drive.mecanumDriveAbsolute(.4, 0, 0);
-                }
-                else{
+                } else {
                     drive.brake();
                 }
                 break;
@@ -204,7 +200,7 @@ public class Robot extends IterativeRobot {
         //SHOOTER SERVOS
         if (driveStick.getRawButton(10) || secondaryStick.getRawButton(10)) {
             leftShooter.servos.set(magnitude);
-            rightShooter.servos.set(magnitude*.8);
+            rightShooter.servos.set(magnitude * .8);
             //System.out.println(leftShooter.servos + "      " + rightShooter.servos);
         }
 
@@ -218,7 +214,10 @@ public class Robot extends IterativeRobot {
     public void testInit() {
         super.testInit();
         System.out.println("Entering test...");
-        pixy.start();
+        if(pixy == null){
+            pixy = new PixyThread(Ports.US_CHANNEL);
+            pixy.start();
+        }
     }
 
     @Override
@@ -260,7 +259,8 @@ public class Robot extends IterativeRobot {
     @Override
     public void disabledInit() {
         System.out.println("Disabling robot");
-        pixy.terminate();
-        System.out.println("Stopping thread");
+        if (pixy != null) {
+            pixy.terminate();
+        }
     }
 }

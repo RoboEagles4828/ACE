@@ -13,23 +13,16 @@ public class PixyThread extends Thread {
     private static final int PORT = 5800;
     private static final int WINDOW_SIZE = 30;
     private static final double SUPPLIED_VOLTAGE = 5.0;
+    private static final double pixyOffset = 0;
     volatile Frame lastFrame;
+    private  boolean enabled;
     private volatile Frame currentFrame;
     private double distCm = 0;
     private volatile double distIn = 0;
     private BufferedReader in;
     private Socket soc;
-    private Thread t = null;
-    private boolean enabled;
-    private String threadName = "pixy thread";
     private AnalogInput sensor;
     private Queue<Double> values;
-    private static final double pixyOffset = 0;
-
-    public boolean isBlocksDetected() {
-        return blocksDetected;
-    }
-
     private boolean blocksDetected = false;
 
     /**
@@ -43,6 +36,11 @@ public class PixyThread extends Thread {
         String[] temp = {"0 1 2 3 4 5 6"};
         currentFrame = new Frame(temp, .5);
         lastFrame = new Frame(temp, .5);
+        enabled = false;
+    }
+
+    public boolean isBlocksDetected() {
+        return blocksDetected;
     }
 
     public double horizontalOffset() {
@@ -106,11 +104,11 @@ public class PixyThread extends Thread {
         return toCm(voltage) / 2.54;
     }
 
-    //THIS VERSION HAS PIXY
     @Override
     public void run() {
+        System.out.println("STARTING RUN");
         boolean scanning = true;
-        while (scanning) {
+        while (scanning && enabled) {
             try {
                 soc = new Socket(HOST, PORT);
                 in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
@@ -127,55 +125,46 @@ public class PixyThread extends Thread {
         System.out.println("Socket connection established");
         int i = 0;
         while (enabled) {
+            System.out.println("sampled " + i);
             try {
                 currentFrame = new Frame(in.readLine().split(","), distIn);
-            } catch (Exception e) {
+                if (currentFrame.numBlocks() >= 2 || (lastFrame == null && currentFrame.numBlocks() == 1)) {
+                    blocksDetected = true;
+                    lastFrame = currentFrame;
+                }
+
+                values.add(sensor.getVoltage());
+                while (values.size() > WINDOW_SIZE) {
+                    values.remove();
+                }
+                i++;
+                distCm = toCm(medianFilter(values));
+                distIn = toIn(medianFilter(values));
+                edu.wpi.first.wpilibj.Timer.delay(0.1);
+            }
+            catch (Exception e) {
                 e.printStackTrace();
             }
-
-            if (currentFrame.numBlocks() >= 2 || (lastFrame == null && currentFrame.numBlocks() == 1)) {
-                blocksDetected = true;
-                lastFrame = currentFrame;
-            }
-
-            System.out.println("sampled " + i);
-            values.add(sensor.getVoltage());
-            while (values.size() > WINDOW_SIZE) {
-                values.remove();
-            }
-            i++;
-            distCm = toCm(medianFilter(values));
-            distIn = toIn(medianFilter(values));
-            edu.wpi.first.wpilibj.Timer.delay(0.1);
         }
     }
 
-    // THIS VERSION HAS PIXY
     @Override
-    public void start() {
+    public void start(){
         enabled = true;
-        if (t == null) {
-            System.out.println("starting: " + threadName);
-            t = new Thread(this, threadName);
-            t.start();
-        }
+        System.out.println("STARTING THREAD");
+        super.start();
     }
 
-    //THIS VERION HAS PIXY
     public void terminate() {
-        if (t != null) {
-            System.out.println("DISABLING THREAD");
-            try {
-                in.close();
-                soc.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            sensor.free();
-            enabled = false;
-            blocksDetected = false;
-            t = null;
+        System.out.println("DISABLING THREAD");
+        try {
+            in.close();
+            soc.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        blocksDetected = false;
+        enabled = false;
     }
 
     @Override
