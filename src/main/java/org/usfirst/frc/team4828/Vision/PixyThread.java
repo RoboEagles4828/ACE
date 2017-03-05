@@ -19,7 +19,7 @@ public class PixyThread extends Thread {
     private volatile double distIn = 0;
     private BufferedReader in;
     private Socket soc;
-    private Thread t;
+    private Thread t = null;
     private boolean enabled;
     private String threadName = "pixy thread";
     private AnalogInput sensor;
@@ -41,7 +41,8 @@ public class PixyThread extends Thread {
         sensor = new AnalogInput(port);
         values = new LinkedList<>();
         String[] temp = {"0 1 2 3 4 5 6"};
-        currentFrame  = new Frame(temp, .5);
+        currentFrame = new Frame(temp, .5);
+        lastFrame = new Frame(temp, .5);
     }
 
     public double horizontalOffset() {
@@ -105,7 +106,7 @@ public class PixyThread extends Thread {
         return toCm(voltage) / 2.54;
     }
 
-  //THIS VERSION HAS PIXY
+    //THIS VERSION HAS PIXY
     @Override
     public void run() {
         boolean scanning = true;
@@ -123,6 +124,8 @@ public class PixyThread extends Thread {
                 }
             }
         }
+        System.out.println("Socket connection established");
+        int i = 0;
         while (enabled) {
             try {
                 currentFrame = new Frame(in.readLine().split(","), distIn);
@@ -135,11 +138,12 @@ public class PixyThread extends Thread {
                 lastFrame = currentFrame;
             }
 
+            System.out.println("sampled " + i);
             values.add(sensor.getVoltage());
             while (values.size() > WINDOW_SIZE) {
                 values.remove();
             }
-
+            i++;
             distCm = toCm(medianFilter(values));
             distIn = toIn(medianFilter(values));
             edu.wpi.first.wpilibj.Timer.delay(0.1);
@@ -152,40 +156,15 @@ public class PixyThread extends Thread {
         enabled = true;
         if (t == null) {
             System.out.println("starting: " + threadName);
-            System.out.println("Socket connection established");
             t = new Thread(this, threadName);
             t.start();
         }
     }
 
-
-//    @Override
-//    public void run() {
-//        while (enabled) {
-//            values.add(sensor.getVoltage());
-//            while (values.size() > WINDOW_SIZE) {
-//                values.remove();
-//            }
-//
-//            distCm = toCm(medianFilter(values));
-//            distIn = toIn(medianFilter(values));
-//            edu.wpi.first.wpilibj.Timer.delay(0.1);
-//        }
-//    }
-
-//    @Override
-//    public void start() {
-//        enabled = true;
-//        if (t == null) {
-//            System.out.println("starting: " + threadName);
-//            t = new Thread(this, threadName);
-//            t.start();
-//        }
-//    }
-
-  //THIS VERION HAS PIXY
+    //THIS VERION HAS PIXY
     public void terminate() {
         if (t != null) {
+            System.out.println("DISABLING THREAD");
             try {
                 in.close();
                 soc.close();
@@ -198,14 +177,6 @@ public class PixyThread extends Thread {
             t = null;
         }
     }
-
-//    public void terminate() {
-//        if (t != null) {
-//            sensor.free();
-//            enabled = false;
-//            t = null;
-//        }
-//    }
 
     @Override
     public String toString() {

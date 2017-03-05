@@ -238,7 +238,8 @@ public class Robot extends IterativeRobot {
 //        }
         if (driveStick.getRawButton(11)) {
             System.out.println("ultra data: " + pixy.distanceFromLift());
-            System.out.println(pixy.toString() + "     " + pixy.horizontalOffset());
+            System.out.println("raw data" + pixy);
+            System.out.println("offset" + pixy.horizontalOffset());
         }
 
 //        if (driveStick.getRawButton(10)) {
