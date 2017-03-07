@@ -21,7 +21,7 @@ public class DriveTrainTest {
     @Test
     public void testNormalize() {
         Random rand = new Random();
-        DriveTrain drive = new DriveTrain();
+        DriveTrain drive = new DriveTrain(false);
         for(int j = 1; j < TEST_CASES + 1; j++) {
             double[] testData = new double[4];
             for (int i = 0; i < 4; i++) {
