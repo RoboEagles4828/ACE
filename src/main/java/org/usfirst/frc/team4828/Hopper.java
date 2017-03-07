@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj.Spark;
 
 public class Hopper {
 
-    private static final double AGITATOR_SPEED = 0.5;
-    private static final double INTAKE_SPEED = 0.5;
+    private static final double AGITATOR_SPEED = 0.7;
+    private static final double INTAKE_SPEED = 0.95;
 
     private Spark agitator;
     private Spark intakeMotor;

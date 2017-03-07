@@ -3,33 +3,34 @@ package org.usfirst.frc.team4828;
 import edu.wpi.first.wpilibj.Servo;
 
 public class GearGobbler {
-    private Servo servo;
-    private double openPos, closePos;
+    public ServoGroup servo;
+    public Servo pusher;
 
-    GearGobbler(int servoPort) {
-        servo = new Servo(servoPort);
+    GearGobbler(int leftServoPort, int rightServoPort) {
+        servo = new ServoGroup(leftServoPort, rightServoPort);
+        pusher = new Servo(Ports.PUSH_GEAR_GOBBLER);
     }
 
-    GearGobbler(int servoPort, double openPos, double closePos) {
-        servo = new Servo(servoPort);
-        calibrate(openPos, closePos);
+    public void debug(double pos){
+        pusher.set(pos);
+        System.out.println(pusher.get());
     }
 
-    public void calibrate(double open, double close) {
-        openPos = open;
-        closePos = close;
+    // 0 - .45
+
+    public void push(){
+        pusher.set(0);
     }
 
-    public void setAbsolute(double pos) {
-        System.out.println("GearServo Pos: " + pos);
-        servo.set(pos);
+    public void retract(){
+        pusher.set(.45);
     }
 
     public void open() {
-        servo.set(openPos);
+        servo.set(1);
     }
 
     public void close() {
-        servo.set(closePos);
+        servo.set(0);
     }
 }
