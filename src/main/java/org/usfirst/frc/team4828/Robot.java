@@ -1,13 +1,13 @@
 package org.usfirst.frc.team4828;
 
 import edu.wpi.first.wpilibj.*;
-import org.usfirst.frc.team4828.Vision.PixyThread;
+import org.usfirst.frc.team4828.Vision.Pixy;
 
 public class Robot extends IterativeRobot {
     private Joystick driveStick, secondaryStick;
     private DriveTrain drive;
-    private Shooter shoot;
-    private PixyThread pixy;
+    private Ultrasonic ultrasonic;
+    private Pixy pixy;
     private Shooter rightShooter, leftShooter;
     private DigitalInput[] dipSwitch;
     private int autonSelect;
@@ -15,13 +15,18 @@ public class Robot extends IterativeRobot {
     private Hopper hopper;
     private GearGobbler gearGobbler;
     private double startTime = 0.0;
+    private Thread pixyThread, ultraThread;
 
     @Override
     public void robotInit() {
         super.robotInit();
-        System.out.println("THE ROBOT TURNED ON");
+        System.out.println("Starting initialization");
+
+        //JOYSTICKS
         driveStick = new Joystick(0);
         secondaryStick = new Joystick(1);
+
+        //DRIVETRAIN
         drive = new DriveTrain(
                 Ports.DT_FRONT_LEFT,
                 Ports.DT_BACK_LEFT,
@@ -29,8 +34,13 @@ public class Robot extends IterativeRobot {
                 Ports.DT_BACK_RIGHT
         );
 
+        //CLIMBING
         climb = new Climber(Ports.CLIMBER_1, Ports.CLIMBER_2, Ports.HALLEFFECT_PORT);
+
+        //HOPPER
         hopper = new Hopper(Ports.AGITATOR, Ports.INTAKE);
+
+        //SHOOTERS
         // Master is the one on the right if you are looking at the back of the shooter
         rightShooter = new Shooter(Ports.MOTOR_RIGHT, Ports.SERVO_RIGHT_MASTER, Ports.SERVO_RIGHT_SLAVE, Ports.INDEXER_RIGHT);
         leftShooter = new Shooter(Ports.MOTOR_LEFT, Ports.SERVO_LEFT_MASTER, Ports.SERVO_LEFT_SLAVE, Ports.INDEXER_LEFT);
@@ -38,36 +48,41 @@ public class Robot extends IterativeRobot {
         rightShooter.servos.calibrate(2, .6, 1);
         leftShooter.servos.calibrate(1, .75, .5);
         leftShooter.servos.calibrate(2, .35, .7);
+
+        //GEAR GOBBLER
         gearGobbler = new GearGobbler(Ports.LEFT_GEAR_GOBBLER, Ports.RIGHT_GEAR_GOBBLER);
         gearGobbler.servo.calibrate(2, 1, .8);
         gearGobbler.servo.calibrate(1, 0, .25);
 
+        //AUTON SELECT
         dipSwitch = new DigitalInput[4];
         dipSwitch[0] = new DigitalInput(Ports.DIPSWITCH_1);
         dipSwitch[1] = new DigitalInput(Ports.DIPSWITCH_2);
         dipSwitch[2] = new DigitalInput(Ports.DIPSWITCH_3);
         dipSwitch[3] = new DigitalInput(Ports.DIPSWITCH_4);
 
-        // Starting servo positions
-        //TODO: check if setting servos in robotInit actually works
+        //THREADS
+        ultrasonic = new Ultrasonic(Ports.US_CHANNEL);
+        pixy = new Pixy(ultrasonic);
+        pixyThread = new Thread(pixy, "Pixy");
+        ultraThread = new Thread(ultrasonic, "Ultrasonic");
+
+        //ZERO SERVOS
         rightShooter.servos.set(0);
         leftShooter.servos.set(0);
         gearGobbler.retract();
-        gearGobbler.open();
-//        rightShooter.calibrateIndexer(0, 1);
-//        leftShooter.calibrateIndexer(0, 1);
+        gearGobbler.close();
     }
 
     @Override
     public void autonomousInit() {
         super.autonomousInit();
-        // Bit shift the switches repeatedly to read it into an int
         autonSelect = 0;
         for (int i = 0; i < 4; i++) {
-            autonSelect += (dipSwitch[i].get() ? 1 : 0) * (1 << i);
+            autonSelect += (dipSwitch[i].get() ? 1 : 0) * (1 << i); // Bit shift the switches repeatedly to read it into an int
         }
         gearGobbler.retract();
-        gearGobbler.open();
+        gearGobbler.close();
         System.out.println("Entering auton number " + autonSelect);
         drive.reset();
         startTime = Timer.getFPGATimestamp();
@@ -133,7 +148,6 @@ public class Robot extends IterativeRobot {
     public void teleopInit() {
         super.teleopInit();
         System.out.println("Entering teleop...");
-        pixy.start();
     }
 
     @Override
@@ -205,7 +219,7 @@ public class Robot extends IterativeRobot {
         }
 
         if (driveStick.getRawButton(2)) {
-            System.out.println("navx " + drive + "    pixy data: " + pixy.distanceFromLift());
+            System.out.println("navx " + drive + "    pixy data: " + ultrasonic.getDist());
             System.out.println(magnitude * 30000 + "     " + magnitude);
         }
     }
@@ -214,41 +228,20 @@ public class Robot extends IterativeRobot {
     public void testInit() {
         super.testInit();
         System.out.println("Entering test...");
-        if(pixy == null){
-            pixy = new PixyThread(Ports.US_CHANNEL);
-            pixy.start();
-        }
+        pixyThread = new Thread(pixy, "Pixy Thread");
+        pixyThread.start();
     }
 
     @Override
     public void testPeriodic() {
         double temp = ((-driveStick.getThrottle()) + 1) / 2;
-//        if (driveStick.getRawButton(10)) {
-//            System.out.print("navx " + drive);
-//            drive.turnDegrees(driveStick.getThrottle() * 360);
-//        }
 
-//        if (driveStick.getRawButton(9)) {
-//            drive.reset();
-//            drive.zeroEncoders();
-//        }
-//        if (driveStick.getRawButton(12)) {
-//            drive.debugEncoders();
-//        }
         if (driveStick.getRawButton(11)) {
-            System.out.println("ultra data: " + pixy.distanceFromLift());
+            System.out.println("ultra data: " + ultrasonic.getDist());
             System.out.println("raw data" + pixy);
             System.out.println("offset" + pixy.horizontalOffset());
         }
 
-//        if (driveStick.getRawButton(10)) {
-//            leftShooter.servos.set(temp);
-//            System.out.println(leftShooter.servos);
-//        }
-//        if (driveStick.getRawButton(9)) {
-//            rightShooter.servos.set(temp);
-//            System.out.println(rightShooter.servos);
-//        }
         if (driveStick.getRawButton(2)) {
             System.out.print("joystick pos: " + temp);
             System.out.println(" pov pos: " + driveStick.getPOV());
@@ -259,8 +252,6 @@ public class Robot extends IterativeRobot {
     @Override
     public void disabledInit() {
         System.out.println("Disabling robot");
-        if (pixy != null) {
-            pixy.terminate();
-        }
+        pixy.terminate();
     }
 }
