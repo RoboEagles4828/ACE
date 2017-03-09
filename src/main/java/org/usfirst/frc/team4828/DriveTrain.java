@@ -172,9 +172,9 @@ public class DriveTrain {
      * @param pos  1 = Right, 2 = Middle, 3 = Right
      * @param pixy
      */
-    public void placeGear(int pos, Pixy pixy, GearGobbler gobbler) {
+    public void placeGear(int pos, Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
         //todo: confirm angles for each side
-        if (pixy.isBlocksDetected()) {
+        if (pixy.blocksDetected()) {
             if (pos == 1) {
                 turnDegrees(-30);
             } else if (pos == 2) {
@@ -193,7 +193,7 @@ public class DriveTrain {
                 // center relative to the target
                 mecanumDriveAbsolute(0, AUTON_SPEED * dir, 0);
             }
-            while (pixy.distanceFromLift() >= PLACING_DIST) {
+            while (ultrasonic.getDist() >= PLACING_DIST) {
                 // approach the target
                 dir = 1;
                 if (pixy.horizontalOffset() < 0) {
@@ -214,11 +214,11 @@ public class DriveTrain {
      *
      * @param pixy
      */
-    public void placeGear(Pixy pixy, GearGobbler gobbler) {
+    public void placeGear(Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
         //todo: round to nearest angle
         double angle = navx.getAngle();
         if (angle > 0 && angle < 60) {
-            placeGear(1, pixy, gobbler);
+            placeGear(1, pixy, ultrasonic, gobbler);
         }
     }
 
