@@ -16,8 +16,6 @@ public class GearGobbler {
         System.out.println(pusher.get());
     }
 
-    // 0 - .45
-
     public void push(){
         pusher.set(0);
     }
@@ -27,10 +25,10 @@ public class GearGobbler {
     }
 
     public void open() {
-        servo.set(1);
+        servo.set(0);
     }
 
     public void close() {
-        servo.set(0);
+        servo.set(1);
     }
 }

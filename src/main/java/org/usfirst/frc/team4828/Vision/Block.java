@@ -72,16 +72,6 @@ public class Block {
         return height;
     }
 
-    /**
-     * @param pixelConstant conversion constant pixels -> inches
-     * @param distance      distance to wall in inches from ultrasonic sensor
-     * @return angle to detected block
-     */
-    double computeAngle(double pixelConstant, double distance) {
-        double horizontalDistance = (x - X_CENTER) * pixelConstant;
-        return Math.toDegrees(Math.atan(horizontalDistance / distance));
-    }
-
     int getX() {
         return x;
     }
@@ -92,5 +82,15 @@ public class Block {
 
     double getAngle() {
         return angle;
+    }
+
+    /**
+     * @param pixelConstant conversion constant pixels -> inches
+     * @param distance      distance to wall in inches from ultrasonic sensor
+     * @return angle to detected block
+     */
+    double computeAngle(double pixelConstant, double distance) {
+        double horizontalDistance = (x - X_CENTER) * pixelConstant;
+        return Math.toDegrees(Math.atan(horizontalDistance / distance));
     }
 }

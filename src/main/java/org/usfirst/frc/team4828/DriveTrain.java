@@ -4,7 +4,7 @@ import com.ctre.CANTalon;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
-import org.usfirst.frc.team4828.Vision.PixyThread;
+import org.usfirst.frc.team4828.Vision.Pixy;
 
 
 public class DriveTrain {
@@ -172,7 +172,7 @@ public class DriveTrain {
      * @param pos  1 = Right, 2 = Middle, 3 = Right
      * @param pixy
      */
-    public void placeGear(int pos, PixyThread pixy, GearGobbler gobbler) {
+    public void placeGear(int pos, Pixy pixy, GearGobbler gobbler) {
         //todo: confirm angles for each side
         if (pixy.isBlocksDetected()) {
             if (pos == 1) {
@@ -214,7 +214,7 @@ public class DriveTrain {
      *
      * @param pixy
      */
-    public void placeGear(PixyThread pixy, GearGobbler gobbler) {
+    public void placeGear(Pixy pixy, GearGobbler gobbler) {
         //todo: round to nearest angle
         double angle = navx.getAngle();
         if (angle > 0 && angle < 60) {
