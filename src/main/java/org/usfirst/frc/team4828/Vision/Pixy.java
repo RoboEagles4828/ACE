@@ -52,12 +52,11 @@ public class Pixy implements Runnable {
     @Override
     public void run() {
         System.out.println("Searching for socket connection...");
-        boolean scanning = true;
-        while (scanning && enabled) {
+        while (enabled) {
             try {
                 soc = new Socket(HOST, PORT);
                 in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
-                scanning = false;
+                break;
             } catch (IOException e) {
                 System.out.println("Connect failed, waiting and trying again");
                 try {
