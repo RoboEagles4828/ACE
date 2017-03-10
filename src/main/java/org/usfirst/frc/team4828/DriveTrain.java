@@ -8,20 +8,20 @@ import org.usfirst.frc.team4828.Vision.Pixy;
 
 
 public class DriveTrain {
-    private CANTalon frontLeft;
-    private CANTalon frontRight;
-    private CANTalon backLeft;
-    private CANTalon backRight;
-    private AHRS navx;
-
     private static final double TWIST_THRESHOLD = 0.15;
     private static final double MIN_X_SPEED = 0.3;
     private static final double MIN_Y_SPEED = 0.2;
+    private static final double AUTON_SPEED = .3;
     private static final double TURN_DEADZONE = 1;
     private static final double TURN_SPEED = .25;
     private static final double MAX_HORIZONTAL_OFFSET = 36.0;
     private static final double VISION_DEADZONE = 0.5;
     private static final double PLACING_DIST = 8; //todo: determine distance from the wall to stop when placing gear
+    private CANTalon frontLeft;
+    private CANTalon frontRight;
+    private CANTalon backLeft;
+    private CANTalon backRight;
+    private AHRS navx;
 
     /**
      * Create drive train object containing mecanum motor functionality.
@@ -31,7 +31,7 @@ public class DriveTrain {
      * @param frontRightPort port of the front right motor
      * @param backRightPort  port of the back right motor
      */
-    public DriveTrain(int frontLeftPort, int backLeftPort, int frontRightPort, int backRightPort) {
+    DriveTrain(int frontLeftPort, int backLeftPort, int frontRightPort, int backRightPort) {
         frontLeft = new CANTalon(frontLeftPort);
         frontRight = new CANTalon(frontRightPort);
         backLeft = new CANTalon(backLeftPort);
@@ -48,7 +48,7 @@ public class DriveTrain {
     /**
      * Test drive train object.
      */
-    public DriveTrain(boolean gyro) {
+    DriveTrain(boolean gyro) {
         if (gyro) {
             navx = new AHRS(SPI.Port.kMXP);
         }
@@ -60,7 +60,7 @@ public class DriveTrain {
      *
      * @param wheelSpeeds wheel speeds
      */
-    public static void normalize(double[] wheelSpeeds) {
+    static void normalize(double[] wheelSpeeds) {
         double maxMagnitude = Math.abs(wheelSpeeds[0]);
         for (int i = 1; i < 4; i++) {
             double temp = Math.abs(wheelSpeeds[i]);
@@ -82,7 +82,7 @@ public class DriveTrain {
      * @param ycomponent Y component of the vector
      * @return the resultant vector as a double[2]
      */
-    public double[] rotateVector(double xcomponent, double ycomponent) {
+    private double[] rotateVector(double xcomponent, double ycomponent) {
         double angle = navx.getAngle();
         double cosA = Math.cos(angle * (3.14159 / 180.0));
         double sinA = Math.sin(angle * (3.14159 / 180.0));
@@ -99,7 +99,7 @@ public class DriveTrain {
      * @param ycomponent y component of the joystick
      * @param rotation   rotation of the joystick
      */
-    public void mecanumDriveAbsolute(double xcomponent, double ycomponent, double rotation) {
+    void mecanumDriveAbsolute(double xcomponent, double ycomponent, double rotation) {
         if (Math.abs(rotation) <= TWIST_THRESHOLD) {
             rotation = 0.0;
         }
@@ -127,7 +127,7 @@ public class DriveTrain {
      * @param ycomponent y component of the joystick
      * @param rotation   rotation of the joystick
      */
-    public void mecanumDrive(double xcomponent, double ycomponent, double rotation) {
+    void mecanumDrive(double xcomponent, double ycomponent, double rotation) {
         // Ignore tiny inadvertent joystick rotations
         if (Math.abs(rotation) <= TWIST_THRESHOLD) {
             rotation = 0.0;
@@ -172,10 +172,11 @@ public class DriveTrain {
     }
 
     /**
-     * @param pos  1 = Right, 2 = Middle, 3 = Right
-     * @param pixy
+     * Gear placement routine.
+     *
+     * @param pos 1 = Right, 2 = Middle, 3 = Right
      */
-    public void placeGear(int pos, Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
+    void placeGear(int pos, Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
         //todo: confirm angles for each side
         if (pixy.blocksDetected()) {
             if (pos == 1) {
@@ -213,10 +214,8 @@ public class DriveTrain {
 
     /**
      * Teleop version finds nearest angle before starting.
-     *
-     * @param pixy
      */
-    public void placeGear(Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
+    void placeGear(Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
         //todo: round to nearest angle
         double angle = navx.getAngle();
         if (angle > 0 && angle < 60) {
@@ -225,33 +224,14 @@ public class DriveTrain {
     }
 
     /**
-     * Turn all wheels slowly for testing purposes.
-     */
-    public void testMotors() {
-        frontLeft.set(.2);
-        frontRight.set(.2);
-        backLeft.set(.2);
-        backRight.set(.2);
-    }
-
-    /**
-     * Turns at a certain speed
-     *
-     * @param speed double -1-1
-     */
-    public void turn(double speed) {
-        mecanumDrive(0, 0, speed);
-    }
-
-    /**
      * Turn a certain amount of degrees
      *
      * @param degrees target degrees
      */
-    public void turnDegrees(double degrees) {
+    void turnDegrees(double degrees) {
         int dir = getOptimalDirection(getTrueAngle(), degrees);
         while (getTrueAngle() - TURN_DEADZONE > degrees || getTrueAngle() + TURN_DEADZONE < degrees) {
-            turn(TURN_SPEED * dir);
+            mecanumDriveAbsolute(0, 0, TURN_SPEED * dir);
         }
         brake();
     }
@@ -261,12 +241,8 @@ public class DriveTrain {
      *
      * @return 0 <= angle < 360
      */
-    public double getTrueAngle() {
-        double angle = navx.getAngle() % 360;
-        if (angle < 0) {
-            return 360 + angle;
-        }
-        return angle;
+    private double getTrueAngle() {
+        return (navx.getAngle() + 360) % 360;
     }
 
     /**
@@ -276,7 +252,7 @@ public class DriveTrain {
      * @param target  target angle
      * @return -1 = left, 1 = right
      */
-    public int getOptimalDirection(double current, double target) {
+    private int getOptimalDirection(double current, double target) {
         if (Math.abs(current - target) <= 180) {
             if (current > target) {
                 return -1;
@@ -302,6 +278,16 @@ public class DriveTrain {
         frontRight.set(fr);
         backLeft.set(bl);
         backRight.set(br);
+    }
+
+    /**
+     * Turn all wheels slowly for testing purposes.
+     */
+    void testMotors() {
+        frontLeft.set(.2);
+        frontRight.set(.2);
+        backLeft.set(.2);
+        backRight.set(.2);
     }
 
     /**
