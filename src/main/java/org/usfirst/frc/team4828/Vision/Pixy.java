@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 public class Pixy implements Runnable {
-    private static final String HOST = "pixyco.local";
+    private static final String HOST = "pixytest.local";
     private static final int PORT = 5800;
     private static final double PIXY_OFFSET = 0;
     private boolean enabled, blocksDetected;
@@ -52,6 +52,7 @@ public class Pixy implements Runnable {
     @Override
     public void run() {
         System.out.println("Searching for socket connection...");
+        enabled = true;
         while (enabled) {
             try {
                 soc = new Socket(HOST, PORT);
@@ -66,10 +67,8 @@ public class Pixy implements Runnable {
                 }
             }
         }
-        System.out.println("Socket connection established");
-        int i = 0;
+        System.out.print("Socket connection established on ip: " + soc.getInetAddress());
         while (enabled) {
-            System.out.println("sampled " + i);
             try {
                 currentFrame = new Frame(in.readLine().split(","), us.getDist());
             } catch (IOException e) {
@@ -79,7 +78,7 @@ public class Pixy implements Runnable {
                 blocksDetected = true;
                 lastFrame = currentFrame;
             }
-            edu.wpi.first.wpilibj.Timer.delay(0.1);
+            edu.wpi.first.wpilibj.Timer.delay(0.01);
         }
     }
 

@@ -1,11 +1,12 @@
 package org.usfirst.frc.team4828;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.Timer;
 import java.util.*;
 
 
 public class Ultrasonic implements Runnable{
-    private static final int WINDOW_SIZE = 30;
+    private static final int WINDOW_SIZE = 50;
     private static final double SUPPLIED_VOLTAGE = 5.0;
     private volatile double distIn = 0;
     private AnalogInput sensor;
@@ -77,10 +78,12 @@ public class Ultrasonic implements Runnable{
                 values.remove();
             }
             distIn = toIn(medianFilter(values));
+            Timer.delay(.01);
         }
     }
 
     public void terminate(){
+        sensor.free();
         enabled = false;
         System.out.println("Killing ultrasonic thread");
     }

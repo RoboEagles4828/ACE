@@ -24,54 +24,57 @@ public class Robot extends IterativeRobot {
 
         //JOYSTICKS
         driveStick = new Joystick(0);
-        secondaryStick = new Joystick(1);
+//        secondaryStick = new Joystick(1);
+//
+//        //DRIVETRAIN
+//        drive = new DriveTrain(
+//                Ports.DT_FRONT_LEFT,
+//                Ports.DT_BACK_LEFT,
+//                Ports.DT_FRONT_RIGHT,
+//                Ports.DT_BACK_RIGHT
+//        );
+//
+//        //CLIMBING
+//        climb = new Climber(Ports.CLIMBER_1, Ports.CLIMBER_2, Ports.HALLEFFECT_PORT);
+//
+//        //HOPPER
+//        hopper = new Hopper(Ports.AGITATOR, Ports.INTAKE);
+//
+//        //SHOOTERS
+//        // Master is the one on the right if you are looking at the back of the shooter
+//        rightShooter = new Shooter(Ports.MOTOR_RIGHT, Ports.SERVO_RIGHT_MASTER, Ports.SERVO_RIGHT_SLAVE, Ports.INDEXER_RIGHT);
+//        leftShooter = new Shooter(Ports.MOTOR_LEFT, Ports.SERVO_LEFT_MASTER, Ports.SERVO_LEFT_SLAVE, Ports.INDEXER_LEFT);
+//        rightShooter.servos.calibrate(1, .3, 0);
+//        rightShooter.servos.calibrate(2, .6, 1);
+//        leftShooter.servos.calibrate(1, .75, .5);
+//        leftShooter.servos.calibrate(2, .35, .7);
+//
+//        //GEAR GOBBLER
+//        gearGobbler = new GearGobbler(Ports.LEFT_GEAR_GOBBLER, Ports.RIGHT_GEAR_GOBBLER);
+//        gearGobbler.servo.calibrate(2, 1, .8);
+//        gearGobbler.servo.calibrate(1, 0, .25);
+//
+//        //AUTON SELECT
+//        dipSwitch = new DigitalInput[4];
+//        dipSwitch[0] = new DigitalInput(Ports.DIPSWITCH_1);
+//        dipSwitch[1] = new DigitalInput(Ports.DIPSWITCH_2);
+//        dipSwitch[2] = new DigitalInput(Ports.DIPSWITCH_3);
+//        dipSwitch[3] = new DigitalInput(Ports.DIPSWITCH_4);
 
-        //DRIVETRAIN
-        drive = new DriveTrain(
-                Ports.DT_FRONT_LEFT,
-                Ports.DT_BACK_LEFT,
-                Ports.DT_FRONT_RIGHT,
-                Ports.DT_BACK_RIGHT
-        );
-
-        //CLIMBING
-        climb = new Climber(Ports.CLIMBER_1, Ports.CLIMBER_2, Ports.HALLEFFECT_PORT);
-
-        //HOPPER
-        hopper = new Hopper(Ports.AGITATOR, Ports.INTAKE);
-
-        //SHOOTERS
-        // Master is the one on the right if you are looking at the back of the shooter
-        rightShooter = new Shooter(Ports.MOTOR_RIGHT, Ports.SERVO_RIGHT_MASTER, Ports.SERVO_RIGHT_SLAVE, Ports.INDEXER_RIGHT);
-        leftShooter = new Shooter(Ports.MOTOR_LEFT, Ports.SERVO_LEFT_MASTER, Ports.SERVO_LEFT_SLAVE, Ports.INDEXER_LEFT);
-        rightShooter.servos.calibrate(1, .3, 0);
-        rightShooter.servos.calibrate(2, .6, 1);
-        leftShooter.servos.calibrate(1, .75, .5);
-        leftShooter.servos.calibrate(2, .35, .7);
-
-        //GEAR GOBBLER
-        gearGobbler = new GearGobbler(Ports.LEFT_GEAR_GOBBLER, Ports.RIGHT_GEAR_GOBBLER);
-        gearGobbler.servo.calibrate(2, 1, .8);
-        gearGobbler.servo.calibrate(1, 0, .25);
-
-        //AUTON SELECT
-        dipSwitch = new DigitalInput[4];
-        dipSwitch[0] = new DigitalInput(Ports.DIPSWITCH_1);
-        dipSwitch[1] = new DigitalInput(Ports.DIPSWITCH_2);
-        dipSwitch[2] = new DigitalInput(Ports.DIPSWITCH_3);
-        dipSwitch[3] = new DigitalInput(Ports.DIPSWITCH_4);
+        drive = new DriveTrain(7, 2, 3, 4);
 
         //THREADS
         ultrasonic = new Ultrasonic(Ports.US_CHANNEL);
         pixy = new Pixy(ultrasonic);
         pixyThread = new Thread(pixy, "Pixy");
         ultraThread = new Thread(ultrasonic, "Ultrasonic");
-
-        //ZERO SERVOS
-        rightShooter.servos.set(0);
-        leftShooter.servos.set(0);
-        gearGobbler.retract();
-        gearGobbler.close();
+        ultraThread.start();
+//
+//        //ZERO SERVOS
+//        rightShooter.servos.set(0);
+//        leftShooter.servos.set(0);
+//        gearGobbler.retract();
+//        gearGobbler.close();
     }
 
     @Override
@@ -235,18 +238,37 @@ public class Robot extends IterativeRobot {
     @Override
     public void testPeriodic() {
         double temp = ((-driveStick.getThrottle()) + 1) / 2;
+        double offset = pixy.horizontalOffset();
 
         if (driveStick.getRawButton(11)) {
             System.out.println("ultra data: " + ultrasonic.getDist());
-            System.out.println("raw data" + pixy);
-            System.out.println("offset" + pixy.horizontalOffset());
+            System.out.println("raw data: " + pixy);
+            System.out.println("offset: " + pixy.horizontalOffset());
+        }
+
+        if (driveStick.getRawButton(1)) {
+            drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 2);
+            System.out.println(drive);
+        }
+
+        if (Math.abs(offset) > 2 && driveStick.getRawButton(10)) {
+            int dir = 1;
+            if (offset < 0) {
+                dir = -1;
+            }
+            // center relative to the target
+            drive.mecanumDriveAbsolute(.4 * dir, 0, 0);
+            System.out.println("offset: " + offset);
+        }
+        else{
+            drive.brake();
         }
 
         if (driveStick.getRawButton(2)) {
             System.out.print("joystick pos: " + temp);
-            System.out.println(" pov pos: " + driveStick.getPOV());
+            System.out.println("pov pos: " + driveStick.getPOV());
         }
-        Timer.delay(.1);
+        Timer.delay(.05);
     }
 
     @Override
