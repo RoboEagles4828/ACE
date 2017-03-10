@@ -4,7 +4,7 @@ import com.ctre.CANTalon;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
-import org.usfirst.frc.team4828.Vision.PixyThread;
+import org.usfirst.frc.team4828.Vision.Pixy;
 
 
 public class DriveTrain {
@@ -15,12 +15,11 @@ public class DriveTrain {
     private AHRS navx;
 
     private static final double TWIST_THRESHOLD = 0.15;
-    private static final double DIST_TO_ENC = 1.0; //todo: determine conversion factor
     private static final double AUTON_SPEED = 0.3; //todo: calibrate speed
     private static final double TURN_DEADZONE = 1;
     private static final double TURN_SPEED = .25;
     private static final double VISION_DEADZONE = 0.5;
-    private static final double PLACING_DIST = -3; //todo: determine distance from the wall to stop when placing gear
+    private static final double PLACING_DIST = 8; //todo: determine distance from the wall to stop when placing gear
 
     /**
      * Create drive train object containing mecanum motor functionality.
@@ -35,6 +34,12 @@ public class DriveTrain {
         frontRight = new CANTalon(frontRightPort);
         backLeft = new CANTalon(backLeftPort);
         backRight = new CANTalon(backRightPort);
+        frontLeft.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
+        frontRight.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
+        backLeft.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
+        backRight.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
+        backLeft.reverseSensor(true);
+        frontLeft.reverseSensor(true);
         navx = new AHRS(SPI.Port.kMXP);
     }
 
@@ -152,13 +157,12 @@ public class DriveTrain {
      * @param dist distance
      */
     public void moveDistance(double dist) {
-        double encoderChange = Math.abs(dist * DIST_TO_ENC);
         int dir = 1;
-        frontLeft.setEncPosition(0);
+        zeroEncoders();
         if (dist < 0) {
             dir = -1;
         }
-        while (frontLeft.getEncPosition() < encoderChange) {
+        while (frontLeft.getEncPosition() < Math.abs(dist)) {
             mecanumDrive(0, AUTON_SPEED * dir, 0);
         }
         brake();
@@ -168,9 +172,9 @@ public class DriveTrain {
      * @param pos  1 = Right, 2 = Middle, 3 = Right
      * @param pixy
      */
-    public void placeGear(int pos, PixyThread pixy, GearGobbler gobbler) {
+    public void placeGear(int pos, Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
         //todo: confirm angles for each side
-        if(pixy.isBlocksDetected()) {
+        if (pixy.blocksDetected()) {
             if (pos == 1) {
                 turnDegrees(-30);
             } else if (pos == 2) {
@@ -187,15 +191,15 @@ public class DriveTrain {
                     dir = -1;
                 }
                 // center relative to the target
-                mecanumDrive(0, AUTON_SPEED * dir, 0);
+                mecanumDriveAbsolute(0, AUTON_SPEED * dir, 0);
             }
-            while (pixy.distanceFromLift() >= PLACING_DIST) {
+            while (ultrasonic.getDist() >= PLACING_DIST) {
                 // approach the target
                 dir = 1;
                 if (pixy.horizontalOffset() < 0) {
                     dir = -1;
                 }
-                mecanumDrive(AUTON_SPEED, AUTON_SPEED * dir, 0);
+                mecanumDriveAbsolute(AUTON_SPEED, AUTON_SPEED * dir, 0);
             }
             brake();
             gobbler.open();
@@ -210,11 +214,11 @@ public class DriveTrain {
      *
      * @param pixy
      */
-    public void placeGear(PixyThread pixy, GearGobbler gobbler) {
+    public void placeGear(Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
         //todo: round to nearest angle
         double angle = navx.getAngle();
         if (angle > 0 && angle < 60) {
-            placeGear(1, pixy, gobbler);
+            placeGear(1, pixy, ultrasonic, gobbler);
         }
     }
 
@@ -234,10 +238,7 @@ public class DriveTrain {
      * @param speed double -1-1
      */
     public void turn(double speed) {
-        frontLeft.set(-speed);
-        backLeft.set(-speed);
-        frontRight.set(speed);
-        backRight.set(speed);
+        mecanumDrive(0, 0, speed);
     }
 
     /**
@@ -322,7 +323,7 @@ public class DriveTrain {
      * Prints current average encoder values.
      */
     public void debugEncoders() {
-        System.out.print((backLeft.getPosition() + backRight.getPosition() + frontLeft.getPosition() + frontRight.getPosition()) / 4);
+        System.out.println("bl " + backLeft.getPosition() + " br " + backRight.getPosition() + " fl " + frontLeft.getPosition() + " fr " + frontRight.getPosition());
     }
 
     /**
@@ -330,5 +331,12 @@ public class DriveTrain {
      */
     public void reset() {
         navx.reset();
+    }
+
+    public void zeroEncoders() {
+        frontLeft.setPosition(0);
+        frontRight.setPosition(0);
+        backLeft.setPosition(0);
+        backRight.setPosition(0);
     }
 }
