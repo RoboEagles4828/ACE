@@ -15,9 +15,11 @@ public class DriveTrain {
     private AHRS navx;
 
     private static final double TWIST_THRESHOLD = 0.15;
-    private static final double AUTON_SPEED = 0.3; //todo: calibrate speed
+    private static final double MIN_X_SPEED = 0.3;
+    private static final double MIN_Y_SPEED = 0.2;
     private static final double TURN_DEADZONE = 1;
     private static final double TURN_SPEED = .25;
+    private static final double MAX_HORIZONTAL_OFFSET = 36.0;
     private static final double VISION_DEADZONE = 0.5;
     private static final double PLACING_DIST = 8; //todo: determine distance from the wall to stop when placing gear
 
@@ -155,15 +157,16 @@ public class DriveTrain {
      * Move motors a certain distance.
      *
      * @param dist distance
+     * @param speed 0-1 no negatives
      */
-    public void moveDistance(double dist) {
+    public void moveDistance(double dist, double speed) {
         int dir = 1;
         zeroEncoders();
         if (dist < 0) {
             dir = -1;
         }
         while (frontLeft.getEncPosition() < Math.abs(dist)) {
-            mecanumDrive(0, AUTON_SPEED * dir, 0);
+            mecanumDrive(0, speed * dir, 0);
         }
         brake();
     }
@@ -206,7 +209,6 @@ public class DriveTrain {
             Timer.delay(.5);
             gobbler.close();
         }
-
     }
 
     /**
