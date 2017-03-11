@@ -38,11 +38,6 @@ public class Ports {
     public static final int PUSH_GEAR_GOBBLER = 19;
 
     private Ports() {
-        throw new AssertionError(
-                "A Summoner has Disconnected.\n"
-                        + "(Assertion Error 'cause you instantiated class Ports.\n"
-                        + "What part of private don't you understand, Nikhil...\n"
-                        + "Sigh.)\n"
-        );
+        throw new InstantiationError ("This is a static class, why are you trying to instantiate it");
     }
 }
