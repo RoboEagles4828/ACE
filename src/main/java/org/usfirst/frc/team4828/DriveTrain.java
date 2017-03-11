@@ -9,14 +9,16 @@ import org.usfirst.frc.team4828.Vision.Pixy;
 
 public class DriveTrain {
     private static final double TWIST_THRESHOLD = 0.15;
-    private static final double MIN_X_SPEED = 0.3;
-    private static final double MIN_Y_SPEED = 0.2;
-    private static final double AUTON_SPEED = .3;
-    private static final double TURN_DEADZONE = 1;
-    private static final double TURN_SPEED = .25;
+    private static final double[] X_SPEED_RANGE = {0.3, .7}; //todo: calibrate all of these to find real min speeds and reasonable max speeds
+    private static final double[] Y_SPEED_RANGE = {0.2, .5};
+    private static final double[] TURN_SPEED_RANGE = {0.2, .5};
+    private static final double[] LIFT_ANGLE = {330, 270, 210};
+    private static final double TURN_DEADZONE = 5.0;
     private static final double MAX_HORIZONTAL_OFFSET = 36.0;
-    private static final double VISION_DEADZONE = 0.5;
-    private static final double PLACING_DIST = 8; //todo: determine distance from the wall to stop when placing gear
+    private static final double MAX_ULTRA_DISTANCE = 48.0;
+    private static final double VISION_DEADZONE = 1.5;
+    private static final double PIXY_OFFSET = 7.0; // distance from the center of the gear to the pixy
+    private static final double PLACING_DIST = 8.0; //todo: determine distance from the wall to stop when placing gear
     private CANTalon frontLeft;
     private CANTalon frontRight;
     private CANTalon backLeft;
@@ -56,7 +58,7 @@ public class DriveTrain {
     }
 
     /**
-     * Ensure that wheel speeds are valid numbers.
+     * Ensure that wheel speeds are all valid numbers.
      *
      * @param wheelSpeeds wheel speeds
      */
@@ -156,7 +158,7 @@ public class DriveTrain {
     /**
      * Move motors a certain distance.
      *
-     * @param dist distance
+     * @param dist  distance
      * @param speed 0-1 no negatives
      */
     public void moveDistance(double dist, double speed) {
@@ -174,95 +176,122 @@ public class DriveTrain {
     /**
      * Gear placement routine.
      *
-     * @param pos 1 = Right, 2 = Middle, 3 = Right
+     * @param pos 1 = Left, 2 = Middle, 3 = Right
      */
     void placeGear(int pos, Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
-        //todo: confirm angles for each side
+        //TURN TO FACE THE LIFT
+        double targetAngle = LIFT_ANGLE[pos - 1];
+        while (Math.abs(closestAngle(getTrueAngle(navx.getAngle()), targetAngle)) > TURN_DEADZONE) {
+            mecanumDriveAbsolute(0, 0, scaledRotation(targetAngle));
+        }
+        //ONLY PROCEED IF VISION IS WORKING
         if (pixy.blocksDetected()) {
-            if (pos == 1) {
-                turnDegrees(-30);
-            } else if (pos == 2) {
-                turnDegrees(-90);
-            } else if (pos == 3) {
-                turnDegrees(-150);
-            } else {
-                turnDegrees(0);
-            }
-            int dir;
-            while (Math.abs(pixy.horizontalOffset()) > VISION_DEADZONE) {
-                dir = 1;
-                if (pixy.horizontalOffset() < 0) {
-                    dir = -1;
-                }
-                // center relative to the target
-                mecanumDriveAbsolute(0, AUTON_SPEED * dir, 0);
+            //CENTER THE GEAR GOBBLER LATERALLY TO THE TARGET
+            while (Math.abs(pixy.horizontalOffset() - PIXY_OFFSET) >= VISION_DEADZONE) {
+                mecanumDriveAbsolute(0, scaledYAxis(pixy.horizontalOffset(), PIXY_OFFSET), scaledRotation(targetAngle));
             }
             while (ultrasonic.getDist() >= PLACING_DIST) {
-                // approach the target
-                dir = 1;
-                if (pixy.horizontalOffset() < 0) {
-                    dir = -1;
-                }
-                mecanumDriveAbsolute(AUTON_SPEED, AUTON_SPEED * dir, 0);
+                //APPROACH THE TARGET, CORRECTING ALL AXES SIMULTANEOUSLY
+                mecanumDriveAbsolute(scaledXAxis(ultrasonic.getDist(), PLACING_DIST), scaledYAxis(pixy.horizontalOffset(), PIXY_OFFSET), scaledRotation(targetAngle));
             }
             brake();
             gobbler.open();
             Timer.delay(.5);
-            gobbler.close();
-        }
-    }
-
-    /**
-     * Teleop version finds nearest angle before starting.
-     */
-    void placeGear(Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
-        //todo: round to nearest angle
-        double angle = navx.getAngle();
-        if (angle > 0 && angle < 60) {
-            placeGear(1, pixy, ultrasonic, gobbler);
-        }
-    }
-
-    /**
-     * Turn a certain amount of degrees
-     *
-     * @param degrees target degrees
-     */
-    void turnDegrees(double degrees) {
-        int dir = getOptimalDirection(getTrueAngle(), degrees);
-        while (getTrueAngle() - TURN_DEADZONE > degrees || getTrueAngle() + TURN_DEADZONE < degrees) {
-            mecanumDriveAbsolute(0, 0, TURN_SPEED * dir);
-        }
-        brake();
-    }
-
-    /**
-     * Get the true navx angle
-     *
-     * @return 0 <= angle < 360
-     */
-    private double getTrueAngle() {
-        return (navx.getAngle() + 360) % 360;
-    }
-
-    /**
-     * Get the best direction to turn
-     *
-     * @param current current angle
-     * @param target  target angle
-     * @return -1 = left, 1 = right
-     */
-    private int getOptimalDirection(double current, double target) {
-        if (Math.abs(current - target) <= 180) {
-            if (current > target) {
-                return -1;
+            while (ultrasonic.getDist() <= 20) { // move back 20 inches at max speed to get away from the lift
+                mecanumDriveAbsolute(-X_SPEED_RANGE[1], 0, scaledRotation(targetAngle));
             }
-            return 1;
+            gobbler.close();
+            System.out.println("GEAR PLACEMENT ROUTINE FINISHED");
+        } else {
+            System.out.println("VISION DOES NOT SEE LIFT");
         }
-        if (current > target) {
-            return 1;
+
+    }
+
+    /**
+     * Teleop version finds nearest angle before starting routine.
+     */
+
+    void placeGear(Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
+        double angle = navx.getAngle();
+        int closest = 0;
+        double distance = Double.MAX_VALUE;
+        for (int i = 0; i < 3; i++) {
+            if (Math.abs(closestAngle(angle, LIFT_ANGLE[i])) < distance) {
+                closest = i + 1;
+            }
         }
-        return -1;
+        placeGear(closest, pixy, ultrasonic, gobbler);
+    }
+
+    /**
+     * Maps value a from range [inMin, inMax] to range [outMin, outMax]
+     *
+     * @return mapped double
+     */
+    private static double map(double a, double inMin, double inMax, double outMin, double outMax) {
+        return Math.max(Math.min((a - inMin) / (inMax - inMin) * (outMax - outMin) + outMin, outMax), outMin);
+    }
+
+    /**
+     * Adjust an angle to fall within 1 rotation.
+     *
+     * @return [0, 360]
+     */
+    private static double getTrueAngle(double a) {
+        double temp = a % 360;
+        if (temp < 0) {
+            temp += 360;
+        }
+        return temp;
+    }
+
+    /**
+     * Computes the shortest distance between two angles.
+     *
+     * @param currentAngle [0, 360]
+     * @param targetAngle  [0, 360]
+     * @return signed distance from current to target angle [-180,180]
+     */
+    private static double closestAngle(double currentAngle, double targetAngle) {
+        return (getTrueAngle(currentAngle - targetAngle) + 180) % 360 - 180;
+    }
+
+    /**
+     * Compute rotation with speed scaled to the distance from the desired angle.
+     *
+     * @param target [0, 360]
+     * @return [-1, 1]
+     */
+    private double scaledRotation(double target) {
+        double temp = closestAngle(getTrueAngle(navx.getAngle()), target);
+        if (Math.abs(temp) < TURN_DEADZONE) {
+            return 0;
+        }
+        return map(Math.abs(temp), TURN_DEADZONE, 180, TURN_SPEED_RANGE[0], TURN_SPEED_RANGE[1]) * Math.signum(temp);
+    }
+
+    /**
+     * Compute speed along x axis scaled to the distance from the lift.
+     *
+     * @return [-1, 1]
+     */
+    private double scaledXAxis(double current, double target) {
+        double temp = current - target;
+        return map(Math.abs(temp), 0, MAX_ULTRA_DISTANCE, X_SPEED_RANGE[0], X_SPEED_RANGE[1]) * Math.signum(temp);
+    }
+
+    /**
+     * Compute speed along x axis scaled to the distance between the center of the pixy's frame and the retro-reflective tape.
+     *
+     * @return [-1, 1]
+     */
+    private double scaledYAxis(double current, double target) {
+        double temp = current - target;
+        if (Math.abs(temp) < VISION_DEADZONE) {
+            return 0;
+        }
+        return map(Math.abs(temp), 0, MAX_HORIZONTAL_OFFSET, Y_SPEED_RANGE[0], Y_SPEED_RANGE[1]) * Math.signum(temp);
     }
 
     /**
@@ -281,19 +310,9 @@ public class DriveTrain {
     }
 
     /**
-     * Turn all wheels slowly for testing purposes.
-     */
-    void testMotors() {
-        frontLeft.set(.2);
-        frontRight.set(.2);
-        backLeft.set(.2);
-        backRight.set(.2);
-    }
-
-    /**
      * Stop all motors.
      */
-    public void brake() {
+    void brake() {
         frontLeft.set(0);
         frontRight.set(0);
         backRight.set(0);
@@ -310,18 +329,18 @@ public class DriveTrain {
     /**
      * Prints current average encoder values.
      */
-    public void debugEncoders() {
+    void debugEncoders() {
         System.out.println("bl " + backLeft.getPosition() + " br " + backRight.getPosition() + " fl " + frontLeft.getPosition() + " fr " + frontRight.getPosition());
     }
 
     /**
      * Zero the gyro.
      */
-    public void reset() {
+    void reset() {
         navx.reset();
     }
 
-    public void zeroEncoders() {
+    void zeroEncoders() {
         frontLeft.setPosition(0);
         frontRight.setPosition(0);
         backLeft.setPosition(0);
