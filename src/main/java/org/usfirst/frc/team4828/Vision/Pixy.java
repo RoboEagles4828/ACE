@@ -11,7 +11,7 @@ public class Pixy implements Runnable {
     private static final String HOST = "pixytest.local";
     private static final int PORT = 5800;
     private static final double PIXY_OFFSET = 0;
-    private boolean enabled, blocksDetected;
+    private boolean enabled, connected, blocksDetected;
     private volatile Frame currentFrame, lastFrame;
     private BufferedReader in;
     private Socket soc;
@@ -28,6 +28,7 @@ public class Pixy implements Runnable {
         lastFrame = new Frame(temp, .5);
         enabled = false;
         blocksDetected = false;
+        connected = false;
         us = ultra;
     }
 
@@ -42,6 +43,7 @@ public class Pixy implements Runnable {
         }
         //if only one vision target is detected
         else if (lastFrame.numBlocks() == 1) {
+            blocksDetected = false;
             return lastFrame.getRealDistance(lastFrame.getFrameData().get(0).getX() - Block.X_CENTER) + PIXY_OFFSET;
         }
         //if no vision targets are detected
@@ -57,6 +59,7 @@ public class Pixy implements Runnable {
             try {
                 soc = new Socket(HOST, PORT);
                 in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
+                System.out.print("Socket connection established on ip: " + soc.getInetAddress());
                 break;
             } catch (IOException e) {
                 System.out.println("Connect failed, waiting and trying again");
@@ -67,7 +70,7 @@ public class Pixy implements Runnable {
                 }
             }
         }
-        System.out.print("Socket connection established on ip: " + soc.getInetAddress());
+        connected = true;
         while (enabled) {
             try {
                 currentFrame = new Frame(in.readLine().split(","), us.getDist());
@@ -84,7 +87,7 @@ public class Pixy implements Runnable {
 
     public void terminate() {
         System.out.println("DISABLING THREAD");
-        if (enabled) {
+        if (enabled && connected) {
             try {
                 in.close();
                 soc.close();
@@ -93,10 +96,15 @@ public class Pixy implements Runnable {
             }
         }
         blocksDetected = false;
+        connected = false;
         enabled = false;
     }
 
-    Frame getLastFrame() {
+    public int getWidth() {
+        return lastFrame.getFrameData().get(0).getWidth();
+    }
+
+    public Frame getLastFrame() {
         if (lastFrame != null) {
             return lastFrame;
         }

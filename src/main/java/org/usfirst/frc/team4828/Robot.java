@@ -241,34 +241,36 @@ public class Robot extends IterativeRobot {
         double offset = pixy.horizontalOffset();
 
         if (driveStick.getRawButton(11)) {
+            System.out.print("pixy: " + offset);
+            System.out.println("    width: " + pixy.getWidth());
             System.out.println("ultra data: " + ultrasonic.getDist());
-            System.out.println("raw data: " + pixy);
-            System.out.println("offset: " + pixy.horizontalOffset());
         }
 
         if (driveStick.getRawButton(1)) {
-            drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 2);
-            System.out.println(drive);
-        }
-
-        if (Math.abs(offset) > 2 && driveStick.getRawButton(10)) {
-            int dir = 1;
-            if (offset < 0) {
-                dir = -1;
+            if (driveStick.getRawButton(7)) {
+                drive.mecanumDriveAbsolute(0, 0, drive.scaledRotation(330));
+            } else if (driveStick.getRawButton(8)) {
+                drive.mecanumDriveAbsolute(0, 0, drive.scaledRotation(270));
+            } else if (driveStick.getRawButton(9)) {
+                drive.mecanumDriveAbsolute(0, 0, drive.scaledRotation(210));
+            } else if (driveStick.getRawButton(12)) {
+                drive.placeGear(pixy, ultrasonic, gearGobbler);
+            } else if (driveStick.getRawButton(3)) {
+                drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 2);
+                //drive.debugEncoders();
+            } else {
+                drive.gearRoutineProgress = 0;
+                drive.brake();
             }
-            // center relative to the target
-            drive.mecanumDriveAbsolute(.4 * dir, 0, 0);
-            System.out.println("offset: " + offset);
-        }
-        else{
+        } else {
             drive.brake();
         }
 
-        if (driveStick.getRawButton(2)) {
-            System.out.print("joystick pos: " + temp);
-            System.out.println("pov pos: " + driveStick.getPOV());
+        if (driveStick.getRawButton(4)) {
+            drive.reset();
+            drive.zeroEncoders();
         }
-        Timer.delay(.05);
+        Timer.delay(.1);
     }
 
     @Override

@@ -40,7 +40,7 @@ public class Frame {
         return pixels * getPixelConstant();
     }
 
-    List<Block> getFrameData() {
+    public List<Block> getFrameData() {
         return frameData;
     }
 

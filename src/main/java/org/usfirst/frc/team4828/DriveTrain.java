@@ -9,21 +9,22 @@ import org.usfirst.frc.team4828.Vision.Pixy;
 
 public class DriveTrain {
     private static final double TWIST_THRESHOLD = 0.15;
-    private static final double[] X_SPEED_RANGE = {0.3, .7}; //todo: calibrate all of these to find real min speeds and reasonable max speeds
-    private static final double[] Y_SPEED_RANGE = {0.2, .5};
+    private static final double[] X_SPEED_RANGE = {3, .4}; //todo: calibrate all of these to find real min speeds and reasonable max speeds
+    private static final double[] Y_SPEED_RANGE = {0.1, .4};
     private static final double[] TURN_SPEED_RANGE = {0.2, .5};
     private static final double[] LIFT_ANGLE = {330, 270, 210};
     private static final double TURN_DEADZONE = 5.0;
     private static final double MAX_HORIZONTAL_OFFSET = 36.0;
-    private static final double MAX_ULTRA_DISTANCE = 48.0;
-    private static final double VISION_DEADZONE = 1.5;
-    private static final double PIXY_OFFSET = 7.0; // distance from the center of the gear to the pixy
+    private static final double MAX_ULTRA_DISTANCE = 40.0;
+    private static final double VISION_DEADZONE = 2;
+    private static final double PIXY_OFFSET = 9.4; // distance from the center of the gear to the pixy
     private static final double PLACING_DIST = 8.0; //todo: determine distance from the wall to stop when placing gear
     private CANTalon frontLeft;
     private CANTalon frontRight;
     private CANTalon backLeft;
     private CANTalon backRight;
     private AHRS navx;
+    public int gearRoutineProgress; // 0: turning to angle, 1: centering, 2: approaching, 3: backing off
 
     /**
      * Create drive train object containing mecanum motor functionality.
@@ -45,6 +46,7 @@ public class DriveTrain {
         backLeft.reverseSensor(true);
         frontLeft.reverseSensor(true);
         navx = new AHRS(SPI.Port.kMXP);
+        gearRoutineProgress = 0;
     }
 
     /**
@@ -178,7 +180,7 @@ public class DriveTrain {
      *
      * @param pos 1 = Left, 2 = Middle, 3 = Right
      */
-    void placeGear(int pos, Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
+    void placeGearAuton(int pos, Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
         //TURN TO FACE THE LIFT
         double targetAngle = LIFT_ANGLE[pos - 1];
         while (Math.abs(closestAngle(getTrueAngle(navx.getAngle()), targetAngle)) > TURN_DEADZONE) {
@@ -209,16 +211,76 @@ public class DriveTrain {
     }
 
     /**
+     * Gear placement routine.
+     *
+     * @param pos 1 = Left, 2 = Middle, 3 = Right
+     */
+    void placeGear(int pos, Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
+        //TURN TO FACE THE LIFT
+        double targetAngle = LIFT_ANGLE[pos - 1];
+        if (gearRoutineProgress == 0) {
+            if (Math.abs(closestAngle(getTrueAngle(navx.getAngle()), targetAngle)) > TURN_DEADZONE) {
+                mecanumDriveAbsolute(0, 0, scaledRotation(targetAngle));
+            } else {
+                brake();
+                gearRoutineProgress = 1;
+            }
+        }
+        //ONLY PROCEED IF VISION IS WORKING
+        else {
+            double offset = pixy.horizontalOffset();
+            //CENTER THE GEAR GOBBLER LATERALLY TO THE TARGET
+            if (gearRoutineProgress < 2) {
+                if (pixy.blocksDetected()) {
+                    gearRoutineProgress = 1;
+                    if (Math.abs(offset - PIXY_OFFSET) >= VISION_DEADZONE) {
+                        mecanumDriveAbsolute(0, scaledYAxis(offset, PIXY_OFFSET), scaledRotation(targetAngle));
+                        System.out.println("Offset: " + offset);
+                    } else {
+                        brake();
+                        gearRoutineProgress = 2;
+                    }
+                } else {
+                    System.out.println("No blocks detected");
+                }
+            } else if (gearRoutineProgress == 2) {
+                if (ultrasonic.getDist() >= PLACING_DIST) {
+                    double temp = scaledYAxis(offset, PIXY_OFFSET);
+                    if (!pixy.blocksDetected()) {
+                        temp = 0;
+                    }
+                    //APPROACH THE TARGET, CORRECTING ALL AXES SIMULTANEOUSLY
+                    mecanumDriveAbsolute(scaledXAxis(ultrasonic.getDist(), PLACING_DIST), temp, scaledRotation(targetAngle));
+                } else {
+                    brake();
+                    //gobbler.open();
+                    Timer.delay(.5);
+                    gearRoutineProgress = 3;
+                }
+            } else if (gearRoutineProgress == 3) {
+                if (ultrasonic.getDist() <= 20) { // move back 20 inches at max speed to get away from the lift
+                    mecanumDriveAbsolute(-X_SPEED_RANGE[1], 0, scaledRotation(targetAngle));
+                } else {
+                    brake();
+                    gearRoutineProgress = 5;
+                }
+            } else {
+                //gobbler.close(); //finished
+            }
+        }
+    }
+
+    /**
      * Teleop version finds nearest angle before starting routine.
      */
-
     void placeGear(Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
-        double angle = navx.getAngle();
+        double angle = getTrueAngle(navx.getAngle());
         int closest = 0;
         double distance = Double.MAX_VALUE;
         for (int i = 0; i < 3; i++) {
             if (Math.abs(closestAngle(angle, LIFT_ANGLE[i])) < distance) {
                 closest = i + 1;
+                distance = Math.abs(closestAngle(angle, LIFT_ANGLE[i]));
             }
         }
         placeGear(closest, pixy, ultrasonic, gobbler);
@@ -230,7 +292,7 @@ public class DriveTrain {
      * @return mapped double
      */
     private static double map(double a, double inMin, double inMax, double outMin, double outMax) {
-        return Math.max(Math.min((a - inMin) / (inMax - inMin) * (outMax - outMin) + outMin, outMax), outMin);
+        return Math.min(Math.max((a - inMin) / (inMax - inMin) * (outMax - outMin) + outMin, outMin), outMax);
     }
 
     /**
@@ -263,12 +325,12 @@ public class DriveTrain {
      * @param target [0, 360]
      * @return [-1, 1]
      */
-    private double scaledRotation(double target) {
+    public double scaledRotation(double target) {
         double temp = closestAngle(getTrueAngle(navx.getAngle()), target);
         if (Math.abs(temp) < TURN_DEADZONE) {
             return 0;
         }
-        return map(Math.abs(temp), TURN_DEADZONE, 180, TURN_SPEED_RANGE[0], TURN_SPEED_RANGE[1]) * Math.signum(temp);
+        return map(Math.abs(temp), TURN_DEADZONE, 180, TURN_SPEED_RANGE[0], TURN_SPEED_RANGE[1]) * -Math.signum(temp);
     }
 
     /**
@@ -331,6 +393,10 @@ public class DriveTrain {
      */
     void debugEncoders() {
         System.out.println("bl " + backLeft.getPosition() + " br " + backRight.getPosition() + " fl " + frontLeft.getPosition() + " fr " + frontRight.getPosition());
+    }
+
+    void debugGyro() {
+        System.out.println("Angle: " + getTrueAngle(navx.getAngle()));
     }
 
     /**

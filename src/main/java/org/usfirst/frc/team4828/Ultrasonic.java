@@ -47,7 +47,7 @@ public class Ultrasonic implements Runnable{
      * @return converted number
      */
     private double toCm(double voltage) {
-        return voltage / (SUPPLIED_VOLTAGE / 1024);
+        return voltage / (SUPPLIED_VOLTAGE / 512);
     }
 
     /**
