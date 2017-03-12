@@ -11,6 +11,7 @@ public class Pixy implements Runnable {
     private static final String HOST = "pixytest.local";
     private static final int PORT = 5800;
     private static final double PIXY_OFFSET = 0;
+    private static final int PIXY_SIDE = 1;  //-1 for right, 1 for left
     private boolean enabled, connected, blocksDetected;
     private volatile Frame currentFrame, lastFrame;
     private BufferedReader in;
@@ -37,14 +38,18 @@ public class Pixy implements Runnable {
     }
 
     public double horizontalOffset() {
+        //if two blocks are detected return position of peg
         if (lastFrame.numBlocks() == 2) {
             return lastFrame.getRealDistance(((lastFrame.getFrameData().get(0).getX()
                     + lastFrame.getFrameData().get(1).getX()) / 2) - Block.X_CENTER) + PIXY_OFFSET;
         }
-        //if only one vision target is detected
+        //if only one vision target is detected guess position of peg
         else if (lastFrame.numBlocks() == 1) {
             blocksDetected = false;
-            return lastFrame.getRealDistance(lastFrame.getFrameData().get(0).getX() - Block.X_CENTER) + PIXY_OFFSET;
+            double pegPos = ((lastFrame.getFrameData().get(0).getX() - Block.X_CENTER) > 0) ? 4.125 : -4.125;
+            return us.getDist() > 12
+                    ? lastFrame.getRealDistance(lastFrame.getFrameData().get(0).getX() - Block.X_CENTER) + pegPos + PIXY_OFFSET
+                    : PIXY_SIDE * 4.125;
         }
         //if no vision targets are detected
         blocksDetected = false;
