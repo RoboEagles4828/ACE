@@ -233,10 +233,12 @@ public class Robot extends IterativeRobot {
         System.out.println("Entering test...");
         pixyThread = new Thread(pixy, "Pixy Thread");
         pixyThread.start();
+        drive.zeroEncoders();
     }
 
     @Override
     public void testPeriodic() {
+        /*
         double temp = ((-driveStick.getThrottle()) + 1) / 2;
         double offset = pixy.horizontalOffset();
 
@@ -269,6 +271,23 @@ public class Robot extends IterativeRobot {
         if (driveStick.getRawButton(4)) {
             drive.reset();
             drive.zeroEncoders();
+        }
+        */
+//        if(driveStick.getRawButton(2)) {
+//            drive.reset();
+//        }
+//        drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 2);
+        //drive.debugEncoders();
+        System.out.println("Dist: " + drive.encChangeToDist(drive.frontLeft.getPosition()));
+        System.out.println("Enc:  " + drive.frontLeft.getPosition());
+        if(driveStick.getRawButton(1)) {
+            //drive.mecanumDrive(0.5, 0, 0);
+            drive.mecanumDriveAbsolute(0, -0.5, 0);
+        } else {
+            drive.brake();
+        }
+        if(driveStick.getRawButton(2)) {
+            drive.reset();
         }
         Timer.delay(.1);
     }

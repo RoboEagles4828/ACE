@@ -9,7 +9,7 @@ import org.usfirst.frc.team4828.Vision.Pixy;
 
 public class DriveTrain {
     private static final double TWIST_THRESHOLD = 0.15;
-    private static final double[] X_SPEED_RANGE = {3, .4}; //todo: calibrate all of these to find real min speeds and reasonable max speeds
+    private static final double[] X_SPEED_RANGE = {3, .4}; //TODO: Calibrate all of these to find real min speeds and reasonable max speeds
     private static final double[] Y_SPEED_RANGE = {0.1, .4};
     private static final double[] TURN_SPEED_RANGE = {0.2, .5};
     private static final double[] LIFT_ANGLE = {330, 270, 210};
@@ -18,8 +18,9 @@ public class DriveTrain {
     private static final double MAX_ULTRA_DISTANCE = 40.0;
     private static final double VISION_DEADZONE = 2;
     private static final double PIXY_OFFSET = 9.4; // distance from the center of the gear to the pixy
-    private static final double PLACING_DIST = 8.0; //todo: determine distance from the wall to stop when placing gear
-    private CANTalon frontLeft;
+    private static final double PLACING_DIST = 8.0; //TODO: Determine distance from the wall to stop when placing gear
+    private static final double DIST_TO_ENC = 77.066;
+    public CANTalon frontLeft;
     private CANTalon frontRight;
     private CANTalon backLeft;
     private CANTalon backRight;
@@ -247,7 +248,7 @@ public class DriveTrain {
                 if (ultrasonic.getDist() >= PLACING_DIST) {
                     double temp = scaledYAxis(offset, PIXY_OFFSET);
                     if (!pixy.blocksDetected()) {
-                        temp = 0;
+                        temp = -.0182; //TODO: Maybe change to fix drift
                     }
                     //APPROACH THE TARGET, CORRECTING ALL AXES SIMULTANEOUSLY
                     mecanumDriveAbsolute(scaledXAxis(ultrasonic.getDist(), PLACING_DIST), temp, scaledRotation(targetAngle));
@@ -338,7 +339,7 @@ public class DriveTrain {
      *
      * @return [-1, 1]
      */
-    private double scaledXAxis(double current, double target) {
+    public double scaledXAxis(double current, double target) {
         double temp = current - target;
         return map(Math.abs(temp), 0, MAX_ULTRA_DISTANCE, X_SPEED_RANGE[0], X_SPEED_RANGE[1]) * Math.signum(temp);
     }
@@ -348,7 +349,7 @@ public class DriveTrain {
      *
      * @return [-1, 1]
      */
-    private double scaledYAxis(double current, double target) {
+    public double scaledYAxis(double current, double target) {
         double temp = current - target;
         if (Math.abs(temp) < VISION_DEADZONE) {
             return 0;
@@ -411,5 +412,19 @@ public class DriveTrain {
         frontRight.setPosition(0);
         backLeft.setPosition(0);
         backRight.setPosition(0);
+    }
+
+    /**
+     * Takes distance and returns encoder change
+     *
+     * @param dist distance
+     * @return encoder change
+     */
+    public double distToEncChange(double dist) {
+        return dist * DIST_TO_ENC;
+    }
+
+    public double encChangeToDist(double encchange) {
+        return encchange / DIST_TO_ENC;
     }
 }
