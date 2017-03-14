@@ -231,62 +231,12 @@ public class Robot extends IterativeRobot {
     public void testInit() {
         super.testInit();
         System.out.println("Entering test...");
-        pixyThread = new Thread(pixy, "Pixy Thread");
-        pixyThread.start();
-        drive.zeroEncoders();
     }
 
     @Override
     public void testPeriodic() {
-        /*
-        double temp = ((-driveStick.getThrottle()) + 1) / 2;
-        double offset = pixy.horizontalOffset();
-
-        if (driveStick.getRawButton(11)) {
-            System.out.print("pixy: " + offset);
-            System.out.println("    width: " + pixy.getWidth());
-            System.out.println("ultra data: " + ultrasonic.getDist());
-        }
-
-        if (driveStick.getRawButton(1)) {
-            if (driveStick.getRawButton(7)) {
-                drive.mecanumDriveAbsolute(0, 0, drive.scaledRotation(330));
-            } else if (driveStick.getRawButton(8)) {
-                drive.mecanumDriveAbsolute(0, 0, drive.scaledRotation(270));
-            } else if (driveStick.getRawButton(9)) {
-                drive.mecanumDriveAbsolute(0, 0, drive.scaledRotation(210));
-            } else if (driveStick.getRawButton(12)) {
-                drive.placeGear(pixy, ultrasonic, gearGobbler);
-            } else if (driveStick.getRawButton(3)) {
-                drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 2);
-                //drive.debugEncoders();
-            } else {
-                drive.gearRoutineProgress = 0;
-                drive.brake();
-            }
-        } else {
-            drive.brake();
-        }
-
-        if (driveStick.getRawButton(4)) {
-            drive.reset();
-            drive.zeroEncoders();
-        }
-        */
-//        if(driveStick.getRawButton(2)) {
-//            drive.reset();
-//        }
-//        drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 2);
-        //drive.debugEncoders();
-        System.out.println("Dist: " + drive.encChangeToDist(drive.frontLeft.getPosition()));
-        System.out.println("Enc:  " + drive.frontLeft.getPosition());
-        if(driveStick.getRawButton(1)) {
-            //drive.mecanumDrive(0.5, 0, 0);
-            drive.mecanumDriveAbsolute(0, -0.5, 0);
-        } else {
-            drive.brake();
-        }
-        if(driveStick.getRawButton(2)) {
+        drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 2);
+        if (driveStick.getRawButton(7)) {
             drive.reset();
         }
         Timer.delay(.1);
@@ -295,6 +245,5 @@ public class Robot extends IterativeRobot {
     @Override
     public void disabledInit() {
         System.out.println("Disabling robot");
-        pixy.terminate();
     }
 }
