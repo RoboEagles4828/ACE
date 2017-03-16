@@ -9,10 +9,10 @@ import org.usfirst.frc.team4828.Vision.Pixy;
 
 public class DriveTrain {
     private static final double TWIST_THRESHOLD = 0.15;
-    private static final double[] X_SPEED_RANGE = {3, .4}; //TODO: Calibrate all of these to find real min speeds and reasonable max speeds
-    private static final double[] Y_SPEED_RANGE = {0.1, .4};
+    private static final double[] X_SPEED_RANGE = {.3, .4}; //TODO: Calibrate all of these to find real min speeds and reasonable max speeds
+    private static final double[] Y_SPEED_RANGE = {0.1, .25};
     private static final double[] TURN_SPEED_RANGE = {0.2, .5};
-    private static final double[] LIFT_ANGLE = {330, 270, 210};
+    private static final double[] LIFT_ANGLE = {300, 270, 210};
     private static final double TURN_DEADZONE = 5.0;
     private static final double MAX_HORIZONTAL_OFFSET = 36.0;
     private static final double MAX_ULTRA_DISTANCE = 40.0;
@@ -20,7 +20,7 @@ public class DriveTrain {
     private static final double PIXY_OFFSET = 9.4; // distance from the center of the gear to the pixy
     private static final double PLACING_DIST = 8.0; //TODO: Determine distance from the wall to stop when placing gear
     private static final double DIST_TO_ENC = 77.066;
-    public CANTalon frontLeft;
+    private CANTalon frontLeft;
     private CANTalon frontRight;
     private CANTalon backLeft;
     private CANTalon backRight;
@@ -248,10 +248,10 @@ public class DriveTrain {
                 if (ultrasonic.getDist() >= PLACING_DIST) {
                     double temp = scaledYAxis(offset, PIXY_OFFSET);
                     if (!pixy.blocksDetected()) {
-                        temp = -.0182; //TODO: Maybe change to fix drift
+                        temp = -.017; //TODO: Maybe change to fix drift
                     }
                     //APPROACH THE TARGET, CORRECTING ALL AXES SIMULTANEOUSLY
-                    mecanumDriveAbsolute(scaledXAxis(ultrasonic.getDist(), PLACING_DIST), temp, scaledRotation(targetAngle));
+                    mecanumDriveAbsolute(X_SPEED_RANGE[1], temp, scaledRotation(targetAngle));
                 } else {
                     brake();
                     //gobbler.open();
@@ -398,6 +398,11 @@ public class DriveTrain {
 
     void debugGyro() {
         System.out.println("Angle: " + getTrueAngle(navx.getAngle()));
+    }
+
+    void debugNavx() {
+        System.out.println("Displacement. X: " + navx.getDisplacementX() + "  Y: " + navx.getDisplacementY() + "  Z: " + navx.getDisplacementZ());
+        System.out.println("Acceleration. X: " + navx.getRawAccelX() + "  Y: " + navx.getRawAccelY() + "  Z: " + navx.getRawAccelZ());
     }
 
     /**

@@ -39,17 +39,15 @@ public class Pixy implements Runnable {
 
     public double horizontalOffset() {
         //if two blocks are detected return position of peg
-        if (lastFrame.numBlocks() == 2) {
+        if (currentFrame.numBlocks() == 2) {
             return lastFrame.getRealDistance(((lastFrame.getFrameData().get(0).getX()
                     + lastFrame.getFrameData().get(1).getX()) / 2) - Block.X_CENTER) + PIXY_OFFSET;
         }
         //if only one vision target is detected guess position of peg
-        else if (lastFrame.numBlocks() == 1) {
+        else if (currentFrame.numBlocks() == 1) {
             blocksDetected = false;
-            double pegPos = ((lastFrame.getFrameData().get(0).getX() - Block.X_CENTER) > 0) ? 4.125 : -4.125;
-            return us.getDist() > 12
-                    ? lastFrame.getRealDistance(lastFrame.getFrameData().get(0).getX() - Block.X_CENTER) + pegPos + PIXY_OFFSET
-                    : PIXY_SIDE * 4.125;
+            double pegPos = ((currentFrame.getFrameData().get(0).getX() - Block.X_CENTER) > 0) ? 4.125 : -4.125;
+            return currentFrame.getRealDistance(currentFrame.getFrameData().get(0).getX() - Block.X_CENTER) + pegPos + PIXY_OFFSET;
         }
         //if no vision targets are detected
         blocksDetected = false;

@@ -238,7 +238,6 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void testPeriodic() {
-        /*
         double temp = ((-driveStick.getThrottle()) + 1) / 2;
         double offset = pixy.horizontalOffset();
 
@@ -257,9 +256,11 @@ public class Robot extends IterativeRobot {
                 drive.mecanumDriveAbsolute(0, 0, drive.scaledRotation(210));
             } else if (driveStick.getRawButton(12)) {
                 drive.placeGear(pixy, ultrasonic, gearGobbler);
-            } else if (driveStick.getRawButton(3)) {
+            } else if (driveStick.getRawButton(5)) {
+                drive.mecanumDriveAbsolute(temp - .5, -.015 * Math.signum(temp - .5), 0);
+            } else if (driveStick.getRawButton(2)) {
                 drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 2);
-                //drive.debugEncoders();
+                drive.debugNavx();
             } else {
                 drive.gearRoutineProgress = 0;
                 drive.brake();
@@ -272,24 +273,23 @@ public class Robot extends IterativeRobot {
             drive.reset();
             drive.zeroEncoders();
         }
-        */
-//        if(driveStick.getRawButton(2)) {
-//            drive.reset();
-//        }
-//        drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 2);
-        //drive.debugEncoders();
-        System.out.println("Dist: " + drive.encChangeToDist(drive.frontLeft.getPosition()));
-        System.out.println("Enc:  " + drive.frontLeft.getPosition());
-        if(driveStick.getRawButton(1)) {
-            //drive.mecanumDrive(0.5, 0, 0);
-            drive.mecanumDriveAbsolute(0, -0.5, 0);
-        } else {
-            drive.brake();
+
+        switch (driveStick.getPOV()) {
+            case 0:
+                drive.testMotors(1, 0, 0, 0);
+                break;
+            case 90:
+                drive.testMotors(0, 1, 0, 0);
+                break;
+            case 180:
+                drive.testMotors(0, 0, 1, 0);
+                break;
+            case 270:
+                drive.testMotors(0, 0, 0, 1);
+                break;
         }
-        if(driveStick.getRawButton(2)) {
-            drive.reset();
-        }
-        Timer.delay(.1);
+
+        Timer.delay(.05);
     }
 
     @Override
