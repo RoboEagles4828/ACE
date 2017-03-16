@@ -7,6 +7,7 @@ import java.util.List;
 public class Frame {
     //8.25 in between targets
     private static final double WIDTH_BETWEEN_TARGET = 8.25;
+    private static final double TARGET_WIDTH = 2.0;
     private List<Block> frameData;
 
     /**
@@ -33,11 +34,13 @@ public class Frame {
         if (numBlocks() >= 2) {
             return WIDTH_BETWEEN_TARGET / (Math.abs(frameData.get(0).getX() - frameData.get(1).getX()));
         }
+        else if(numBlocks() == 1){
+            return TARGET_WIDTH / frameData.get(0).getWidth();
+        }
         return -1;
     }
 
-    double getRealDistance(int pixels) {
-        return pixels * getPixelConstant();
+    double getRealDistance(int pixels) {return pixels * getPixelConstant();
     }
 
     public List<Block> getFrameData() {
