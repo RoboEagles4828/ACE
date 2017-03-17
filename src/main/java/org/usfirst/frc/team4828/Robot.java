@@ -243,7 +243,7 @@ public class Robot extends IterativeRobot {
 
         if (driveStick.getRawButton(11)) {
             System.out.print("pixy: " + offset);
-            System.out.println("    width: " + pixy.getWidth());
+            System.out.println("2 blocks?   " + pixy.blocksDetected());
             System.out.println("ultra data: " + ultrasonic.getDist());
         }
 
@@ -260,7 +260,6 @@ public class Robot extends IterativeRobot {
                 drive.mecanumDriveAbsolute(temp - .5, -.015 * Math.signum(temp - .5), 0);
             } else if (driveStick.getRawButton(2)) {
                 drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 2);
-                drive.debugNavx();
             } else {
                 drive.gearRoutineProgress = 0;
                 drive.brake();

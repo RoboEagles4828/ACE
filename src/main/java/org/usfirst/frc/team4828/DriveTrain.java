@@ -247,9 +247,10 @@ public class DriveTrain {
             } else if (gearRoutineProgress == 2) {
                 if (ultrasonic.getDist() >= PLACING_DIST) {
                     double temp = scaledYAxis(offset, PIXY_OFFSET);
-                    if (!pixy.blocksDetected()) {
+                    if (!pixy.blocksDetected() || ultrasonic.getDist() < 22) {
                         temp = -.017; //TODO: Maybe change to fix drift
                     }
+                    System.out.println("2 blocks?  " + pixy.blocksDetected());
                     //APPROACH THE TARGET, CORRECTING ALL AXES SIMULTANEOUSLY
                     mecanumDriveAbsolute(X_SPEED_RANGE[1], temp, scaledRotation(targetAngle));
                 } else {
