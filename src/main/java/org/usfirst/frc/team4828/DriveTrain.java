@@ -213,23 +213,20 @@ public class DriveTrain {
      * @param pos 0 = Left, 1 = Middle, 2 = Right
      */
     void placeGear(int pos, Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
-        //TURN TO FACE THE LIFT
-        double targetAngle = LIFT_ANGLE[pos];
-        if (gearRoutineProgress == 0) {
-            if (Math.abs(closestAngle(getTrueAngle(navx.getAngle()), targetAngle)) > TURN_DEADZONE) {
-                mecanumDriveAbsolute(0, 0, scaledRotation(targetAngle));
-            } else {
-                brake();
-                gearRoutineProgress = 1;
-            }
-        }
-        //ONLY PROCEED IF VISION IS WORKING
-        else {
-            double offset = pixy.horizontalOffset();
-            //CENTER THE GEAR GOBBLER LATERALLY TO THE TARGET
-            if (gearRoutineProgress < 2) {
-                if (pixy.blocksDetected()) {
+        double targetAngle;
+        double offset;
+        switch(gearRoutineProgress){
+            case 0:
+                targetAngle = LIFT_ANGLE[pos];
+                if (Math.abs(closestAngle(getTrueAngle(navx.getAngle()), targetAngle)) > TURN_DEADZONE) {
+                    mecanumDriveAbsolute(0, 0, scaledRotation(targetAngle));
+                } else {
+                    brake();
                     gearRoutineProgress = 1;
+                }
+            case 1:
+                offset = pixy.horizontalOffset();
+                if (pixy.blocksDetected()) {
                     if (Math.abs(offset - PIXY_OFFSET) >= VISION_DEADZONE) {
                         mecanumDriveAbsolute(0, scaledYAxis(offset, PIXY_OFFSET), scaledRotation(targetAngle));
                         System.out.println("Offset: " + offset);
@@ -240,7 +237,8 @@ public class DriveTrain {
                 } else {
                     System.out.println("No blocks detected");
                 }
-            } else if (gearRoutineProgress == 2) {
+            case 2:
+                offset = pixy.horizontalOffset();
                 if (ultrasonic.getDist() >= PLACING_DIST) {
                     double temp = scaledYAxis(offset, PIXY_OFFSET);
                     if (!pixy.blocksDetected() || ultrasonic.getDist() < 22) {
@@ -255,16 +253,15 @@ public class DriveTrain {
                     Timer.delay(.5);
                     gearRoutineProgress = 3;
                 }
-            } else if (gearRoutineProgress == 3) {
+            case 3:
                 if (ultrasonic.getDist() <= 20) { // move back 20 inches at max speed to get away from the lift
                     mecanumDriveAbsolute(-X_SPEED_RANGE[1], 0, scaledRotation(targetAngle));
                 } else {
                     brake();
                     gearRoutineProgress = 5;
                 }
-            } else {
-                //gobbler.close(); //finished
-            }
+            default:
+                //finished
         }
     }
 
