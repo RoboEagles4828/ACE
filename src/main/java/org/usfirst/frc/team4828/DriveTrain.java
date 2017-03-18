@@ -36,6 +36,7 @@ public class DriveTrain {
      * @param backRightPort  port of the back right motor
      */
     DriveTrain(int frontLeftPort, int backLeftPort, int frontRightPort, int backRightPort) {
+        //config motors
         frontLeft = new CANTalon(frontLeftPort);
         frontRight = new CANTalon(frontRightPort);
         backLeft = new CANTalon(backLeftPort);
@@ -46,6 +47,44 @@ public class DriveTrain {
         backRight.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
         backLeft.reverseSensor(true);
         frontLeft.reverseSensor(true);
+        frontLeft.configEncoderCodesPerRev(360);
+        frontRight.configEncoderCodesPerRev(360);
+        backLeft.configEncoderCodesPerRev(360);
+        backRight.configEncoderCodesPerRev(360);
+        frontLeft.configNominalOutputVoltage(+0.0f, -0.0f);
+        frontLeft.configPeakOutputVoltage(+12.0f, -12.0f);
+        frontRight.configNominalOutputVoltage(+0.0f, -0.0f);
+        frontRight.configPeakOutputVoltage(+12.0f, -12.0f);
+        backLeft.configNominalOutputVoltage(+0.0f, -0.0f);
+        backLeft.configPeakOutputVoltage(+12.0f, -12.0f);
+        backRight.configNominalOutputVoltage(+0.0f, -0.0f);
+        backRight.configPeakOutputVoltage(+12.0f, -12.0f);
+
+        //initialize PID
+        frontLeft.setProfile(0);
+        frontRight.setProfile(0);
+        backLeft.setProfile(0);
+        backRight.setProfile(0);
+
+        frontLeft.setF(0);
+        frontRight.setF(0);
+        backLeft.setF(0);
+        backRight.setF(0);
+
+        frontLeft.setP(0);
+        frontRight.setP(0);
+        backLeft.setP(0);
+        backRight.setP(0);
+
+        frontLeft.setI(0);
+        frontRight.setI(0);
+        backLeft.setF(0);
+        backRight.setI(0);
+
+        frontLeft.setD(0);
+        frontRight.setD(0);
+        backLeft.setD(0);
+        backRight.setD(0);
         navx = new AHRS(SPI.Port.kMXP);
         gearRoutineProgress = 0;
     }
@@ -105,6 +144,35 @@ public class DriveTrain {
      * @param rotation   rotation of the joystick
      */
     void mecanumDriveAbsolute(double xcomponent, double ycomponent, double rotation) {
+        frontLeft.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+        frontRight.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+        backLeft.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+        backRight.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+        if (Math.abs(rotation) <= TWIST_THRESHOLD) {
+            rotation = 0.0;
+        }
+
+        // Negate y for the joystick.
+        ycomponent = -ycomponent;
+        double[] wheelSpeeds = new double[4];
+        wheelSpeeds[0] = xcomponent + ycomponent + rotation;
+        wheelSpeeds[1] = -xcomponent + ycomponent - rotation;
+        wheelSpeeds[2] = -xcomponent + ycomponent + rotation;
+        wheelSpeeds[3] = xcomponent + ycomponent - rotation;
+
+        normalize(wheelSpeeds);
+        frontLeft.set(wheelSpeeds[0]);
+        frontRight.set(wheelSpeeds[1]);
+        backLeft.set(wheelSpeeds[2]);
+        backRight.set(wheelSpeeds[3]);
+    }
+
+    void mecanumDriveAbsolutePID(double xcomponent, double ycomponent, double rotation) {
+        frontLeft.changeControlMode(CANTalon.TalonControlMode.Speed);
+        frontRight.changeControlMode(CANTalon.TalonControlMode.Speed);
+        backLeft.changeControlMode(CANTalon.TalonControlMode.Speed);
+        backRight.changeControlMode(CANTalon.TalonControlMode.Speed);
+
         if (Math.abs(rotation) <= TWIST_THRESHOLD) {
             rotation = 0.0;
         }
@@ -252,7 +320,7 @@ public class DriveTrain {
                     }
                     System.out.println("2 blocks?  " + pixy.blocksDetected());
                     //APPROACH THE TARGET, CORRECTING ALL AXES SIMULTANEOUSLY
-                    mecanumDriveAbsolute(X_SPEED_RANGE[1], temp, scaledRotation(targetAngle));
+                    mecanumDriveAbsolutePID(X_SPEED_RANGE[1], temp, scaledRotation(targetAngle));
                 } else {
                     brake();
                     //gobbler.open();
