@@ -255,7 +255,7 @@ public class DriveTrain {
                 }
                 break;
             default:
-                // Finished
+                System.out.println("Finished gear placement routine");
         }
         brake();
         gearRoutineProgress++;
