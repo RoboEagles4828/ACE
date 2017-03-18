@@ -165,13 +165,9 @@ public class DriveTrain {
      * @param speed 0-1 no negatives
      */
     public void moveDistance(double dist, double speed) {
-        int dir = 1;
-        if (dist < 0) {
-            dir = -1;
-        }
         zeroEncoders();
         while (frontLeft.getEncPosition() < Math.abs(dist)) {
-            mecanumDrive(0, speed * dir, 0);
+            mecanumDrive(0, speed * Math.signum(dist), 0);
         }
         brake();
     }
@@ -217,35 +213,31 @@ public class DriveTrain {
      * @param pos 0 = Left, 1 = Middle, 2 = Right
      */
     void placeGear(int pos, Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
-        //TURN TO FACE THE LIFT
-        double targetAngle = LIFT_ANGLE[pos-1];
+        double offset;
+        double targetAngle = LIFT_ANGLE[pos];
         System.out.println("Gear place routine on pos: " + pos);
-        if (gearRoutineProgress == 0) {
-            if (Math.abs(closestAngle(getTrueAngle(navx.getAngle()), targetAngle)) > TURN_DEADZONE) {
-                mecanumDriveAbsolute(0, 0, scaledRotation(targetAngle));
-            } else {
-                brake();
-                gearRoutineProgress = 1;
-            }
-        }
-        //ONLY PROCEED IF VISION IS WORKING
-        else {
-            double offset = pixy.horizontalOffset();
-            //CENTER THE GEAR GOBBLER LATERALLY TO THE TARGET
-            if (gearRoutineProgress < 2) {
+        switch(gearRoutineProgress){
+            case 0:
+                if (Math.abs(closestAngle(getTrueAngle(navx.getAngle()), targetAngle)) > TURN_DEADZONE) {
+                    mecanumDriveAbsolute(0, 0, scaledRotation(targetAngle));
+                    return;
+                }
+                break;
+            case 1:
+                offset = pixy.horizontalOffset();
                 if (pixy.blocksDetected()) {
-                    gearRoutineProgress = 1;
                     if (Math.abs(offset - PIXY_OFFSET) >= VISION_DEADZONE) {
                         mecanumDriveAbsolute(0, scaledYAxis(offset, PIXY_OFFSET), scaledRotation(targetAngle));
                         System.out.println("Offset: " + offset);
-                    } else {
-                        brake();
-                        gearRoutineProgress = 2;
+                        return;
                     }
+                    break;
                 } else {
                     System.out.println("No blocks detected");
+                    return;
                 }
-            } else if (gearRoutineProgress == 2) {
+            case 2:
+                offset = pixy.horizontalOffset();
                 if (ultrasonic.getDist() >= PLACING_DIST) {
                     double temp = scaledYAxis(offset, PIXY_OFFSET);
                     if (!pixy.blocksDetected()) {
@@ -254,23 +246,20 @@ public class DriveTrain {
                     System.out.println("2 blocks?  " + pixy.blocksDetected());
                     //APPROACH THE TARGET, CORRECTING ALL AXES SIMULTANEOUSLY
                     mecanumDriveAbsolute(X_SPEED_RANGE[1], temp, scaledRotation(targetAngle));
-                } else {
-                    brake();
-                    //gobbler.open();
-                    Timer.delay(.5);
-                    gearRoutineProgress = 3;
+                    return;
                 }
-            } else if (gearRoutineProgress == 3) {
+                break;
+            case 3:
                 if (ultrasonic.getDist() <= 20) { // move back 20 inches at max speed to get away from the lift
                     mecanumDriveAbsolute(-X_SPEED_RANGE[1], 0, scaledRotation(targetAngle));
-                } else {
-                    brake();
-                    gearRoutineProgress = 5;
+                    return;
                 }
-            } else {
-                //gobbler.close(); //finished
-            }
+                break;
+            default:
+                // Finished
         }
+        brake();
+        gearRoutineProgress++;
     }
 
     /**
@@ -282,7 +271,7 @@ public class DriveTrain {
         double distance = Double.MAX_VALUE;
         for (int i = 0; i < 3; i++) {
             if (Math.abs(closestAngle(angle, LIFT_ANGLE[i])) < distance) {
-                closest = i + 1;
+                closest = i;
                 distance = Math.abs(closestAngle(angle, LIFT_ANGLE[i]));
             }
         }
