@@ -254,6 +254,7 @@ public class DriveTrain {
                     gearRoutineProgress = 3;
                 }
             case 3:
+                targetAngle = LIFT_ANGLE[pos];
                 if (ultrasonic.getDist() <= 20) { // move back 20 inches at max speed to get away from the lift
                     mecanumDriveAbsolute(-X_SPEED_RANGE[1], 0, scaledRotation(targetAngle));
                 } else {
