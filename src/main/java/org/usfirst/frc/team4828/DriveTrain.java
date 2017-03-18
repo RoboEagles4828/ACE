@@ -213,29 +213,27 @@ public class DriveTrain {
      * @param pos 0 = Left, 1 = Middle, 2 = Right
      */
     void placeGear(int pos, Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
-        double targetAngle;
         double offset;
+        double targetAngle = LIFT_ANGLE[pos];
         switch(gearRoutineProgress){
             case 0:
-                targetAngle = LIFT_ANGLE[pos];
                 if (Math.abs(closestAngle(getTrueAngle(navx.getAngle()), targetAngle)) > TURN_DEADZONE) {
                     mecanumDriveAbsolute(0, 0, scaledRotation(targetAngle));
-                } else {
-                    brake();
-                    gearRoutineProgress = 1;
+                    return;
                 }
+                break;
             case 1:
                 offset = pixy.horizontalOffset();
                 if (pixy.blocksDetected()) {
                     if (Math.abs(offset - PIXY_OFFSET) >= VISION_DEADZONE) {
                         mecanumDriveAbsolute(0, scaledYAxis(offset, PIXY_OFFSET), scaledRotation(targetAngle));
                         System.out.println("Offset: " + offset);
-                    } else {
-                        brake();
-                        gearRoutineProgress = 2;
+                        return;
                     }
+                    break;
                 } else {
                     System.out.println("No blocks detected");
+                    return;
                 }
             case 2:
                 offset = pixy.horizontalOffset();
@@ -247,23 +245,20 @@ public class DriveTrain {
                     System.out.println("2 blocks?  " + pixy.blocksDetected());
                     //APPROACH THE TARGET, CORRECTING ALL AXES SIMULTANEOUSLY
                     mecanumDriveAbsolute(X_SPEED_RANGE[1], temp, scaledRotation(targetAngle));
-                } else {
-                    brake();
-                    //gobbler.open();
-                    Timer.delay(.5);
-                    gearRoutineProgress = 3;
+                    return;
                 }
+                break;
             case 3:
-                targetAngle = LIFT_ANGLE[pos];
                 if (ultrasonic.getDist() <= 20) { // move back 20 inches at max speed to get away from the lift
                     mecanumDriveAbsolute(-X_SPEED_RANGE[1], 0, scaledRotation(targetAngle));
-                } else {
-                    brake();
-                    gearRoutineProgress = 5;
+                    return;
                 }
+                break;
             default:
-                //finished
+                // Finished
         }
+        brake();
+        gearRoutineProgress++;
     }
 
     /**
