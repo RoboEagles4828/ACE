@@ -47,10 +47,14 @@ public class DriveTrain {
         backRight.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
         backLeft.reverseSensor(true);
         frontLeft.reverseSensor(true);
-        frontLeft.configEncoderCodesPerRev(360);
-        frontRight.configEncoderCodesPerRev(360);
-        backLeft.configEncoderCodesPerRev(360);
-        backRight.configEncoderCodesPerRev(360);
+        frontLeft.configEncoderCodesPerRev(1440);
+        frontRight.configEncoderCodesPerRev(1440);
+        backLeft.configEncoderCodesPerRev(1440);
+        backRight.configEncoderCodesPerRev(1440);
+        frontLeft.setPosition(0);
+        frontRight.setPosition(0);
+        backLeft.setPosition(0);
+        backRight.setPosition(0);
         frontLeft.configNominalOutputVoltage(+0.0f, -0.0f);
         frontLeft.configPeakOutputVoltage(+12.0f, -12.0f);
         frontRight.configNominalOutputVoltage(+0.0f, -0.0f);
