@@ -49,7 +49,7 @@ public class DriveTrain {
         frontLeft.reverseSensor(true);
         frontLeft.configEncoderCodesPerRev(1440);
         frontRight.configEncoderCodesPerRev(1440);
-        backLeft.configEncoderCodesPerRev(1440);
+        backLeft.configEncoderCodesPerRev(1430);
         backRight.configEncoderCodesPerRev(1440);
         frontLeft.setPosition(0);
         frontRight.setPosition(0);
