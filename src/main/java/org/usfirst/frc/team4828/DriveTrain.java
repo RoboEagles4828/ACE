@@ -213,6 +213,10 @@ public class DriveTrain {
      * @param pos 0 = Left, 1 = Middle, 2 = Right
      */
     void placeGear(int pos, Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
+        if(pos > 2 || pos < 0){
+            System.out.println("ERROR: pos > 2, read the javadoc for the valid pos values");
+            return;
+        }
         double offset;
         double targetAngle = LIFT_ANGLE[pos];
         System.out.println("Gear place routine on pos: " + pos);
