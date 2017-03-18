@@ -473,6 +473,11 @@ public class DriveTrain {
         System.out.println("bl " + backLeft.getPosition() + " br " + backRight.getPosition() + " fl " + frontLeft.getPosition() + " fr " + frontRight.getPosition());
     }
 
+    void debugPID(){
+        System.out.println("SPEED: bl " + backLeft.getSpeed() + " br " + backRight.getSpeed() + " fl " + frontLeft.getSpeed() + " fr " + frontRight.getSpeed());
+        System.out.println("ERROR: bl " + backLeft.getClosedLoopError() + " br " + backRight.getClosedLoopError() + " fl " + frontLeft.getClosedLoopError() + " fr " + frontRight.getClosedLoopError());
+    }
+
     void debugGyro() {
         System.out.println("Angle: " + getTrueAngle(navx.getAngle()));
     }
