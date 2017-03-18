@@ -277,7 +277,7 @@ public class DriveTrain {
         double distance = Double.MAX_VALUE;
         for (int i = 0; i < 3; i++) {
             if (Math.abs(closestAngle(angle, LIFT_ANGLE[i])) < distance) {
-                closest = i + 1;
+                closest = i;
                 distance = Math.abs(closestAngle(angle, LIFT_ANGLE[i]));
             }
         }
