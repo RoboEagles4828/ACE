@@ -258,6 +258,15 @@ public class DriveTrain {
                     return;
                 }
                 break;
+            case 4:
+//                gobbler.open();
+//                Timer.delay(0.5);
+//                gobbler.push();
+//                Timer.delay(0.5);
+//                gobbler.retract();
+//                Timer.delay(0.5);
+//                gobbler.close();
+                break;
             default:
                 System.out.println("Finished gear placement routine");
         }
