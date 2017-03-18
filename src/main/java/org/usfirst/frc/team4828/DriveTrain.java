@@ -442,7 +442,7 @@ public class DriveTrain {
      * @param bl speed for back left wheel
      * @param br speed for back right wheel
      */
-    public void testMotors(int fl, int fr, int bl, int br) {
+    public void testMotors(double fl, double fr, double bl, double br) {
         frontLeft.set(fl);
         frontRight.set(fr);
         backLeft.set(bl);

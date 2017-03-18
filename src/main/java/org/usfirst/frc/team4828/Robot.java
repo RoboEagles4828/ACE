@@ -257,9 +257,9 @@ public class Robot extends IterativeRobot {
             } else if (driveStick.getRawButton(12)) {
                 drive.placeGear(pixy, ultrasonic, gearGobbler);
             } else if (driveStick.getRawButton(5)) {
-                drive.mecanumDriveAbsolute(temp - .5, -.015 * Math.signum(temp - .5), 0);
+                drive.mecanumDriveAbsolutePID(temp - .5, 0, 0);// -.015 * Math.signum(temp - .5)
             } else if (driveStick.getRawButton(2)) {
-                drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 2);
+                drive.mecanumDriveAbsolutePID(driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 2);
             } else {
                 drive.gearRoutineProgress = 0;
                 drive.brake();
@@ -275,16 +275,16 @@ public class Robot extends IterativeRobot {
 
         switch (driveStick.getPOV()) {
             case 0:
-                drive.testMotors(1, 0, 0, 0);
+                drive.testMotors(.3, 0, 0, 0);
                 break;
             case 90:
-                drive.testMotors(0, 1, 0, 0);
+                drive.testMotors(0, .3, 0, 0);
                 break;
             case 180:
-                drive.testMotors(0, 0, 1, 0);
+                drive.testMotors(0, 0, .3, 0);
                 break;
             case 270:
-                drive.testMotors(0, 0, 0, 1);
+                drive.testMotors(0, 0, 0, .3);
                 break;
         }
 
