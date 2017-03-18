@@ -166,10 +166,10 @@ public class DriveTrain {
      */
     public void moveDistance(double dist, double speed) {
         int dir = 1;
-        zeroEncoders();
         if (dist < 0) {
             dir = -1;
         }
+        zeroEncoders();
         while (frontLeft.getEncPosition() < Math.abs(dist)) {
             mecanumDrive(0, speed * dir, 0);
         }
@@ -179,11 +179,11 @@ public class DriveTrain {
     /**
      * Gear placement routine.
      *
-     * @param pos 1 = Left, 2 = Middle, 3 = Right
+     * @param pos 0 = Left, 1 = Middle, 2 = Right
      */
     void placeGearAuton(int pos, Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
         //TURN TO FACE THE LIFT
-        double targetAngle = LIFT_ANGLE[pos - 1];
+        double targetAngle = LIFT_ANGLE[pos];
         while (Math.abs(closestAngle(getTrueAngle(navx.getAngle()), targetAngle)) > TURN_DEADZONE) {
             mecanumDriveAbsolute(0, 0, scaledRotation(targetAngle));
         }
@@ -214,11 +214,11 @@ public class DriveTrain {
     /**
      * Gear placement routine.
      *
-     * @param pos 1 = Left, 2 = Middle, 3 = Right
+     * @param pos 0 = Left, 1 = Middle, 2 = Right
      */
     void placeGear(int pos, Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
         //TURN TO FACE THE LIFT
-        double targetAngle = LIFT_ANGLE[pos - 1];
+        double targetAngle = LIFT_ANGLE[pos];
         if (gearRoutineProgress == 0) {
             if (Math.abs(closestAngle(getTrueAngle(navx.getAngle()), targetAngle)) > TURN_DEADZONE) {
                 mecanumDriveAbsolute(0, 0, scaledRotation(targetAngle));

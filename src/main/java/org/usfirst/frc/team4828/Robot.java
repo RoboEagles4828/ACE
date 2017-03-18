@@ -95,50 +95,38 @@ public class Robot extends IterativeRobot {
     public void autonomousPeriodic() {
         super.autonomousPeriodic();
         double time = Timer.getFPGATimestamp() - startTime;
+        double distance = 93.3;
+        double speed = 0.75;
+        double shooterServosPos = 0.4;
         switch (autonSelect) {
             case 0:
-                // DO NOTHING
+                // Do nothing
                 break;
             case 1:
                 // Shoot 10
-                rightShooter.servos.set(.6);
-                leftShooter.servos.set(.4);
+                rightShooter.servos.set(shooterServosPos);
+                leftShooter.servos.set(shooterServosPos);
                 rightShooter.spinUp(25000);
                 leftShooter.spinUp(25000);
                 hopper.stir();
                 break;
             case 2:
-                // Place gear on center
+                // Place gear on left side
+                drive.moveDistance(distance, speed);
+                drive.placeGearAuton(0, pixy, ultrasonic, gearGobbler);
                 break;
             case 3:
-                if (time < 4) {
-                    drive.mecanumDriveAbsolute(.4, 0, 0);
-                } else if (time > 6 && time < 8) {
-                    drive.mecanumDriveAbsolute(-.4, 0, 0);
-                } else if (time < 6) {
-                    drive.brake();
-                    gearGobbler.close();
-                    Timer.delay(.5);
-                    gearGobbler.push();
-                } else if (time > 10) {
-                    gearGobbler.open();
-                    gearGobbler.retract();
-                } else {
-                    drive.brake();
-                }
-
+                // Place gear on center
+                drive.moveDistance(distance / 2, speed);
+                drive.placeGearAuton(1, pixy, ultrasonic, gearGobbler);
                 break;
             case 4:
-                // Shoot 10 fuel
-                break;
-            case 5:
-                if (time < 7) {
-                    drive.mecanumDriveAbsolute(.4, 0, 0);
-                } else {
-                    drive.brake();
-                }
+                // Place gear on right side
+                drive.moveDistance(distance, speed);
+                drive.placeGearAuton(2, pixy, ultrasonic, gearGobbler);
                 break;
             case 15:
+                // Do nothing
                 System.out.println("Safe Auton... doing nothing");
                 break;
             default:
