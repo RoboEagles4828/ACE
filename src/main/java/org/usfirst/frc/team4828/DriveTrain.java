@@ -9,15 +9,15 @@ import org.usfirst.frc.team4828.Vision.Pixy;
 
 public class DriveTrain {
     private static final double TWIST_THRESHOLD = 0.15;
-    private static final double[] X_SPEED_RANGE = {.3, .4}; //TODO: Calibrate all of these to find real min speeds and reasonable max speeds
+    private static final double[] X_SPEED_RANGE = {.3, .5}; //TODO: Calibrate all of these to find real min speeds and reasonable max speeds
     private static final double[] Y_SPEED_RANGE = {0.1, .25};
     private static final double[] TURN_SPEED_RANGE = {0.2, .5};
-    private static final double[] LIFT_ANGLE = {300, 270, 210};
+    private static final double[] LIFT_ANGLE = {330, 270, 210};
     private static final double TURN_DEADZONE = 5.0;
     private static final double MAX_HORIZONTAL_OFFSET = 36.0;
     private static final double MAX_ULTRA_DISTANCE = 40.0;
-    private static final double VISION_DEADZONE = 2;
-    private static final double PIXY_OFFSET = 9.4; // distance from the center of the gear to the pixy
+    private static final double VISION_DEADZONE = 1;
+    private static final double PIXY_OFFSET = 0; // distance from the center of the gear to the pixy
     private static final double PLACING_DIST = 8.0; //TODO: Determine distance from the wall to stop when placing gear
     private static final double DIST_TO_ENC = 77.066;
     private CANTalon frontLeft;
@@ -40,10 +40,10 @@ public class DriveTrain {
         frontRight = new CANTalon(frontRightPort);
         backLeft = new CANTalon(backLeftPort);
         backRight = new CANTalon(backRightPort);
-        frontLeft.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
-        frontRight.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
-        backLeft.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
-        backRight.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
+        frontLeft.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+        frontRight.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+        backLeft.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+        backRight.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
         backLeft.reverseSensor(true);
         frontLeft.reverseSensor(true);
         navx = new AHRS(SPI.Port.kMXP);
@@ -218,7 +218,8 @@ public class DriveTrain {
      */
     void placeGear(int pos, Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
         //TURN TO FACE THE LIFT
-        double targetAngle = LIFT_ANGLE[pos];
+        double targetAngle = LIFT_ANGLE[pos-1];
+        System.out.println("Gear place routine on pos: " + pos);
         if (gearRoutineProgress == 0) {
             if (Math.abs(closestAngle(getTrueAngle(navx.getAngle()), targetAngle)) > TURN_DEADZONE) {
                 mecanumDriveAbsolute(0, 0, scaledRotation(targetAngle));
@@ -247,7 +248,7 @@ public class DriveTrain {
             } else if (gearRoutineProgress == 2) {
                 if (ultrasonic.getDist() >= PLACING_DIST) {
                     double temp = scaledYAxis(offset, PIXY_OFFSET);
-                    if (!pixy.blocksDetected() || ultrasonic.getDist() < 22) {
+                    if (!pixy.blocksDetected()) {
                         temp = -.017; //TODO: Maybe change to fix drift
                     }
                     System.out.println("2 blocks?  " + pixy.blocksDetected());
@@ -332,7 +333,7 @@ public class DriveTrain {
         if (Math.abs(temp) < TURN_DEADZONE) {
             return 0;
         }
-        return map(Math.abs(temp), TURN_DEADZONE, 180, TURN_SPEED_RANGE[0], TURN_SPEED_RANGE[1]) * -Math.signum(temp);
+        return map(Math.abs(temp), TURN_DEADZONE, 180, TURN_SPEED_RANGE[0], TURN_SPEED_RANGE[1]) * Math.signum(temp);
     }
 
     /**
@@ -399,6 +400,10 @@ public class DriveTrain {
 
     void debugGyro() {
         System.out.println("Angle: " + getTrueAngle(navx.getAngle()));
+    }
+
+    double getGyroDebug(){
+        return backRight.getPosition();
     }
 
     void debugNavx() {
