@@ -201,6 +201,10 @@ public class DriveTrain {
      * @param rotation   rotation of the joystick
      */
     void mecanumDrive(double xcomponent, double ycomponent, double rotation) {
+        frontLeft.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+        frontRight.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+        backLeft.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+        backRight.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
         // Ignore tiny inadvertent joystick rotations
         if (Math.abs(rotation) <= TWIST_THRESHOLD) {
             rotation = 0.0;
