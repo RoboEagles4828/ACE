@@ -244,14 +244,13 @@ public class DriveTrain {
                         temp = -.017; //TODO: Maybe change to fix drift
                     }
                     System.out.println("2 blocks?  " + pixy.blocksDetected());
-                    //APPROACH THE TARGET, CORRECTING ALL AXES SIMULTANEOUSLY
                     mecanumDriveAbsolute(X_SPEED_RANGE[1], temp, scaledRotation(targetAngle));
                     return;
                 }
                 break;
             case 3:
-                if (ultrasonic.getDist() <= 20) { // move back 20 inches at max speed to get away from the lift
-                    mecanumDriveAbsolute(-X_SPEED_RANGE[1], 0, scaledRotation(targetAngle));
+                if (ultrasonic.getDist() <= 20) {
+                    mecanumDriveAbsolute(X_SPEED_RANGE[1], 0, scaledRotation(targetAngle));
                     return;
                 }
                 break;
