@@ -66,15 +66,15 @@ public class DriveTrain {
         backLeft.setProfile(0);
         backRight.setProfile(0);
 
-        frontLeft.setF(0);
-        frontRight.setF(0);
-        backLeft.setF(0);
-        backRight.setF(0);
+        frontLeft.setF(0.1097);
+        frontRight.setF(0.1097);
+        backLeft.setF(0.1097);
+        backRight.setF(0.1097);
 
-        frontLeft.setP(0);
-        frontRight.setP(0);
-        backLeft.setP(0);
-        backRight.setP(0);
+        frontLeft.setP(0.22);
+        frontRight.setP(0.22);
+        backLeft.setP(0.22);
+        backRight.setP(0.22);
 
         frontLeft.setI(0);
         frontRight.setI(0);
