@@ -24,44 +24,42 @@ public class Robot extends IterativeRobot {
 
         //JOYSTICKS
         driveStick = new Joystick(0);
-//        secondaryStick = new Joystick(1);
-//
-//        //DRIVETRAIN
-//        drive = new DriveTrain(
-//                Ports.DT_FRONT_LEFT,
-//                Ports.DT_BACK_LEFT,
-//                Ports.DT_FRONT_RIGHT,
-//                Ports.DT_BACK_RIGHT
-//        );
-//
-//        //CLIMBING
-//        climb = new Climber(Ports.CLIMBER_1, Ports.CLIMBER_2, Ports.HALLEFFECT_PORT);
-//
-//        //HOPPER
-//        hopper = new Hopper(Ports.AGITATOR, Ports.INTAKE);
-//
-//        //SHOOTERS
-//        // Master is the one on the right if you are looking at the back of the shooter
-//        rightShooter = new Shooter(Ports.MOTOR_RIGHT, Ports.SERVO_RIGHT_MASTER, Ports.SERVO_RIGHT_SLAVE, Ports.INDEXER_RIGHT);
-//        leftShooter = new Shooter(Ports.MOTOR_LEFT, Ports.SERVO_LEFT_MASTER, Ports.SERVO_LEFT_SLAVE, Ports.INDEXER_LEFT);
-//        rightShooter.servos.calibrate(1, .3, 0);
-//        rightShooter.servos.calibrate(2, .6, 1);
-//        leftShooter.servos.calibrate(1, .75, .5);
-//        leftShooter.servos.calibrate(2, .35, .7);
-//
-//        //GEAR GOBBLER
-//        gearGobbler = new GearGobbler(Ports.LEFT_GEAR_GOBBLER, Ports.RIGHT_GEAR_GOBBLER);
-//        gearGobbler.servo.calibrate(2, 1, .8);
-//        gearGobbler.servo.calibrate(1, 0, .25);
-//
-//        //AUTON SELECT
-//        dipSwitch = new DigitalInput[4];
-//        dipSwitch[0] = new DigitalInput(Ports.DIPSWITCH_1);
-//        dipSwitch[1] = new DigitalInput(Ports.DIPSWITCH_2);
-//        dipSwitch[2] = new DigitalInput(Ports.DIPSWITCH_3);
-//        dipSwitch[3] = new DigitalInput(Ports.DIPSWITCH_4);
+        secondaryStick = new Joystick(1);
 
-        drive = new DriveTrain(7, 2, 3, 4);
+        //DRIVETRAIN
+        drive = new DriveTrain(
+                Ports.DT_FRONT_LEFT,
+                Ports.DT_BACK_LEFT,
+                Ports.DT_FRONT_RIGHT,
+                Ports.DT_BACK_RIGHT
+        );
+
+        //CLIMBING
+        climb = new Climber(Ports.CLIMBER_1, Ports.CLIMBER_2, Ports.HALLEFFECT_PORT);
+
+        //HOPPER
+        hopper = new Hopper(Ports.AGITATOR, Ports.INTAKE);
+
+        //SHOOTERS
+        // Master is the one on the right if you are looking at the back of the shooter
+        rightShooter = new Shooter(Ports.MOTOR_RIGHT, Ports.SERVO_RIGHT_MASTER, Ports.SERVO_RIGHT_SLAVE, Ports.INDEXER_RIGHT);
+        leftShooter = new Shooter(Ports.MOTOR_LEFT, Ports.SERVO_LEFT_MASTER, Ports.SERVO_LEFT_SLAVE, Ports.INDEXER_LEFT);
+        rightShooter.servos.calibrate(1, .3, 0);
+        rightShooter.servos.calibrate(2, .6, 1);
+        leftShooter.servos.calibrate(1, .75, .5);
+        leftShooter.servos.calibrate(2, .35, .7);
+
+        //GEAR GOBBLER
+        gearGobbler = new GearGobbler(Ports.LEFT_GEAR_GOBBLER, Ports.RIGHT_GEAR_GOBBLER);
+        gearGobbler.servo.calibrate(2, 1, .8);
+        gearGobbler.servo.calibrate(1, 0, .25);
+
+        //AUTON SELECT
+        dipSwitch = new DigitalInput[4];
+        dipSwitch[0] = new DigitalInput(Ports.DIPSWITCH_1);
+        dipSwitch[1] = new DigitalInput(Ports.DIPSWITCH_2);
+        dipSwitch[2] = new DigitalInput(Ports.DIPSWITCH_3);
+        dipSwitch[3] = new DigitalInput(Ports.DIPSWITCH_4);
 
         //THREADS
         ultrasonic = new Ultrasonic(Ports.US_CHANNEL);
@@ -69,12 +67,12 @@ public class Robot extends IterativeRobot {
         pixyThread = new Thread(pixy, "Pixy");
         ultraThread = new Thread(ultrasonic, "Ultrasonic");
         ultraThread.start();
-//
-//        //ZERO SERVOS
-//        rightShooter.servos.set(0);
-//        leftShooter.servos.set(0);
-//        gearGobbler.retract();
-//        gearGobbler.close();
+
+        //ZERO SERVOS
+        rightShooter.servos.set(0);
+        leftShooter.servos.set(0);
+        gearGobbler.retract();
+        gearGobbler.close();
     }
 
     @Override
@@ -172,19 +170,21 @@ public class Robot extends IterativeRobot {
             climb.raise();
         } else if (driveStick.getRawButton(9)) {
             climb.reset();
+        } else if (secondaryStick.getRawButton(12)) {
+            climb.raise(-.3);
         } else {
             climb.stop();
         }
 
         //GEAR PLACEMENT
-        if (driveStick.getRawButton(12) || secondaryStick.getRawButton(12)) {
-            gearGobbler.close();
+        if (driveStick.getRawButton(12)) {
+            gearGobbler.open();
             Timer.delay(.5);
             gearGobbler.push();
             Timer.delay(.4);
         } else {
             gearGobbler.retract();
-            gearGobbler.open();
+            gearGobbler.close();
         }
 
         if (driveStick.getRawButton(5)) {
@@ -232,31 +232,32 @@ public class Robot extends IterativeRobot {
         double temp = ((-driveStick.getThrottle()) + 1) / 2;
         double offset = pixy.horizontalOffset();
 
-        if (driveStick.getRawButton(11)) {
+        if (driveStick.getRawButton(6)) {
             System.out.print("pixy: " + offset);
             System.out.println("2 blocks?   " + pixy.blocksDetected());
             System.out.println("ultra data: " + ultrasonic.getDist());
+            drive.debugGyro();
         }
 
         if (driveStick.getRawButton(1)) {
-            if (driveStick.getRawButton(7)) {
-                drive.mecanumDriveAbsolute(0, 0, drive.scaledRotation(330));
-            } else if (driveStick.getRawButton(8)) {
-                drive.mecanumDriveAbsolute(0, 0, drive.scaledRotation(270));
-            } else if (driveStick.getRawButton(9)) {
-                drive.mecanumDriveAbsolute(0, 0, drive.scaledRotation(210));
-            } else if (driveStick.getRawButton(12)) {
+            if (driveStick.getRawButton(12)) {
                 drive.placeGear(pixy, ultrasonic, gearGobbler);
+            } else if (driveStick.getRawButton(7)) {
+                drive.mecanumDriveAbsolute(0, 0, drive.scaledRotation(270) * 1.1);
+            } else if (driveStick.getRawButton(8)) {
+                double tempSpeed = drive.getGyroDebug();
+                while (drive.getGyroDebug() < tempSpeed + 3) {
+                    drive.mecanumDriveAbsolute(0, -.3, 0);
+                }
             } else if (driveStick.getRawButton(5)) {
                 drive.mecanumDriveAbsolute(temp - .5, -.015 * Math.signum(temp - .5), 0);
             } else if (driveStick.getRawButton(2)) {
                 drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 2);
+                drive.debugEncoders();
             } else {
-                drive.gearRoutineProgress = 0;
                 drive.brake();
+                drive.gearRoutineProgress = 0;
             }
-        } else {
-            drive.brake();
         }
 
         if (driveStick.getRawButton(4)) {
@@ -264,20 +265,6 @@ public class Robot extends IterativeRobot {
             drive.zeroEncoders();
         }
 
-        switch (driveStick.getPOV()) {
-            case 0:
-                drive.testMotors(1, 0, 0, 0);
-                break;
-            case 90:
-                drive.testMotors(0, 1, 0, 0);
-                break;
-            case 180:
-                drive.testMotors(0, 0, 1, 0);
-                break;
-            case 270:
-                drive.testMotors(0, 0, 0, 1);
-                break;
-        }
 
         Timer.delay(.05);
     }

@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 public class Pixy implements Runnable {
-    private static final String HOST = "pixytest.local";
+    private static final String HOST = "pixyco.local";
     private static final int PORT = 5800;
     private static final int PIXY_SIDE = 1;  //-1 for right, 1 for left
     private boolean enabled, connected, blocksDetected;
