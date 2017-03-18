@@ -258,6 +258,7 @@ public class Robot extends IterativeRobot {
                 drive.placeGear(pixy, ultrasonic, gearGobbler);
             } else if (driveStick.getRawButton(5)) {
                 drive.mecanumDriveAbsolute(temp - .5, -.015 * Math.signum(temp - .5), 0);
+                drive.debugPID();
             } else if (driveStick.getRawButton(2)) {
                 drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 2);
             } else {
