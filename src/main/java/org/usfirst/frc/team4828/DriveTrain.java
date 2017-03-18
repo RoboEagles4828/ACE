@@ -165,13 +165,9 @@ public class DriveTrain {
      * @param speed 0-1 no negatives
      */
     public void moveDistance(double dist, double speed) {
-        int dir = 1;
-        if (dist < 0) {
-            dir = -1;
-        }
         zeroEncoders();
         while (frontLeft.getEncPosition() < Math.abs(dist)) {
-            mecanumDrive(0, speed * dir, 0);
+            mecanumDrive(0, speed * Math.signum(dist), 0);
         }
         brake();
     }
