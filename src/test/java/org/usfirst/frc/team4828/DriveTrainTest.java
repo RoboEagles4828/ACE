@@ -37,4 +37,12 @@ public class DriveTrainTest {
         }
         System.out.println("Finished " + TEST_CASES + " Normalization Tests");
     }
+
+//    @Test
+//    public void closestAngle(){
+//        double a = 45;
+//        for(double b = 0; b < 360; b++){
+//            System.out.println(a + ", " + b + ": " + DriveTrain.closestAngle(a, b));
+//        }
+//    }
 }

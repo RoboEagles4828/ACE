@@ -317,8 +317,8 @@ public class DriveTrain {
      * @param targetAngle  [0, 360]
      * @return signed distance from current to target angle [-180,180]
      */
-    private static double closestAngle(double currentAngle, double targetAngle) {
-        return (getTrueAngle(currentAngle - targetAngle) + 180) % 360 - 180;
+    public static double closestAngle(double currentAngle, double targetAngle) {
+        return (getTrueAngle(targetAngle - currentAngle) + 180) % 360 - 180;
     }
 
     /**
