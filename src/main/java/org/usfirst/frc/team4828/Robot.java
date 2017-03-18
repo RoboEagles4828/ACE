@@ -94,13 +94,13 @@ public class Robot extends IterativeRobot {
     @Override
     public void autonomousPeriodic() {
         super.autonomousPeriodic();
-        double time = Timer.getFPGATimestamp() - startTime;
         double distance = 93.3;
         double speed = 0.75;
         double shooterServosPos = 0.4;
         switch (autonSelect) {
             case 0:
                 // Do nothing
+                System.out.println("Auton 0: Doing nothing");
                 break;
             case 1:
                 // Shoot 10
@@ -117,7 +117,7 @@ public class Robot extends IterativeRobot {
                 break;
             case 3:
                 // Place gear on center
-                drive.moveDistance(distance / 2, speed);
+                drive.moveDistance(distance / 3, speed);
                 drive.placeGearAuton(1, pixy, ultrasonic, gearGobbler);
                 break;
             case 4:
@@ -125,12 +125,15 @@ public class Robot extends IterativeRobot {
                 drive.moveDistance(distance, speed);
                 drive.placeGearAuton(2, pixy, ultrasonic, gearGobbler);
                 break;
+            case 5:
+
             case 15:
                 // Do nothing
-                System.out.println("Safe Auton... doing nothing");
+                System.out.println("Auton 15: Doing nothing");
                 break;
             default:
                 // Do nothing
+                System.out.println("Auton " + autonSelect + " not found: Doing nothing");
         }
         Timer.delay(.1);
     }
