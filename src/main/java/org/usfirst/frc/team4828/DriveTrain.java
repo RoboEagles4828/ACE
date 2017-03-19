@@ -45,8 +45,10 @@ public class DriveTrain {
         frontRight.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
         backLeft.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
         backRight.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
-        backLeft.reverseSensor(true);
-        frontLeft.reverseSensor(true);
+        frontRight.reverseSensor(true);
+        backRight.reverseSensor(true);
+//        backLeft.reverseSensor(true);
+//        frontLeft.reverseSensor(true);
         frontLeft.configEncoderCodesPerRev(1440);
         frontRight.configEncoderCodesPerRev(1440);
         backLeft.configEncoderCodesPerRev(1430);
@@ -70,25 +72,25 @@ public class DriveTrain {
         backLeft.setProfile(0);
         backRight.setProfile(0);
 
-        frontLeft.setF(0.1097);
-        frontRight.setF(0.1097);
-        backLeft.setF(0.1097);
-        backRight.setF(0.1097);
+        frontLeft.setF(1.5223214286);
+        frontRight.setF(1.5223214286);
+        backLeft.setF(1.5223214286);
+        backRight.setF(1.5223214286);
 
-        frontLeft.setP(0.22);
-        frontRight.setP(0.22);
-        backLeft.setP(0.22);
-        backRight.setP(0.22);
+        frontLeft.setP(1.488);
+        frontRight.setP(1.488);
+        backLeft.setP(1.488);
+        backRight.setP(1.488);
 
         frontLeft.setI(0);
         frontRight.setI(0);
-        backLeft.setF(0);
+        backLeft.setI(0);
         backRight.setI(0);
 
-        frontLeft.setD(0);
-        frontRight.setD(0);
-        backLeft.setD(0);
-        backRight.setD(0);
+        frontLeft.setD(59.92);
+        frontRight.setD(59.92);
+        backLeft.setD(59.92);
+        backRight.setD(59.92);
         navx = new AHRS(SPI.Port.kMXP);
         gearRoutineProgress = 0;
     }
@@ -184,16 +186,17 @@ public class DriveTrain {
         // Negate y for the joystick.
         ycomponent = -ycomponent;
         double[] wheelSpeeds = new double[4];
-        wheelSpeeds[0] = xcomponent + ycomponent + rotation;
-        wheelSpeeds[1] = -xcomponent + ycomponent - rotation;
-        wheelSpeeds[2] = -xcomponent + ycomponent + rotation;
-        wheelSpeeds[3] = xcomponent + ycomponent - rotation;
+        wheelSpeeds[0] = (xcomponent + ycomponent + rotation);
+        wheelSpeeds[1] = (-xcomponent + ycomponent - rotation);
+        wheelSpeeds[2] = (-xcomponent + ycomponent + rotation);
+        wheelSpeeds[3] = (xcomponent + ycomponent - rotation);
 
         normalize(wheelSpeeds);
-        frontLeft.set(wheelSpeeds[0]);
-        frontRight.set(wheelSpeeds[1]);
-        backLeft.set(wheelSpeeds[2]);
-        backRight.set(wheelSpeeds[3]);
+        frontLeft.set(wheelSpeeds[0] * 70);
+        frontRight.set(wheelSpeeds[1] * 70);
+        backLeft.set(wheelSpeeds[2] * 70);
+        System.out.println(wheelSpeeds[3]);
+        backRight.set(wheelSpeeds[3] * 70);
     }
 
     /**

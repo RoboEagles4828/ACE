@@ -248,46 +248,53 @@ public class Robot extends IterativeRobot {
         }
 
         if (driveStick.getRawButton(1)) {
-            if (driveStick.getRawButton(7)) {
-                drive.mecanumDriveAbsolute(0, 0, drive.scaledRotation(330));
-            } else if (driveStick.getRawButton(8)) {
-                drive.mecanumDriveAbsolute(0, 0, drive.scaledRotation(270));
-            } else if (driveStick.getRawButton(9)) {
-                drive.mecanumDriveAbsolute(0, 0, drive.scaledRotation(210));
-            } else if (driveStick.getRawButton(12)) {
+            if (driveStick.getRawButton(11)) {
                 drive.placeGear(pixy, ultrasonic, gearGobbler);
             } else if (driveStick.getRawButton(5)) {
                 drive.mecanumDriveAbsolutePID(temp - .5, 0, 0);// -.015 * Math.signum(temp - .5)
-                drive.debugPID();
-            } else if (driveStick.getRawButton(2)) {
-                drive.mecanumDriveAbsolutePID(driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 2);
+            } else if (driveStick.getRawButton(6)) {
+                drive.mecanumDriveAbsolutePID(driveStick.getX(), driveStick.getY(), 0);
+            } else if (driveStick.getRawButton(7)) {
+                drive.mecanumDrive(driveStick.getX(), driveStick.getY(), 0);
             } else {
-                drive.gearRoutineProgress = 0;
                 drive.brake();
             }
         } else {
             drive.brake();
         }
 
-        if (driveStick.getRawButton(4)) {
+        if (driveStick.getRawButton(9)) {
             drive.reset();
             drive.zeroEncoders();
         }
 
-        switch (driveStick.getPOV()) {
-            case 0:
-                drive.testMotors(.3, 0, 0, 0);
-                break;
-            case 90:
-                drive.testMotors(0, .3, 0, 0);
-                break;
-            case 180:
-                drive.testMotors(0, 0, .3, 0);
-                break;
-            case 270:
-                drive.testMotors(0, 0, 0, .3);
-                break;
+//        switch (driveStick.getPOV()) {
+//            case 0:
+//                drive.testMotors(.3, 0, 0, 0);
+//                break;
+//            case 90:
+//                drive.testMotors(0, .3, 0, 0);
+//                break;
+//            case 180:
+//                drive.testMotors(0, 0, .3, 0);
+//                break;
+//            case 270:
+//                drive.testMotors(0, 0, 0, .3);
+//                break;
+//        }
+        if(driveStick.getRawButton(2)) {
+            drive.testMotors(.3, 0, 0, 0);
         }
+        if(driveStick.getRawButton(3)) {
+            drive.testMotors(0, .3, 0, 0);
+        }
+        if(driveStick.getRawButton(4)) {
+            drive.testMotors(0, 0, .3, 0);
+        }
+        if(driveStick.getRawButton(5)) {
+            drive.testMotors(0, 0, 0, .3);
+        }
+        drive.debugPID();
 
         Timer.delay(.05);
     }
