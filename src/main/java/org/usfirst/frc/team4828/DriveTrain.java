@@ -2,9 +2,12 @@ package org.usfirst.frc.team4828;
 
 import com.ctre.CANTalon;
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.MotorSafety;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import org.usfirst.frc.team4828.Vision.Pixy;
+
+import java.beans.PropertyVetoException;
 
 
 public class DriveTrain {
@@ -20,6 +23,11 @@ public class DriveTrain {
     private static final double PIXY_OFFSET = 9.4; // distance from the center of the gear to the pixy
     private static final double PLACING_DIST = 8.0; //TODO: Determine distance from the wall to stop when placing gear
     private static final double DIST_TO_ENC = 77.066;
+    // PID Values
+    private static final double P_VAL = 1.488;
+    private static final double I_VAL = 0;
+    private static final double D_VAL = 59.92;
+    private static final double FEED_FORWARD = 1.5223214286;
     private CANTalon frontLeft;
     private CANTalon frontRight;
     private CANTalon backLeft;
@@ -72,25 +80,26 @@ public class DriveTrain {
         backLeft.setProfile(0);
         backRight.setProfile(0);
 
-        frontLeft.setF(1.5223214286);
-        frontRight.setF(1.5223214286);
-        backLeft.setF(1.5223214286);
-        backRight.setF(1.5223214286);
+        frontLeft.setF(FEED_FORWARD);
+        frontRight.setF(FEED_FORWARD);
+        backLeft.setF(FEED_FORWARD);
+        backRight.setF(FEED_FORWARD);
 
-        frontLeft.setP(1.488);
-        frontRight.setP(1.488);
-        backLeft.setP(1.488);
-        backRight.setP(1.488);
+        frontLeft.setP(P_VAL);
+        frontRight.setP(P_VAL);
+        backLeft.setP(P_VAL);
+        backRight.setP(P_VAL);
 
-        frontLeft.setI(0);
-        frontRight.setI(0);
-        backLeft.setI(0);
-        backRight.setI(0);
+        frontLeft.setI(I_VAL);
+        frontRight.setI(I_VAL);
+        backLeft.setI(I_VAL);
+        backRight.setI(I_VAL);
 
-        frontLeft.setD(59.92);
-        frontRight.setD(59.92);
-        backLeft.setD(59.92);
-        backRight.setD(59.92);
+        frontLeft.setD(D_VAL);
+        frontRight.setD(D_VAL);
+        backLeft.setD(D_VAL);
+        backRight.setD(D_VAL);
+        
         navx = new AHRS(SPI.Port.kMXP);
         gearRoutineProgress = 0;
     }
