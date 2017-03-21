@@ -14,8 +14,9 @@ public class Robot extends IterativeRobot {
     private Climber climb;
     private Hopper hopper;
     private GearGobbler gearGobbler;
-    private double startTime = 0.0;
+    private double currentPos, startTime;
     private Thread pixyThread, ultraThread;
+    private boolean runningAuton = false;
 
     @Override
     public void robotInit() {
@@ -87,6 +88,7 @@ public class Robot extends IterativeRobot {
         System.out.println("Entering auton number " + autonSelect);
         drive.reset();
         startTime = Timer.getFPGATimestamp();
+        currentPos = drive.getEncoder();
     }
 
     @Override
@@ -110,18 +112,21 @@ public class Robot extends IterativeRobot {
                 break;
             case 2:
                 // Place gear on left side
-                drive.moveDistance(distance, speed);
-                drive.placeGearAuton(0, pixy, ultrasonic, gearGobbler);
+                if (drive.getEncoder() < currentPos + 3) {
+                    drive.mecanumDriveAbsolute(0, -.3, 0);
+                } else {
+                    drive.placeGear(0, pixy, ultrasonic, gearGobbler);
+                }
                 break;
             case 3:
                 // Place gear on center
                 drive.moveDistance(distance / 3, speed);
-                drive.placeGearAuton(1, pixy, ultrasonic, gearGobbler);
+                drive.placeGear(1, pixy, ultrasonic, gearGobbler);
                 break;
             case 4:
                 // Place gear on right side
                 drive.moveDistance(distance, speed);
-                drive.placeGearAuton(2, pixy, ultrasonic, gearGobbler);
+                drive.placeGear(2, pixy, ultrasonic, gearGobbler);
                 break;
             case 5:
 
@@ -243,11 +248,18 @@ public class Robot extends IterativeRobot {
             if (driveStick.getRawButton(12)) {
                 drive.placeGear(pixy, ultrasonic, gearGobbler);
             } else if (driveStick.getRawButton(7)) {
-                drive.mecanumDriveAbsolute(0, 0, drive.scaledRotation(270) * 1.1);
+                drive.mecanumDriveAbsolute(0, 0, drive.scaledRotation(270));
             } else if (driveStick.getRawButton(8)) {
-                double tempSpeed = drive.getGyroDebug();
-                while (drive.getGyroDebug() < tempSpeed + 3) {
-                    drive.mecanumDriveAbsolute(0, -.3, 0);
+                if (runningAuton) {
+                    if (drive.getEncoder() < currentPos + 3) {
+                        drive.mecanumDriveAbsolute(0, -.3, 0);
+                    }
+                    else{
+                        drive.brake();
+                    }
+                } else {
+                    currentPos = drive.getEncoder();
+                    runningAuton = true;
                 }
             } else if (driveStick.getRawButton(5)) {
                 drive.mecanumDriveAbsolute(temp - .5, -.015 * Math.signum(temp - .5), 0);
@@ -257,6 +269,7 @@ public class Robot extends IterativeRobot {
             } else {
                 drive.brake();
                 drive.gearRoutineProgress = 0;
+                runningAuton = false;
             }
         }
 

@@ -181,41 +181,6 @@ public class DriveTrain {
      *
      * @param pos 0 = Left, 1 = Middle, 2 = Right
      */
-    void placeGearAuton(int pos, Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
-        //TURN TO FACE THE LIFT
-        double targetAngle = LIFT_ANGLE[pos];
-        while (Math.abs(closestAngle(getTrueAngle(navx.getAngle()), targetAngle)) > TURN_DEADZONE) {
-            mecanumDriveAbsolute(0, 0, scaledRotation(targetAngle));
-        }
-        //ONLY PROCEED IF VISION IS WORKING
-        if (pixy.blocksDetected()) {
-            //CENTER THE GEAR GOBBLER LATERALLY TO THE TARGET
-            while (Math.abs(pixy.horizontalOffset() - PIXY_OFFSET) >= VISION_DEADZONE) {
-                mecanumDriveAbsolute(0, scaledYAxis(pixy.horizontalOffset(), PIXY_OFFSET), scaledRotation(targetAngle));
-            }
-            while (ultrasonic.getDist() >= PLACING_DIST) {
-                //APPROACH THE TARGET, CORRECTING ALL AXES SIMULTANEOUSLY
-                mecanumDriveAbsolute(scaledXAxis(ultrasonic.getDist(), PLACING_DIST), scaledYAxis(pixy.horizontalOffset(), PIXY_OFFSET), scaledRotation(targetAngle));
-            }
-            brake();
-            gobbler.open();
-            Timer.delay(.5);
-            while (ultrasonic.getDist() <= 20) { // move back 20 inches at max speed to get away from the lift
-                mecanumDriveAbsolute(-X_SPEED_RANGE[1], 0, scaledRotation(targetAngle));
-            }
-            gobbler.close();
-            System.out.println("GEAR PLACEMENT ROUTINE FINISHED");
-        } else {
-            System.out.println("VISION DOES NOT SEE LIFT");
-        }
-
-    }
-
-    /**
-     * Gear placement routine.
-     *
-     * @param pos 0 = Left, 1 = Middle, 2 = Right
-     */
     void placeGear(int pos, Pixy pixy, Ultrasonic ultrasonic, GearGobbler gobbler) {
         //TURN TO FACE THE LIFT
         double targetAngle = LIFT_ANGLE[pos-1];
@@ -402,7 +367,7 @@ public class DriveTrain {
         System.out.println("Angle: " + getTrueAngle(navx.getAngle()));
     }
 
-    double getGyroDebug(){
+    double getEncoder(){
         return backRight.getPosition();
     }
 
