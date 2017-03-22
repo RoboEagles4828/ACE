@@ -86,6 +86,8 @@ public class Robot extends IterativeRobot {
         gearGobbler.retract();
         gearGobbler.close();
         System.out.println("Entering auton number " + autonSelect);
+        pixyThread = new Thread(pixy, "Pixy Thread");
+        pixyThread.start();
         drive.reset();
         startTime = Timer.getFPGATimestamp();
         currentPos = drive.getEncoder();
@@ -115,18 +117,25 @@ public class Robot extends IterativeRobot {
                 if (drive.getEncoder() < currentPos + 3) {
                     drive.mecanumDriveAbsolute(0, -.3, 0);
                 } else {
-                    drive.placeGear(0, pixy, ultrasonic, gearGobbler);
+                    drive.placeGear(1, pixy, ultrasonic, gearGobbler);
                 }
                 break;
             case 3:
                 // Place gear on center
-                drive.moveDistance(distance / 3, speed);
-                drive.placeGear(1, pixy, ultrasonic, gearGobbler);
+                if (drive.getEncoder() < currentPos + 2) {
+                    drive.mecanumDriveAbsolute(0, -.3, 0);
+                } else {
+                    drive.placeGear(2, pixy, ultrasonic, gearGobbler);
+                }
                 break;
             case 4:
                 // Place gear on right side
-                drive.moveDistance(distance, speed);
-                drive.placeGear(2, pixy, ultrasonic, gearGobbler);
+                //TODO: Fix it
+                if (drive.getEncoder() < currentPos + 3) {
+                    drive.mecanumDriveAbsolute(0, -.3, 0);
+                } else {
+                    drive.placeGear(3, pixy, ultrasonic, gearGobbler);
+                }
                 break;
             case 5:
 
@@ -251,8 +260,8 @@ public class Robot extends IterativeRobot {
                 drive.mecanumDriveAbsolute(0, 0, drive.scaledRotation(270));
             } else if (driveStick.getRawButton(8)) {
                 if (runningAuton) {
-                    if (drive.getEncoder() < currentPos + 3) {
-                        drive.mecanumDriveAbsolute(0, -.3, 0);
+                    if (drive.getEncoder() < currentPos + 1.5) {
+                        drive.mecanumDriveAbsolute(0, -.2, 0);
                     }
                     else{
                         drive.brake();
