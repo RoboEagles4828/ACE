@@ -155,7 +155,31 @@ public class DriveTrainPID {
         backLeft.set(wheelSpeeds[2]);
         backRight.set(wheelSpeeds[3]);
     }
+    void mecanumDriveAbsolutePID(double xcomponent, double ycomponent, double rotation) {
+        frontLeft.changeControlMode(CANTalon.TalonControlMode.Speed);
+        frontRight.changeControlMode(CANTalon.TalonControlMode.Speed);
+        backLeft.changeControlMode(CANTalon.TalonControlMode.Speed);
+        backRight.changeControlMode(CANTalon.TalonControlMode.Speed);
 
+        if (Math.abs(rotation) <= TWIST_THRESHOLD) {
+            rotation = 0.0;
+        }
+
+        // Negate y for the joystick.
+        ycomponent = -ycomponent;
+        double[] wheelSpeeds = new double[4];
+        wheelSpeeds[0] = (xcomponent + ycomponent + rotation);
+        wheelSpeeds[1] = (-xcomponent + ycomponent - rotation);
+        wheelSpeeds[2] = (-xcomponent + ycomponent + rotation);
+        wheelSpeeds[3] = (xcomponent + ycomponent - rotation);
+
+        normalize(wheelSpeeds);
+        frontLeft.set(wheelSpeeds[0] * 50);
+        frontRight.set(wheelSpeeds[1] * 50);
+        backLeft.set(wheelSpeeds[2] * 50);
+        System.out.println(wheelSpeeds[3]);
+        backRight.set(wheelSpeeds[3] * 50);
+    }
     /**
      * Adjust motor speeds according to heading and joystick input.
      * Uses input from the gyroscope to determine field orientation.

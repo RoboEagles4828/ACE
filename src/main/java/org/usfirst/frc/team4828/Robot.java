@@ -5,7 +5,7 @@ import org.usfirst.frc.team4828.Vision.Pixy;
 
 public class Robot extends IterativeRobot {
     private Joystick driveStick, secondaryStick;
-    private DriveTrain drive;
+    private DriveTrainPID drive;
     private Ultrasonic ultrasonic;
     private Pixy pixy;
     private Shooter rightShooter, leftShooter;
@@ -28,7 +28,7 @@ public class Robot extends IterativeRobot {
         secondaryStick = new Joystick(1);
 
         //DRIVETRAIN
-        drive = new DriveTrain(
+        drive = new DriveTrainPID(
                 Ports.DT_FRONT_LEFT,
                 Ports.DT_BACK_LEFT,
                 Ports.DT_FRONT_RIGHT,
@@ -277,7 +277,12 @@ public class Robot extends IterativeRobot {
             } else if (driveStick.getRawButton(2)) {
                 drive.mecanumDrive(driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 2);
                 drive.debugEncoders();
-            } else {
+            }
+            else if(driveStick.getRawButton(3)){
+                drive.mecanumDriveAbsolutePID((driveStick.getX(), driveStick.getY(), driveStick.getTwist() / 2);
+                drive.debugPID();
+            }
+            else {
                 drive.brake();
                 drive.gearRoutineProgress = 0;
                 runningAuton = false;
