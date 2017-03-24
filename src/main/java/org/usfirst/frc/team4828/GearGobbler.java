@@ -29,6 +29,6 @@ public class GearGobbler {
     }
 
     public void close() {
-        servo.set(1);
+        servo.set(.8);
     }
 }

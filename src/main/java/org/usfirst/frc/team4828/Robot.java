@@ -122,7 +122,7 @@ public class Robot extends IterativeRobot {
                 break;
             case 3:
                 // Place gear on center
-                if (drive.getEncoder() < currentPos + 2) {
+                if (drive.getEncoder() < currentPos + 1.8) {
                     drive.mecanumDriveAbsolute(0, -.3, 0);
                 } else {
                     drive.placeGear(2, pixy, ultrasonic, gearGobbler);
