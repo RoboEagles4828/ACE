@@ -246,6 +246,8 @@ public class Robot extends IterativeRobot {
         double temp = ((-driveStick.getThrottle()) + 1) / 2;
         double offset = pixy.horizontalOffset();
 
+        double magnitude = ((-driveStick.getThrottle()) + 1) / 2;
+
         if (driveStick.getRawButton(6)) {
             System.out.print("pixy: " + offset);
             System.out.println("2 blocks?   " + pixy.blocksDetected());
@@ -280,6 +282,10 @@ public class Robot extends IterativeRobot {
                 drive.gearRoutineProgress = 0;
                 runningAuton = false;
             }
+        }
+        if(secondaryStick.getRawButton(1)){
+            rightShooter.spinUp((int) (magnitude * 30000));
+            leftShooter.spinUp((int) (magnitude * 30000));
         }
 
         if (driveStick.getRawButton(4)) {

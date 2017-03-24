@@ -30,6 +30,13 @@ public class Shooter extends Thread {
      */
     public Shooter(int motorPort, int masterPort, int slavePort, int indexerPort) {
         shooterMotor = new CANTalon(motorPort);
+        shooterMotor.setFeedbackDevice(CANTalon.FeedbackDevice.CtreMagEncoder_Relative);
+        shooterMotor.configNominalOutputVoltage(+0.0f, -0.0f);
+        shooterMotor.configPeakOutputVoltage(+12.0f, -12.0f);
+        shooterMotor.setProfile(0);
+        shooterMotor.setF(0);
+        shooterMotor.setPID(0, 0, 0);
+
         servos = new ServoGroup(masterPort, slavePort);
         indexer = new Servo(indexerPort);
     }
@@ -48,7 +55,7 @@ public class Shooter extends Thread {
      */
     public void spinUp(int speed) {
         int currentSpeed = shooterMotor.getEncVelocity();
-        if(currentPower>1.0){
+        if (currentPower > 1.0) {
             currentPower = .99;
         }
         if (speed - SPEED_DEADZONE > currentSpeed || speed + SPEED_DEADZONE < currentSpeed) {
@@ -59,6 +66,15 @@ public class Shooter extends Thread {
             }
         }
         shooterMotor.set(currentPower);
+    }
+
+    public void spinUpPID(int speed){
+        shooterMotor.changeControlMode(CANTalon.TalonControlMode.Speed);
+        shooterMotor.set(speed);
+    }
+
+    public void debugPID(){
+        System.out.println("SPEED: " + shooterMotor.getSpeed() + " ERR: " + shooterMotor.getClosedLoopError());
     }
 
     public void spinUpAbsolute(double speed) {
@@ -92,9 +108,9 @@ public class Shooter extends Thread {
 
 
     /**
-     * Change the shooter motor back to normal speed control instead of PID.
+     * Change the shooter motor back to normal speed control instead of DriveTrainPID.
      * <p>
-     * If they don't give us enough time to calibrate shooter PID, we will
+     * If they don't give us enough time to calibrate shooter DriveTrainPID, we will
      * have to resort to the tried and true way of spinning the shooter
      * wheel and not worry about it slowing down from contacting fuel.
      */
