@@ -19,7 +19,7 @@ public class Hopper {
      */
     public Hopper(int agitator1Port, int agitator2Port, int intakePort) {
         agitator1 = new Spark(agitator1Port);
-        agitator2 = new Spark(agitator2Port)
+        agitator2 = new Spark(agitator2Port);
         intakeMotor = new Spark(intakePort);
     }
 
