@@ -32,7 +32,8 @@ public class Frame {
      */
     private double getPixelConstant() {
         if (numBlocks() >= 2) {
-            return WIDTH_BETWEEN_TARGET / (Math.abs(frameData.get(0).getX() - frameData.get(1).getX()));
+            return WIDTH_BETWEEN_TARGET / (Math.abs(frameData.get(0).getX()
+                    - frameData.get(1).getX()));
         }
         else if(numBlocks() == 1){
             return TARGET_WIDTH / frameData.get(0).getWidth();
@@ -66,9 +67,12 @@ public class Frame {
                                 frameData.get(i).getBlock_type(),
                                 frameData.get(i).getSignature(),
                                 (frameData.get(i).getX() + frameData.get(j).getX()) / 2,
-                                (frameData.get(i).getYcoord() + frameData.get(j).getYcoord()) / 2,
-                                (frameData.get(i).getWidth() + frameData.get(j).getWidth()) / 2,
-                                frameData.get(i).getHeight() + frameData.get(j).getHeight() / 2));
+                                (frameData.get(i).getYcoord()
+                                        + frameData.get(j).getYcoord()) / 2,
+                                (frameData.get(i).getWidth()
+                                        + frameData.get(j).getWidth()) / 2,
+                                frameData.get(i).getHeight()
+                                        + frameData.get(j).getHeight() / 2));
                         frameData.remove(i);
                         frameData.remove(j);
                     }

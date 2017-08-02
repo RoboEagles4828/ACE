@@ -241,8 +241,8 @@ public class DriveTrain {
                 offset = pixy.horizontalOffset();
                 if (pixy.blocksDetected()) {
                     if (Math.abs(offset - PIXY_OFFSET) >= VISION_DEADZONE) {
-                        mecanumDriveAbsolute(0, scaledYAxis(offset, PIXY_OFFSET)
-                                , scaledRotation(targetAngle));
+                        mecanumDriveAbsolute(0, scaledYAxis(offset, PIXY_OFFSET),
+                                scaledRotation(targetAngle));
                         System.out.println("Offset: " + offset);
                         return;
                     }
