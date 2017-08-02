@@ -30,7 +30,8 @@ public class DriveTrainTest {
             DriveTrain.normalize(testData);
             for (int i = 0; i < 4; i++) {
                 if (testData[i] > 1.0) {
-                    System.out.println("Normalization failed: " + testData[i] + " > 1.0 (" + j + " of " + TEST_CASES + ")");
+                    System.out.println("Normalization failed: " + testData[i]
+                            + " > 1.0 (" + j + " of " + TEST_CASES + ")");
                     Assert.fail();
                 }
             }

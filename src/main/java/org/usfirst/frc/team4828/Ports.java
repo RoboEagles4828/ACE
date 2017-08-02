@@ -38,6 +38,7 @@ public class Ports {
     public static final int PUSH_GEAR_GOBBLER = 19;
 
     private Ports() {
-        throw new InstantiationError ("This is a static class, why are you trying to instantiate it");
+        throw new InstantiationError(
+                "This is a static class, why are you trying to instantiate it");
     }
 }

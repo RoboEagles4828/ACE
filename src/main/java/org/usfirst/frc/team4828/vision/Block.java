@@ -1,4 +1,4 @@
-package org.usfirst.frc.team4828.Vision;
+package org.usfirst.frc.team4828.vision;
 
 public class Block {
     static final int X_CENTER = 319 / 2;

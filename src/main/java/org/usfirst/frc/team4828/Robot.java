@@ -1,7 +1,7 @@
 package org.usfirst.frc.team4828;
 
 import edu.wpi.first.wpilibj.*;
-import org.usfirst.frc.team4828.Vision.Pixy;
+import org.usfirst.frc.team4828.vision.Pixy;
 
 public class Robot extends IterativeRobot {
     private Joystick driveStick, secondaryStick;
@@ -15,7 +15,8 @@ public class Robot extends IterativeRobot {
     private Hopper hopper;
     private GearGobbler gearGobbler;
     private double startTime = 0.0;
-    private Thread pixyThread, ultraThread;
+    private Thread pixyThread;
+    private Thread ultraThread;
 
     @Override
     public void robotInit() {
@@ -80,7 +81,8 @@ public class Robot extends IterativeRobot {
         super.autonomousInit();
         autonSelect = 0;
         for (int i = 0; i < 4; i++) {
-            autonSelect += (dipSwitch[i].get() ? 1 : 0) * (1 << i); // Bit shift the switches repeatedly to read it into an int
+            // Bit shift the switches repeatedly to read it into an int
+            autonSelect += (dipSwitch[i].get() ? 1 : 0) * (1 << i);
         }
         gearGobbler.retract();
         gearGobbler.close();

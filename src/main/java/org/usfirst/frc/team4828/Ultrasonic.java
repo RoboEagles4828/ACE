@@ -2,8 +2,12 @@ package org.usfirst.frc.team4828;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Timer;
-import java.util.*;
 
+import java.util.ArrayList;
+import java.util.Queue;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Collections;
 
 public class Ultrasonic implements Runnable{
     private static final int WINDOW_SIZE = 50;

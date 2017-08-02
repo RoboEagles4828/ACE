@@ -4,12 +4,14 @@ import com.ctre.CANTalon;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
-import org.usfirst.frc.team4828.Vision.Pixy;
+import org.usfirst.frc.team4828.vision.Pixy;
 
 
 public class DriveTrain {
     private static final double TWIST_THRESHOLD = 0.15;
-    private static final double[] X_SPEED_RANGE = {.3, .5}; //TODO: Calibrate all of these to find real min speeds and reasonable max speeds
+    private static final double[] X_SPEED_RANGE = {.3, .5};
+    // TODO: Calibrate all of these to find real min speeds and reasonable max speeds
+
     private static final double[] Y_SPEED_RANGE = {0.1, .25};
     private static final double[] TURN_SPEED_RANGE = {0.2, .5};
     private static final double[] LIFT_ANGLE = {330, 270, 210};
@@ -17,15 +19,18 @@ public class DriveTrain {
     private static final double MAX_HORIZONTAL_OFFSET = 36.0;
     private static final double MAX_ULTRA_DISTANCE = 40.0;
     private static final double VISION_DEADZONE = 1;
-    private static final double PIXY_OFFSET = 0; // distance from the center of the gear to the pixy
-    private static final double PLACING_DIST = 8.0; //TODO: Determine distance from the wall to stop when placing gear
+    private static final double PIXY_OFFSET = 0; // distance from center of the gear to the pixy
+    private static final double PLACING_DIST = 8.0;
+    // TODO: Determine distance from the wall to stop when placing gear
+
     private static final double DIST_TO_ENC = 77.066;
     private CANTalon frontLeft;
     private CANTalon frontRight;
     private CANTalon backLeft;
     private CANTalon backRight;
     private AHRS navx;
-    public int gearRoutineProgress; // 0: turning to angle, 1: centering, 2: approaching, 3: backing off
+    public int gearRoutineProgress;
+    // 0: turning to angle, 1: centering, 2: approaching, 3: backing off
 
     /**
      * Create drive train object containing mecanum motor functionality.
@@ -187,11 +192,13 @@ public class DriveTrain {
         if (pixy.blocksDetected()) {
             //CENTER THE GEAR GOBBLER LATERALLY TO THE TARGET
             while (Math.abs(pixy.horizontalOffset() - PIXY_OFFSET) >= VISION_DEADZONE) {
-                mecanumDriveAbsolute(0, scaledYAxis(pixy.horizontalOffset(), PIXY_OFFSET), scaledRotation(targetAngle));
+                mecanumDriveAbsolute(0, scaledYAxis(pixy.horizontalOffset(), PIXY_OFFSET)
+                        , scaledRotation(targetAngle));
             }
             while (ultrasonic.getDist() >= PLACING_DIST) {
                 //APPROACH THE TARGET, CORRECTING ALL AXES SIMULTANEOUSLY
-                mecanumDriveAbsolute(scaledXAxis(ultrasonic.getDist(), PLACING_DIST), scaledYAxis(pixy.horizontalOffset(), PIXY_OFFSET), scaledRotation(targetAngle));
+                mecanumDriveAbsolute(scaledXAxis(ultrasonic.getDist(), PLACING_DIST)
+                        , scaledYAxis(pixy.horizontalOffset(), PIXY_OFFSET), scaledRotation(targetAngle));
             }
             brake();
             gobbler.open();
@@ -231,7 +238,8 @@ public class DriveTrain {
                 offset = pixy.horizontalOffset();
                 if (pixy.blocksDetected()) {
                     if (Math.abs(offset - PIXY_OFFSET) >= VISION_DEADZONE) {
-                        mecanumDriveAbsolute(0, scaledYAxis(offset, PIXY_OFFSET), scaledRotation(targetAngle));
+                        mecanumDriveAbsolute(0, scaledYAxis(offset, PIXY_OFFSET)
+                                , scaledRotation(targetAngle));
                         System.out.println("Offset: " + offset);
                         return;
                     }
@@ -295,8 +303,8 @@ public class DriveTrain {
      *
      * @return mapped double
      */
-    private static double map(double a, double inMin, double inMax, double outMin, double outMax) {
-        return Math.min(Math.max((a - inMin) / (inMax - inMin) * (outMax - outMin) + outMin, outMin), outMax);
+    private static double map(double alpha, double inMin, double inMax, double outMin, double outMax) {
+        return Math.min(Math.max((alpha - inMin) / (inMax - inMin) * (outMax - outMin) + outMin, outMin), outMax);
     }
 
     /**
@@ -304,8 +312,8 @@ public class DriveTrain {
      *
      * @return [0, 360]
      */
-    private static double getTrueAngle(double a) {
-        double temp = a % 360;
+    private static double getTrueAngle(double alpha) {
+        double temp = alpha % 360;
         if (temp < 0) {
             temp += 360;
         }
@@ -334,7 +342,8 @@ public class DriveTrain {
         if (Math.abs(temp) < TURN_DEADZONE) {
             return 0;
         }
-        return map(Math.abs(temp), TURN_DEADZONE, 180, TURN_SPEED_RANGE[0], TURN_SPEED_RANGE[1]) * Math.signum(temp);
+        return map(Math.abs(temp), TURN_DEADZONE, 180, TURN_SPEED_RANGE[0], TURN_SPEED_RANGE[1])
+                * Math.signum(temp);
     }
 
     /**
@@ -344,11 +353,13 @@ public class DriveTrain {
      */
     public double scaledXAxis(double current, double target) {
         double temp = current - target;
-        return map(Math.abs(temp), 0, MAX_ULTRA_DISTANCE, X_SPEED_RANGE[0], X_SPEED_RANGE[1]) * Math.signum(temp);
+        return map(Math.abs(temp), 0, MAX_ULTRA_DISTANCE, X_SPEED_RANGE[0], X_SPEED_RANGE[1])
+                * Math.signum(temp);
     }
 
     /**
-     * Compute speed along x axis scaled to the distance between the center of the pixy's frame and the retro-reflective tape.
+     * Compute speed along x axis scaled to the distance between the center
+     * of the pixy's frame and the retro-reflective tape.
      *
      * @return [-1, 1]
      */
@@ -357,7 +368,8 @@ public class DriveTrain {
         if (Math.abs(temp) < VISION_DEADZONE) {
             return 0;
         }
-        return map(Math.abs(temp), 0, MAX_HORIZONTAL_OFFSET, Y_SPEED_RANGE[0], Y_SPEED_RANGE[1]) * Math.signum(temp);
+        return map(Math.abs(temp), 0, MAX_HORIZONTAL_OFFSET, Y_SPEED_RANGE[0], Y_SPEED_RANGE[1])
+                * Math.signum(temp);
     }
 
     /**
@@ -396,7 +408,8 @@ public class DriveTrain {
      * Prints current average encoder values.
      */
     void debugEncoders() {
-        System.out.println("bl " + backLeft.getPosition() + " br " + backRight.getPosition() + " fl " + frontLeft.getPosition() + " fr " + frontRight.getPosition());
+        System.out.println("bl " + backLeft.getPosition() + " br " + backRight.getPosition() + " fl "
+                + frontLeft.getPosition() + " fr " + frontRight.getPosition());
     }
 
     void debugGyro() {
@@ -408,8 +421,10 @@ public class DriveTrain {
     }
 
     void debugNavx() {
-        System.out.println("Displacement. X: " + navx.getDisplacementX() + "  Y: " + navx.getDisplacementY() + "  Z: " + navx.getDisplacementZ());
-        System.out.println("Acceleration. X: " + navx.getRawAccelX() + "  Y: " + navx.getRawAccelY() + "  Z: " + navx.getRawAccelZ());
+        System.out.println("Displacement. X: " + navx.getDisplacementX() + "  Y: " + navx.getDisplacementY() + "  Z: "
+                + navx.getDisplacementZ());
+        System.out.println("Acceleration. X: " + navx.getRawAccelX() + "  Y: " + navx.getRawAccelY() + "  Z: "
+                + navx.getRawAccelZ());
     }
 
     /**

@@ -1,18 +1,21 @@
-package org.usfirst.frc.team4828.Vision;
-
-import org.usfirst.frc.team4828.Ultrasonic;
+package org.usfirst.frc.team4828.vision;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
+import org.usfirst.frc.team4828.Ultrasonic;
+
 public class Pixy implements Runnable {
     private static final String HOST = "pixyco.local";
     private static final int PORT = 5800;
     private static final int PIXY_SIDE = 1;  //-1 for right, 1 for left
-    private boolean enabled, connected, blocksDetected;
-    private volatile Frame currentFrame, lastFrame;
+    private boolean enabled;
+    private boolean connected;
+    private boolean blocksDetected;
+    private volatile Frame currentFrame;
+    private volatile Frame lastFrame;
     private BufferedReader in;
     private Socket soc;
     private Ultrasonic us;
@@ -45,8 +48,10 @@ public class Pixy implements Runnable {
         //if only one vision target is detected guess position of peg
         else if (currentFrame.numBlocks() == 1) {
             blocksDetected = false;
-            double pegPos = ((currentFrame.getFrameData().get(0).getX() - Block.X_CENTER) > 0) ? 4.125 : -4.125;
-            return currentFrame.getRealDistance(currentFrame.getFrameData().get(0).getX() - Block.X_CENTER) + pegPos;
+            double pegPos = ((currentFrame.getFrameData().get(0).getX() - Block.X_CENTER) > 0)
+                    ? 4.125 : -4.125;
+            return currentFrame.getRealDistance(currentFrame.getFrameData().get(0).getX()
+                    - Block.X_CENTER) + pegPos;
         }
         //if no vision targets are detected
         blocksDetected = false;
@@ -79,7 +84,8 @@ public class Pixy implements Runnable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if (currentFrame.numBlocks() >= 2 || (lastFrame == null && currentFrame.numBlocks() == 1)) {
+            if (currentFrame.numBlocks() >= 2
+                    || (lastFrame == null && currentFrame.numBlocks() == 1)) {
                 blocksDetected = true;
                 lastFrame = currentFrame;
             }
