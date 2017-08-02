@@ -59,7 +59,8 @@ public class Frame {
         if (numBlocks() > 2) {
             for (int i = 0; i < frameData.size(); i++) {
                 for (int j = 0; j < frameData.size(); j++) {
-                    if (i != j && (Math.abs(frameData.get(i).getX() - frameData.get(j).getX()) < 10)) {
+                    if (i != j && (Math.abs(frameData.get(i).getX()
+                            - frameData.get(j).getX()) < 10)) {
                         frameData.add(new Block(
                                 frameData.get(i).getFrame(),
                                 frameData.get(i).getBlock_type(),

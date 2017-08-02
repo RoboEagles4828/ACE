@@ -192,18 +192,20 @@ public class DriveTrain {
         if (pixy.blocksDetected()) {
             //CENTER THE GEAR GOBBLER LATERALLY TO THE TARGET
             while (Math.abs(pixy.horizontalOffset() - PIXY_OFFSET) >= VISION_DEADZONE) {
-                mecanumDriveAbsolute(0, scaledYAxis(pixy.horizontalOffset(), PIXY_OFFSET)
-                        , scaledRotation(targetAngle));
+                mecanumDriveAbsolute(0, scaledYAxis(pixy.horizontalOffset(), PIXY_OFFSET),
+                        scaledRotation(targetAngle));
             }
             while (ultrasonic.getDist() >= PLACING_DIST) {
                 //APPROACH THE TARGET, CORRECTING ALL AXES SIMULTANEOUSLY
-                mecanumDriveAbsolute(scaledXAxis(ultrasonic.getDist(), PLACING_DIST)
-                        , scaledYAxis(pixy.horizontalOffset(), PIXY_OFFSET), scaledRotation(targetAngle));
+                mecanumDriveAbsolute(scaledXAxis(ultrasonic.getDist(), PLACING_DIST),
+                        scaledYAxis(pixy.horizontalOffset(), PIXY_OFFSET),
+                        scaledRotation(targetAngle));
             }
             brake();
             gobbler.open();
             Timer.delay(.5);
-            while (ultrasonic.getDist() <= 20) { // move back 20 inches at max speed to get away from the lift
+            while (ultrasonic.getDist() <= 20) {
+                // move back 20 inches at max speed to get away from the lift
                 mecanumDriveAbsolute(-X_SPEED_RANGE[1], 0, scaledRotation(targetAngle));
             }
             gobbler.close();
@@ -229,7 +231,8 @@ public class DriveTrain {
         System.out.println("Gear place routine on pos: " + pos);
         switch(gearRoutineProgress){
             case 0:
-                if (Math.abs(closestAngle(getTrueAngle(navx.getAngle()), targetAngle)) > TURN_DEADZONE) {
+                if (Math.abs(closestAngle(getTrueAngle(navx.getAngle()), targetAngle))
+                        > TURN_DEADZONE) {
                     mecanumDriveAbsolute(0, 0, scaledRotation(targetAngle));
                     return;
                 }
@@ -303,8 +306,10 @@ public class DriveTrain {
      *
      * @return mapped double
      */
-    private static double map(double alpha, double inMin, double inMax, double outMin, double outMax) {
-        return Math.min(Math.max((alpha - inMin) / (inMax - inMin) * (outMax - outMin) + outMin, outMin), outMax);
+    private static double map(double alpha, double inMin,
+                              double inMax, double outMin, double outMax) {
+        return Math.min(Math.max((alpha - inMin) / (inMax - inMin)
+                * (outMax - outMin) + outMin, outMin), outMax);
     }
 
     /**
@@ -408,7 +413,8 @@ public class DriveTrain {
      * Prints current average encoder values.
      */
     void debugEncoders() {
-        System.out.println("bl " + backLeft.getPosition() + " br " + backRight.getPosition() + " fl "
+        System.out.println("bl " + backLeft.getPosition() + " br "
+                + backRight.getPosition() + " fl "
                 + frontLeft.getPosition() + " fr " + frontRight.getPosition());
     }
 
@@ -421,9 +427,11 @@ public class DriveTrain {
     }
 
     void debugNavx() {
-        System.out.println("Displacement. X: " + navx.getDisplacementX() + "  Y: " + navx.getDisplacementY() + "  Z: "
+        System.out.println("Displacement. X: " + navx.getDisplacementX() + "  Y: "
+                + navx.getDisplacementY() + "  Z: "
                 + navx.getDisplacementZ());
-        System.out.println("Acceleration. X: " + navx.getRawAccelX() + "  Y: " + navx.getRawAccelY() + "  Z: "
+        System.out.println("Acceleration. X: " + navx.getRawAccelX() + "  Y: "
+                + navx.getRawAccelY() + "  Z: "
                 + navx.getRawAccelZ());
     }
 

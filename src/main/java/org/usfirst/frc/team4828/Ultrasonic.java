@@ -4,10 +4,10 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Timer;
 
 import java.util.ArrayList;
-import java.util.Queue;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Collections;
+import java.util.Queue;
 
 public class Ultrasonic implements Runnable{
     private static final int WINDOW_SIZE = 50;
