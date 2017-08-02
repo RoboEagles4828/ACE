@@ -7,26 +7,25 @@ public class Climber {
 
     private Victor climberMotor1;
     private Victor climberMotor2;
-    private DigitalInput halleffect;
+    private DigitalInput hallEffect;
     private static final double MOTOR_SPEED = 0.8;
     private static final double RESET_SPEED = 0.2;
 
     /**
      * Create climber object encapsulating the climber motor.
      *
-     * @param motorPort1 port of the first climber motor
+     * @param motorPort1 port of the first climber motor todo: figure out which one is left/right
      * @param motorPort2 port of the second climber motor
      */
     public Climber(int motorPort1, int motorPort2, int halleffectPort) {
         climberMotor1 = new Victor(motorPort1);
         climberMotor2 = new Victor(motorPort2);
-        halleffect = new DigitalInput(halleffectPort);
+        hallEffect = new DigitalInput(halleffectPort);
     }
 
     /**
      * Raise the robot at a given speed.
      *
-     * @param speed double speed
      */
     public void raise(double speed) {
         climberMotor1.set(-speed);
@@ -41,8 +40,11 @@ public class Climber {
         climberMotor2.set(MOTOR_SPEED);
     }
 
+    /**
+     * Move the hook to face forward using hall effect sensor.
+     */
     public void reset() {
-        if (halleffect.get()) {
+        if (hallEffect.get()) {
             raise(RESET_SPEED);
         }
         else{
@@ -51,7 +53,7 @@ public class Climber {
     }
 
     public void reset(double speed) {
-        if (halleffect.get()) {
+        if (hallEffect.get()) {
             raise(speed);
         }
         else{
@@ -60,25 +62,7 @@ public class Climber {
     }
 
     /**
-     * Lower the robot at a given speed.
-     *
-     * @param speed double speed (positive)
-     */
-    public void lower(double speed) {
-        climberMotor1.set(speed);
-        climberMotor2.set(-speed);
-    }
-
-    /**
-     * Lower the robot at the default speed.
-     */
-    public void lower() {
-        climberMotor1.set(MOTOR_SPEED);
-        climberMotor2.set(-MOTOR_SPEED);
-    }
-
-    /**
-     * Stop raising or lowering the robot.
+     * Stop raising the robot.
      */
     public void stop() {
         climberMotor1.set(0);
@@ -86,7 +70,7 @@ public class Climber {
     }
 
     public void printDebug() {
-        System.out.println(halleffect.get());
+        System.out.println(hallEffect.get());
     }
 
 }

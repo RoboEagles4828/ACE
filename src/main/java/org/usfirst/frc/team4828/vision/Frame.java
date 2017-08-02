@@ -1,4 +1,4 @@
-package org.usfirst.frc.team4828.Vision;
+package org.usfirst.frc.team4828.vision;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -7,6 +7,7 @@ import java.util.List;
 public class Frame {
     //8.25 in between targets
     private static final double WIDTH_BETWEEN_TARGET = 8.25;
+    private static final double TARGET_WIDTH = 2.0;
     private List<Block> frameData;
 
     /**
@@ -31,16 +32,19 @@ public class Frame {
      */
     private double getPixelConstant() {
         if (numBlocks() >= 2) {
-            return WIDTH_BETWEEN_TARGET / (Math.abs(frameData.get(0).getX() - frameData.get(1).getX()));
+            return WIDTH_BETWEEN_TARGET / (Math.abs(frameData.get(0).getX()
+                    - frameData.get(1).getX()));
+        }
+        else if(numBlocks() == 1){
+            return TARGET_WIDTH / frameData.get(0).getWidth();
         }
         return -1;
     }
 
-    double getRealDistance(int pixels) {
-        return pixels * getPixelConstant();
+    double getRealDistance(int pixels) {return pixels * getPixelConstant();
     }
 
-    List<Block> getFrameData() {
+    public List<Block> getFrameData() {
         return frameData;
     }
 
@@ -56,15 +60,19 @@ public class Frame {
         if (numBlocks() > 2) {
             for (int i = 0; i < frameData.size(); i++) {
                 for (int j = 0; j < frameData.size(); j++) {
-                    if (i != j && (Math.abs(frameData.get(i).getX() - frameData.get(j).getX()) < 10)) {
+                    if (i != j && (Math.abs(frameData.get(i).getX()
+                            - frameData.get(j).getX()) < 10)) {
                         frameData.add(new Block(
                                 frameData.get(i).getFrame(),
                                 frameData.get(i).getBlock_type(),
                                 frameData.get(i).getSignature(),
                                 (frameData.get(i).getX() + frameData.get(j).getX()) / 2,
-                                (frameData.get(i).getY() + frameData.get(j).getY()) / 2,
-                                (frameData.get(i).getWidth() + frameData.get(j).getWidth()) / 2,
-                                frameData.get(i).getHeight() + frameData.get(j).getHeight() / 2));
+                                (frameData.get(i).getYcoord()
+                                        + frameData.get(j).getYcoord()) / 2,
+                                (frameData.get(i).getWidth()
+                                        + frameData.get(j).getWidth()) / 2,
+                                frameData.get(i).getHeight()
+                                        + frameData.get(j).getHeight() / 2));
                         frameData.remove(i);
                         frameData.remove(j);
                     }
