@@ -65,7 +65,7 @@ public class Frame {
                                 frameData.get(i).getBlock_type(),
                                 frameData.get(i).getSignature(),
                                 (frameData.get(i).getX() + frameData.get(j).getX()) / 2,
-                                (frameData.get(i).getY() + frameData.get(j).getY()) / 2,
+                                (frameData.get(i).getYcoord() + frameData.get(j).getYcoord()) / 2,
                                 (frameData.get(i).getWidth() + frameData.get(j).getWidth()) / 2,
                                 frameData.get(i).getHeight() + frameData.get(j).getHeight() / 2));
                         frameData.remove(i);

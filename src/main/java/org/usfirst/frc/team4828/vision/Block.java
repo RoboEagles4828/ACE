@@ -5,10 +5,10 @@ public class Block {
     //private static final int Y_CENTER = 199/2;
     double angle;
     private int frame;
-    private int block_type;
+    private int blocktype;
     private int signature;
-    private int x;
-    private int y;
+    private int xcoord;
+    private int ycoord;
     private int width;
     private int height;
 
@@ -19,10 +19,10 @@ public class Block {
      */
     Block(String[] data) {
         frame = Integer.parseInt(data[0]);
-        block_type = Integer.parseInt(data[1]);
+        blocktype = Integer.parseInt(data[1]);
         signature = Integer.parseInt(data[2]);
-        x = Integer.parseInt(data[3]);
-        y = Integer.parseInt(data[4]);
+        xcoord = Integer.parseInt(data[3]);
+        ycoord = Integer.parseInt(data[4]);
         width = Integer.parseInt(data[5]);
         height = Integer.parseInt(data[6]);
     }
@@ -31,19 +31,19 @@ public class Block {
      * Create block object storing relevant fields
      *
      * @param frame      frame pixy
-     * @param block_type from pixy
+     * @param blocktype from pixy
      * @param signature  from pixy
-     * @param x          in pixels
-     * @param y          in pixels
+     * @param xcoord     in pixels
+     * @param ycoord     in pixels
      * @param width      of block
      * @param height     of block
      */
-    Block(int frame, int block_type, int signature, int x, int y, int width, int height) {
+    Block(int frame, int blocktype, int signature, int xcoord, int ycoord, int width, int height) {
         this.frame = frame;
-        this.block_type = block_type;
+        this.blocktype = blocktype;
         this.signature = signature;
-        this.x = x;
-        this.y = y;
+        this.xcoord = xcoord;
+        this.ycoord = ycoord;
         this.width = width;
         this.height = height;
     }
@@ -57,7 +57,7 @@ public class Block {
     }
 
     int getBlock_type() {
-        return block_type;
+        return blocktype;
     }
 
     int getSignature() {
@@ -73,11 +73,11 @@ public class Block {
     }
 
     int getX() {
-        return x;
+        return xcoord;
     }
 
-    int getY() {
-        return y;
+    int getYcoord() {
+        return ycoord;
     }
 
     double getAngle() {
@@ -90,7 +90,7 @@ public class Block {
      * @return angle to detected block
      */
     double computeAngle(double pixelConstant, double distance) {
-        double horizontalDistance = (x - X_CENTER) * pixelConstant;
+        double horizontalDistance = (xcoord - X_CENTER) * pixelConstant;
         return Math.toDegrees(Math.atan(horizontalDistance / distance));
     }
 }
