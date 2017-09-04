@@ -30,7 +30,9 @@ after_success:
 
 after_failure:
   # For Outputting reports
+  # FindBugs
   - if [ -f /home/travis/build/RoboEagles4828/ACE/build/reports/findbugs/main.html ]; then lynx -dump /home/travis/build/RoboEagles4828/ACE/build/reports/findbugs/main.html; fi
+  # PMD
   - if [ -f /home/travis/build/RoboEagles4828/ACE/build/reports/pmd/main.html ]; then lynx -dump /home/travis/build/RoboEagles4828/ACE/build/reports/pmd/main.html; fi
 
 jdk:
