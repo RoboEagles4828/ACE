@@ -21,7 +21,6 @@ before_install:
   - chmod +x gradlew
 install: echo "skip 'gradle assemble' step"
 script:
-  - gradle check
   - gradle build --continue
 
 # For CodeCov
@@ -32,7 +31,7 @@ after_success:
 after_failure:
   # For Outputting reports
   - if [ -f /home/travis/build/RoboEagles4828/ACE/build/reports/findbugs/main.html ]; then lynx -dump /home/travis/build/RoboEagles4828/ACE/build/reports/findbugs/main.html; fi
-
+  - if [ -f /home/travis/build/RoboEagles4828/ACE/build/reports/pmd/main.html ]; then lynx -dump /home/travis/build/RoboEagles4828/ACE/build/reports/pmd/main.html; fi
 
 jdk:
 - oraclejdk8
