@@ -3,6 +3,11 @@ plugins {
     id "eclipse"
     id "idea"
     id "jaci.openrio.gradle.GradleRIO" version "2017.2.3"
+    id "jacoco"
+}
+
+repositories {
+    mavenCentral()
 }
 
 frc {
@@ -13,6 +18,8 @@ frc {
 dependencies {
     compile wpilib()
     compile talonSrx()
+    compile group: 'junit', name: 'junit', version: '4.12'
+    compile fileTree(dir: "libs", include: "*.jar")
     compile navx()
 }
 
@@ -28,4 +35,15 @@ jar {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '3.2.1'
+}
+
+test {
+    testLogging.showStandardStreams = true
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
 }
