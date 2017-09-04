@@ -83,7 +83,7 @@ public class Pixy implements Runnable {
         while (enabled) {
             try {
                 line = in.readLine();
-                //assert line != null;
+                assert line != null;
                 currentFrame = new Frame(line.split(","), us.getDist());
             } catch (IOException e) {
                 e.printStackTrace();
