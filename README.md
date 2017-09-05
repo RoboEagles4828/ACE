@@ -1,5 +1,5 @@
 # ACE
-[![Code Climate](https://codeclimate.com/github/RoboEagles4828/ACE/badges/gpa.svg)](https://codeclimate.com/github/RoboEagles4828/ACE) [![codecov](https://codecov.io/gh/RoboEagles4828/ACE/branch/master/graph/badge.svg)](https://codecov.io/gh/RoboEagles4828/ACE)
+[![codecov](https://codecov.io/gh/RoboEagles4828/ACE/branch/master/graph/badge.svg)](https://codecov.io/gh/RoboEagles4828/ACE)
 
 
 ## Builds
