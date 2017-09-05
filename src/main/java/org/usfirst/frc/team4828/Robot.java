@@ -14,7 +14,6 @@ public class Robot extends IterativeRobot {
     private Climber climb;
     private Hopper hopper;
     private GearGobbler gearGobbler;
-    private double startTime = 0.0;
     private Thread pixyThread;
     private Thread ultraThread;
 
@@ -88,7 +87,6 @@ public class Robot extends IterativeRobot {
         gearGobbler.close();
         System.out.println("Entering auton number " + autonSelect);
         drive.reset();
-        startTime = Timer.getFPGATimestamp();
     }
 
     @Override
