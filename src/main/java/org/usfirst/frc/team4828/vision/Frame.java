@@ -101,10 +101,10 @@ public class Frame {
         if (numBlocks() == 0) {
             return "NO BLOCKS DETECTED";
         }
-        String temp = "";
+        StringBuilder temp = new StringBuilder();
         for (Block i : frameData) {
-            temp += " " + i.getX() + " ";
+            temp.append(" " + i.getX() + " ");
         }
-        return "Detected " + frameData.size() + " blocks at: " + temp;
+        return "Detected " + frameData.size() + " blocks at: " + temp.toString();
     }
 }

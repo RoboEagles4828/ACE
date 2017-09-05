@@ -7,6 +7,7 @@ addons:
     packages:
       - libstdc++6
       - junit4
+      - lynx
   code_climate:
           repo_token: 3196bfa644b36e30bf8c3d41c51d36d7eb39fc0d54739268ffc677170d1b26d0
 before_cache:
@@ -19,12 +20,20 @@ cache:
 before_install:
   - chmod +x gradlew
 install: echo "skip 'gradle assemble' step"
-script: gradle build --continue
+script:
+  - gradle build --continue
 
 # For CodeCov
 after_success:
   - ./gradlew test jacocoTestReport
   - bash <(curl -s https://codecov.io/bash)
+
+after_failure:
+  # For Outputting reports
+  # FindBugs
+  - if [ -f /home/travis/build/RoboEagles4828/ACE/build/reports/findbugs/main.html ]; then lynx -dump /home/travis/build/RoboEagles4828/ACE/build/reports/findbugs/main.html; fi
+  # PMD
+  - if [ -f /home/travis/build/RoboEagles4828/ACE/build/reports/pmd/main.html ]; then lynx -dump /home/travis/build/RoboEagles4828/ACE/build/reports/pmd/main.html; fi
 
 jdk:
 - oraclejdk8
