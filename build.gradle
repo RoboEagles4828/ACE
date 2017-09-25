@@ -2,7 +2,7 @@ plugins {
     id "java"
     id "eclipse"
     id "idea"
-    id "jaci.openrio.gradle.GradleRIO" version "2017.1.0"
+    id "jaci.openrio.gradle.GradleRIO" version "2017.3.1"
 	id "jacoco"
 }
 
@@ -18,8 +18,10 @@ frc {
 dependencies {
     compile wpilib()
     compile talonSrx()
+
     compile group: 'junit', name: 'junit', version: '4.12'
     compile fileTree(dir: "libs", include: "*.jar")
+    nativeLib fileTree(dir: 'libs', include: '**/*.so')
 }
 
 def robotManifest = {
