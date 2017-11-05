@@ -1,6 +1,7 @@
 package org.usfirst.frc.team4828;
 
 import java.util.Random;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -21,33 +22,28 @@ public class DriveTrainTest {
     @Test
     public void testNormalize() {
         Random rand = new Random();
-        DriveTrain drive = new DriveTrain(false);
-        for(int j = 1; j < TEST_CASES + 1; j++) {
+        for (int j = 1; j < TEST_CASES + 1; j++) {
             double[] testData = new double[4];
             for (int i = 0; i < 4; i++) {
                 testData[i] = rand.nextDouble() * 2;
             }
-            drive.normalize(testData);
+            DriveTrain.normalize(testData);
             for (int i = 0; i < 4; i++) {
                 if (testData[i] > 1.0) {
-                    System.out.println(
-                            "Normalization failed: "
-                                    + testData[i]
-                                    + " > 1.0 ("
-                                    + j
-                                    + " of "
-                                    + TEST_CASES
-                                    + ")"
-                    );
+                    System.out.println("Normalization failed: " + testData[i]
+                            + " > 1.0 (" + j + " of " + TEST_CASES + ")");
                     Assert.fail();
                 }
             }
-//            String output = "Normalization tests passed (" + j + " of " + TEST_CASES + ")";
-//            for (int i = 0; i < output.length(); i++) {
-//                System.out.print("\b");
-//            }
-//            System.out.print("\r" + output);
         }
         System.out.println("Finished " + TEST_CASES + " Normalization Tests");
     }
+
+//    @Test
+//    public void closestAngle(){
+//        double a = 45;
+//        for(double b = 0; b < 360; b++){
+//            System.out.println(a + ", " + b + ": " + DriveTrain.closestAngle(a, b));
+//        }
+//    }
 }

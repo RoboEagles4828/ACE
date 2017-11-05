@@ -2,9 +2,14 @@ plugins {
     id "java"
     id "eclipse"
     id "idea"
-    id "jaci.openrio.gradle.GradleRIO" version "2017.1.5"
-	id "jacoco"
+    id "jaci.openrio.gradle.GradleRIO" version "2017.10.30"
+    id "jacoco"
+    id "pmd"
+    id "findbugs"
 }
+
+def TEAM = 4828
+def ROBOT_CLASS = "frc.team4828.robot.Robot"
 
 repositories {
     mavenCentral()
@@ -13,17 +18,18 @@ repositories {
 frc {
     team = "4828"
     robotClass = "org.usfirst.frc.team4828.Robot"
-
-    rioHost = "roborio-4828-frc.frc-robot.local"
+    rioHost = "roboRIO-4828-FRC.frc-robot.local"
+    deployTimeout = 5
 }
 
 dependencies {
     compile wpilib()
     compile talonSrx()
+    compile navx()
 
     compile group: 'junit', name: 'junit', version: '4.12'
     compile fileTree(dir: "libs", include: "*.jar")
-    nativeLib fileTree(dir: 'libs', include: '**/*.so')
+    nativeLib  fileTree(dir: 'libs', include: '**/*.so')
 }
 
 def robotManifest = {
@@ -33,11 +39,11 @@ def robotManifest = {
 
 jar {
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    manifest robotManifest
+    manifest jaci.openrio.gradle.GradleRIOPlugin.javaManifest(ROBOT_CLASS)
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '3.2.1'
+    gradleVersion = 4.3
 }
 
 test {
@@ -47,6 +53,13 @@ test {
 jacocoTestReport {
     reports {
         xml.enabled true
+        html.enabled true
+    }
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled false
         html.enabled true
     }
 }

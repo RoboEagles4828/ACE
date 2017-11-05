@@ -18,6 +18,7 @@ engines:
   checkstyle:
     enabled: true
     channel: "beta"
+    config: 'config/checkstyle.xml'
 ratings:
   paths:
   - "**.md"
